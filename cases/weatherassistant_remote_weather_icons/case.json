@@ -16,18 +16,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v3/weatherassistant_remote_weather_icons/unfixed",
+      "ref": "clean-app/weatherassistant_remote_weather_icons/unfixed",
       "tree": "0ff272c018812dce29db0c487b741ce001b22d0d",
       "production_patches": [
-        "hosts_patches/weatherassistant/icons-ordinary-origin-unfixed-v2.patch"
+        "hosts_patches/weatherassistant/weatherassistant_remote_weather_icons-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "2d2f650a0bbd69e895c8797fec5ed13e1913908eda640be345ce50e64032e465"
     },
     "fixed": {
-      "ref": "clean-app-v3/weatherassistant_remote_weather_icons/fixed",
+      "ref": "clean-app/weatherassistant_remote_weather_icons/fixed",
       "tree": "098fabd11c7c3f8267551c28c7e6cd3f31f96a2c",
       "production_patches": [
-        "hosts_patches/weatherassistant/icons-ordinary-origin-fixed-v2.patch"
+        "hosts_patches/weatherassistant/weatherassistant_remote_weather_icons-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "4f3fa785462ba232b8484cee2965e58a4b08e89ef0bc77f43c467d388dbac6d6"
     }

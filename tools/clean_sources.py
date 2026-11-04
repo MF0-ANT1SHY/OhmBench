@@ -12,4 +12,4 @@ def source_entry(case, variant):
 
 
 def app_ref(case, variant):
-    return source_entry(case,variant).get('app_ref',f"clean-app/{case['id']}/{variant}")
+    return f"clean-app/{case['id']}/{variant}"

@@ -1,0 +1,22 @@
+diff --git a/entry/src/main/ets/view/SettingDialog.ets b/entry/src/main/ets/view/SettingDialog.ets
+index dd82c057c1d82f23ded6857353d54dd9ec63dbb4..52c27fad635589070fc760dc23f5ad1b55297f08 100644
+--- a/entry/src/main/ets/view/SettingDialog.ets
++++ b/entry/src/main/ets/view/SettingDialog.ets
+@@ -1,6 +1,7 @@
+ import History from '../common/bean/History'
+ import CommonConstants from '../common/constants/CommonConstants'
+ import { Prompt, PromptAction } from '@kit.ArkUI'
++import RdbUtils from '../utils/RdbUtils'
+ 
+ @CustomDialog
+ export default struct SettingDialog {
+@@ -25,7 +26,8 @@ export default struct SettingDialog {
+     }
+   }
+ 
+-  onConfirm() {
++  async onConfirm(): Promise<void> {
++    await RdbUtils.deleteAll()
+     this.historyMap.clear()
+ 
+     Prompt.showToast({

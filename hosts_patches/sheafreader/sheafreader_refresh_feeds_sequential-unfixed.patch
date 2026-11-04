@@ -1,0 +1,12 @@
+diff --git a/entry/src/main/module.json5 b/entry/src/main/module.json5
+index fd38517bb6648cfadd6d7fdfd619f9a2095a375d..151c513445a4c39b94b716e18c28b39b6e40bb89 100644
+--- a/entry/src/main/module.json5
++++ b/entry/src/main/module.json5
+@@ -5,6 +5,7 @@
+     "description": "$string:module_desc",
+     "mainElement": "EntryAbility",
+     "deviceTypes": [
++      "phone",
+       "tablet",
+       "2in1"
+     ],

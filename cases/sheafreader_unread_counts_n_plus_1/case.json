@@ -15,18 +15,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v2/sheafreader_unread_counts_n_plus_1/unfixed",
+      "ref": "clean-app/sheafreader_unread_counts_n_plus_1/unfixed",
       "tree": "fe04f28b6470e2ca7da74b154d6656a39190d01d",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch"
+        "hosts_patches/sheafreader/sheafreader_unread_counts_n_plus_1-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "f6e0c79a149e386cc9b505f3b817552980e8e0a2c2a090e3937672909382dfbc"
     },
     "fixed": {
-      "ref": "clean-app-v2/sheafreader_unread_counts_n_plus_1/fixed",
+      "ref": "clean-app/sheafreader_unread_counts_n_plus_1/fixed",
       "tree": "88948fc3c60907d9f0a25cbb28a16a4b0d4e5ecb",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch"
+        "hosts_patches/sheafreader/sheafreader_unread_counts_n_plus_1-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "d28fb329080692a17cf3c98155c66d717e692e0f998956c059f8de31cf37dad8"
     }

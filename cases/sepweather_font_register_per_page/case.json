@@ -15,18 +15,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v3/sepweather_font_register_per_page/unfixed",
+      "ref": "clean-app/sepweather_font_register_per_page/unfixed",
       "tree": "42f2e82c38df53356755551f93e240e5c11efb33",
       "production_patches": [
-        "hosts_patches/sepweather/page-title-font-unfixed-v2.patch"
+        "hosts_patches/sepweather/sepweather_font_register_per_page-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "dd28a7b09b6743bcfc673da45e225066e985d0cfb0192f6788fa3828e3922435"
     },
     "fixed": {
-      "ref": "clean-app-v3/sepweather_font_register_per_page/fixed",
+      "ref": "clean-app/sepweather_font_register_per_page/fixed",
       "tree": "7a05838c171ffc589790e291937af857e628c916",
       "production_patches": [
-        "hosts_patches/sepweather/page-title-font-fixed-v2.patch"
+        "hosts_patches/sepweather/sepweather_font_register_per_page-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "c4d95997f5005579c614dfceb8288306bee8408110f546037777314193f2ae1e"
     }

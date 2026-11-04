@@ -1,5 +1,5 @@
 diff --git a/commons/constants/src/main/ets/NetworkConst.ets b/commons/constants/src/main/ets/NetworkConst.ets
-index 6c1fd99..3eb8684 100644
+index 6c1fd992b6d5954ac4c5cb8abbce28a883903513..3eb8684cd5926f8fcf16310565b183762e2c0081 100644
 --- a/commons/constants/src/main/ets/NetworkConst.ets
 +++ b/commons/constants/src/main/ets/NetworkConst.ets
 @@ -1,3 +1,5 @@
@@ -44,7 +44,7 @@ index 6c1fd99..3eb8684 100644
    static readonly CHINA_WORLDCULTUREHERITAGE: string = "china_worldcultureheritage";
    static readonly CHINESE_ANTITHETICALCOUPLET: string = "chinese_antitheticalcouplet";
 diff --git a/features/settings/src/main/ets/pages/Settings.ets b/features/settings/src/main/ets/pages/Settings.ets
-index 92b4297..6980b63 100644
+index 92b4297fe118d585e33c14ff8e2a19695f7ffb75..6980b63eb5afe7cec1540c0d119535515784fe45 100644
 --- a/features/settings/src/main/ets/pages/Settings.ets
 +++ b/features/settings/src/main/ets/pages/Settings.ets
 @@ -1,4 +1,4 @@
@@ -92,7 +92,7 @@ index 92b4297..6980b63 100644
            Item({ title: $r('app.string.sync_data') })
              .onClick(() => {
 diff --git a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
-index e04cbb3..5e4af63 100644
+index 17ec4c047bd184f87a7491b59ce7af37e776a9c0..99e2f2874e3657b26d996c12447154a9beac2c29 100644
 --- a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 +++ b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 @@ -10,7 +10,7 @@ class DatasetViewModel {

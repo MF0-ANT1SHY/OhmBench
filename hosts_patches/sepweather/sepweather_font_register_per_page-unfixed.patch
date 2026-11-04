@@ -1,6 +1,6 @@
 diff --git a/entry/src/main/ets/common/utils/PageTitleFont.ets b/entry/src/main/ets/common/utils/PageTitleFont.ets
 new file mode 100644
-index 0000000..2b836a3
+index 0000000000000000000000000000000000000000..2b836a3930438ec745c1026d7cf21da94d096061
 --- /dev/null
 +++ b/entry/src/main/ets/common/utils/PageTitleFont.ets
 @@ -0,0 +1,9 @@
@@ -14,7 +14,7 @@ index 0000000..2b836a3
 +  return family;
 +}
 diff --git a/entry/src/main/ets/view/InfoBarComponent.ets b/entry/src/main/ets/view/InfoBarComponent.ets
-index 20fd84c..47fbc12 100644
+index 20fd84c47a42db061dc2f02236c3225319f3d020..47fbc12d856311b58f7fc3c03db27b5617e9ea3f 100644
 --- a/entry/src/main/ets/view/InfoBarComponent.ets
 +++ b/entry/src/main/ets/view/InfoBarComponent.ets
 @@ -1,3 +1,4 @@
@@ -40,7 +40,7 @@ index 20fd84c..47fbc12 100644
                  .fontWeight(FontWeight.Normal)
 diff --git a/entry/src/main/resources/rawfile/DroidSansFallback-LICENSE.txt b/entry/src/main/resources/rawfile/DroidSansFallback-LICENSE.txt
 new file mode 100644
-index 0000000..d645695
+index 0000000000000000000000000000000000000000..d645695673349e3947e8e5ae42332d0ac3164cd7
 --- /dev/null
 +++ b/entry/src/main/resources/rawfile/DroidSansFallback-LICENSE.txt
 @@ -0,0 +1,202 @@
@@ -248,7 +248,7 @@ index 0000000..d645695
 +   limitations under the License.
 diff --git a/entry/src/main/resources/rawfile/DroidSansFallback-NOTICE.txt b/entry/src/main/resources/rawfile/DroidSansFallback-NOTICE.txt
 new file mode 100644
-index 0000000..868de8e
+index 0000000000000000000000000000000000000000..868de8e159d6d423713229712cdbac08290e76e8
 --- /dev/null
 +++ b/entry/src/main/resources/rawfile/DroidSansFallback-NOTICE.txt
 @@ -0,0 +1,30 @@

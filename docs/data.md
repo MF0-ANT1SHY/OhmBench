@@ -14,7 +14,7 @@ cases/
 hosts_patches/
   host-reconstruction.json expected source tree of every case variant
   <app>/0001-*.patch ...   patch series on top of the upstream base commit
-  <app>/*.patch            production adaptations applied to specific variants
+  <app>/<case-id>-<variant>.patch   build/run adaptation of one case variant
 docs/                      documentation linked from README.md
 tools/                     reconstruction, build and bytecode audit
 ```
@@ -26,8 +26,9 @@ patches in this repository:
 
 1. `hosts_patches/<app>/0001-*.patch …` — a `git am` series on the upstream base commit;
 2. `cases/<id>/fix.patch` — the repair diff between the two variants of a case;
-3. `hosts_patches/<app>/*.patch` (unnumbered) — production adaptations recorded per variant
-   (`production_patches`), needed for the app to build and run its workload;
+3. `hosts_patches/<app>/<case-id>-<variant>.patch` — the adaptation of one variant (listed in its
+   `production_patches`), needed for the app to install and run its workload on a device; it is
+   the diff from `tree` to `app_tree`, applied with `git apply`;
 4. `hosts_patches/host-reconstruction.json` — the git tree hash of every variant, before
    (`tree`) and after (`app_tree`) production adaptations.
 

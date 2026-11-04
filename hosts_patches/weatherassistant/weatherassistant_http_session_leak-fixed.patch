@@ -1,6 +1,6 @@
 diff --git a/alatus/src/main/ets/pages/Hourly.ets b/alatus/src/main/ets/pages/Hourly.ets
 new file mode 100644
-index 0000000..c2f5214
+index 0000000000000000000000000000000000000000..c2f5214006c67c58751c0559ed0eda0734be12bd
 --- /dev/null
 +++ b/alatus/src/main/ets/pages/Hourly.ets
 @@ -0,0 +1,44 @@
@@ -49,7 +49,7 @@ index 0000000..c2f5214
 +  }
 +}
 diff --git a/alatus/src/main/ets/pages/Index.ets b/alatus/src/main/ets/pages/Index.ets
-index 3100b8c..7fea76f 100644
+index 3100b8c9e3a9a61c780a4d8b644c298ab75a3c80..7fea76f741127ffcd803bc0e04d1cfdaa57b91b1 100644
 --- a/alatus/src/main/ets/pages/Index.ets
 +++ b/alatus/src/main/ets/pages/Index.ets
 @@ -7,7 +7,7 @@ import { router } from '@kit.ArkUI';
@@ -93,7 +93,7 @@ index 3100b8c..7fea76f 100644
        });
      }.width("100%").height("100%").backgroundColor("#87CEEB");
 diff --git a/alatus/src/main/ets/view/cityView.ets b/alatus/src/main/ets/view/cityView.ets
-index bfb53d2..50332c9 100644
+index bfb53d26bc9b85bec2def178118d8b4a2c3ce2b1..50332c9a796c7609f129d250a94890887502c740 100644
 --- a/alatus/src/main/ets/view/cityView.ets
 +++ b/alatus/src/main/ets/view/cityView.ets
 @@ -4,21 +4,22 @@ import { cast } from '../viewmodel/cast';
@@ -124,13 +124,13 @@ index bfb53d2..50332c9 100644
      }
    }
 diff --git a/alatus/src/main/ets/viewmodel/getWeatherUtil.ets b/alatus/src/main/ets/viewmodel/getWeatherUtil.ets
-index c84ca96..aec9dd7 100644
+index 7ab06986d98322f76cefd60e69707ddc49765496..441f639cf6df2732d5860f5b8413918e49013cef 100644
 --- a/alatus/src/main/ets/viewmodel/getWeatherUtil.ets
 +++ b/alatus/src/main/ets/viewmodel/getWeatherUtil.ets
-@@ -12,7 +12,7 @@ class getWeatherUtil{
+@@ -7,7 +7,7 @@ class getWeatherUtil{
+   getWeather(cityCode:number){
      return new Promise<weatherModel>((resolve,reject)=>{
        let request = http.createHttp();
-       this.sessions.push(request);
 -      let url = `https://restapi.amap.com/v3/weather/weatherInfo?city=${cityCode}&extensions=all&key=${key}`;
 +      let url = `http://127.0.0.1:18496/v3/weather/weatherInfo?city=${cityCode}&extensions=all&key=${key}`;
        let result = request.request(url);
@@ -138,7 +138,7 @@ index c84ca96..aec9dd7 100644
          if(res.responseCode===200){
 diff --git a/alatus/src/main/ets/viewmodel/hourlyForecast.ets b/alatus/src/main/ets/viewmodel/hourlyForecast.ets
 new file mode 100644
-index 0000000..c0c7c8d
+index 0000000000000000000000000000000000000000..c0c7c8dd7a7e17e30e8471cb23c710fbe7396978
 --- /dev/null
 +++ b/alatus/src/main/ets/viewmodel/hourlyForecast.ets
 @@ -0,0 +1,17 @@
@@ -160,7 +160,7 @@ index 0000000..c0c7c8d
 +  dewPoint: number = 0;
 +}
 diff --git a/alatus/src/main/ets/viewmodel/weatherModel.ets b/alatus/src/main/ets/viewmodel/weatherModel.ets
-index 3a2e926..ef480ce 100644
+index 3a2e926c28cff2bc3734b570f59d751798b61fcb..ef480ce762b05e225464de3ad14ebbd3a84592e8 100644
 --- a/alatus/src/main/ets/viewmodel/weatherModel.ets
 +++ b/alatus/src/main/ets/viewmodel/weatherModel.ets
 @@ -1,6 +1,9 @@
@@ -174,7 +174,7 @@ index 3a2e926..ef480ce 100644
    count: number;
    infocode: number;
 diff --git a/alatus/src/main/resources/base/profile/main_pages.json b/alatus/src/main/resources/base/profile/main_pages.json
-index 59ada40..9a4bbba 100644
+index 59ada40e6cb96a599c08630b2024434d07d37f0d..9a4bbbaf269c9f723026c373720e9c0cff8263d5 100644
 --- a/alatus/src/main/resources/base/profile/main_pages.json
 +++ b/alatus/src/main/resources/base/profile/main_pages.json
 @@ -1,6 +1,7 @@

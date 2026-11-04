@@ -22,10 +22,10 @@
       "reference_unsigned_hap_sha256": "9ebe2d06e0b0aa7f31200789530b8f11e3322b88b8a0dcd17b334a355a4f9c5d"
     },
     "fixed": {
-      "ref": "clean-app/ytmusic_history_json_parse_per_row/fixed-v2",
+      "ref": "clean-app/ytmusic_history_json_parse_per_row/fixed",
       "tree": "5de823520486d769850274e7d5bcb3ea804207d2",
       "production_patches": [
-        "hosts_patches/ytmusic/history-lazy-v2.patch"
+        "hosts_patches/ytmusic/ytmusic_history_json_parse_per_row-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "0c26c438a7f460290dbd45e7d4d3bbbcce397e2e582d52869ff3378fd6f99cc6"
     }

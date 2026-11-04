@@ -15,18 +15,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v2/sheafreader_insert_duplicate_exception/unfixed",
+      "ref": "clean-app/sheafreader_insert_duplicate_exception/unfixed",
       "tree": "88948fc3c60907d9f0a25cbb28a16a4b0d4e5ecb",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch"
+        "hosts_patches/sheafreader/sheafreader_insert_duplicate_exception-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "d28fb329080692a17cf3c98155c66d717e692e0f998956c059f8de31cf37dad8"
     },
     "fixed": {
-      "ref": "clean-app-v2/sheafreader_insert_duplicate_exception/fixed",
+      "ref": "clean-app/sheafreader_insert_duplicate_exception/fixed",
       "tree": "0b54a503d5bfbd066f3f85caeb7403ad3e5adf0e",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch"
+        "hosts_patches/sheafreader/sheafreader_insert_duplicate_exception-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "dc3476540d097090e8fd86f6cc9ae03646041440e8a144ee658e4f9fcaaeba78"
     }

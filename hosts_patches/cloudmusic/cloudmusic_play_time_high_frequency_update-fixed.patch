@@ -1,8 +1,8 @@
 diff --git a/entry/src/main/ets/pages/local/LocalSongPage.ets b/entry/src/main/ets/pages/local/LocalSongPage.ets
-index b3560b0..ee08b79 100644
+index 4baa1f274a55e96f4c259ea24e6881bb805eda9a..cf539b735c028eaa8f98e5f96a3e8d5840697b70 100644
 --- a/entry/src/main/ets/pages/local/LocalSongPage.ets
 +++ b/entry/src/main/ets/pages/local/LocalSongPage.ets
-@@ -94,134 +94,118 @@ export struct LocalSongPage {
+@@ -94,134 +94,122 @@ export struct LocalSongPage {
            .justifyContent(FlexAlign.Center)
          } else {
            Column() {
@@ -147,7 +147,11 @@ index b3560b0..ee08b79 100644
 +                            FileUtils.saveFile(this.selectedSongs)
                            })
                        }
-+                      CheckboxGroup({ group: 'fileCard' })
++                      Checkbox()
++                        .select(this.isSelectionComplete())
++                        .onChange((checked: boolean) => {
++                          this.selectedSongs = checked ? [...this.getSelectionSongs()] : []
++                        })
 +                        .width(Constants.SIZE_ICON_BUTTON_BAR - 5)
 +                        .height(Constants.SIZE_ICON_BUTTON_BAR - 5)
                      }
@@ -232,7 +236,17 @@ index b3560b0..ee08b79 100644
              .width('100%')
            }
            .width('100%')
-@@ -307,7 +291,7 @@ export struct LocalSongPage {
+@@ -249,7 +237,8 @@ export struct LocalSongPage {
+       }
+       const keyword = this.searchKeyword.trim().toLowerCase()
+       // 直接在 SQLite 中按关键词过滤，避免全表加载后在内存中过滤
+-      this.dataSourceFiltered.setData(await RelationalStoreUtils.getSongsByKeyword(keyword))
++      this.dataSourceFiltered.setData((await RelationalStoreUtils.getSongsByKeyword(keyword)).reverse())
++      this.dataSourceFiltered.notifyDataReload()
+     } catch (e) {
+       ToastUtil.showToast('搜索时出错')
+       LogUtil.error(TAG, 'Error while handelSearch: ' + e.message)
+@@ -306,7 +295,7 @@ export struct LocalSongPage {
    @Builder ListContent(dataSource: LazyData<LocalSong>) {
      LazyForEach(dataSource,
        (item: LocalSong, index: number) => {
@@ -241,3 +255,44 @@ index b3560b0..ee08b79 100644
            Row({ space: 5 }) {
              FileCard({
                localSong: item
+@@ -327,19 +316,38 @@ export struct LocalSongPage {
+     LocalMigrationSheet({ isShowMigration: this.isShowMigration })
+   }
+ 
++  private isSelectionComplete(): boolean {
++    const count = this.searchKeyword ? this.dataSourceFiltered.totalCount() : this.localSongs.length
++    return count > 0 && this.selectedSongs.length === count
++  }
++
++  private getSelectionSongs(): LocalSong[] {
++    if (!this.searchKeyword) {
++      return this.localSongs
++    }
++    const songs: LocalSong[] = []
++    for (let index = 0; index < this.dataSourceFiltered.totalCount(); index++) {
++      songs.push(this.dataSourceFiltered.getData(index))
++    }
++    return songs
++  }
++
+   @Builder CardCheckBox(localSong: LocalSong) {
+     Checkbox({ group: 'fileCard' })
++      .select(this.selectedSongs.some(item => item.id === localSong.id))
+       .shape(CheckBoxShape.ROUNDED_SQUARE)
+       .width(Constants.SIZE_ICON_BUTTON_BAR)
+       .aspectRatio(1)
+       .onChange((value) => {
+         if(value) {
+           animateTo({ duration: 100, curve: Curve.Ease }, () => {
+-            this.selectedSongs.push(localSong)
++            if (!this.selectedSongs.some(item => item.id === localSong.id)) {
++              this.selectedSongs.push(localSong)
++            }
+           })
+         } else {
+           animateTo({ duration: 100, curve: Curve.Ease }, () => {
+-            this.selectedSongs = this.selectedSongs.filter(item => item.name !== localSong.name)
++            this.selectedSongs = this.selectedSongs.filter(item => item.id !== localSong.id)
+           })
+         }
+       })

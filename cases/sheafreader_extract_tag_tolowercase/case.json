@@ -15,19 +15,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v2/sheafreader_extract_tag_tolowercase/unfixed",
+      "ref": "clean-app/sheafreader_extract_tag_tolowercase/unfixed",
       "tree": "fe0da4cdae56960086e28000e0a08dc4d02f4a04",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch"
+        "hosts_patches/sheafreader/sheafreader_extract_tag_tolowercase-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "be83d4a5203a04d189b40bb6f78cfe85e8b0cf744ba602a571ccbe602aedd574"
     },
     "fixed": {
-      "ref": "clean-app-v3/sheafreader_extract_tag_tolowercase/fixed",
+      "ref": "clean-app/sheafreader_extract_tag_tolowercase/fixed",
       "tree": "c211382c799c5d1f8a034ee91424a701e207d1e3",
       "production_patches": [
-        "hosts_patches/sheafreader/production-phone-support.patch",
-        "hosts_patches/sheafreader/production-native-tag-search.patch"
+        "hosts_patches/sheafreader/sheafreader_extract_tag_tolowercase-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "045258596066ad562dc26511f10d7f874932d82e5a2c2d9be24bf60ab63cef86"
     }

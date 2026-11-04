@@ -1,6 +1,8 @@
+diff --git a/entry/src/main/ets/utils/FeedParser.ets b/entry/src/main/ets/utils/FeedParser.ets
+index a47bd8b45c264abb5dd20374abdde637e746b538..5e6ce161882828a644be5c78e8ed9d7ee4e82bb3 100644
 --- a/entry/src/main/ets/utils/FeedParser.ets
 +++ b/entry/src/main/ets/utils/FeedParser.ets
-@@ -177,42 +177,78 @@
+@@ -177,42 +177,78 @@ export class FeedParser {
     * then concatenate every CDATA block it contains.
     */
    private static extractTag(xml: string, tagName: string): string {
@@ -103,3 +105,15 @@
      return sawCdata ? result : fragment;
    }
  
+diff --git a/entry/src/main/module.json5 b/entry/src/main/module.json5
+index fd38517bb6648cfadd6d7fdfd619f9a2095a375d..151c513445a4c39b94b716e18c28b39b6e40bb89 100644
+--- a/entry/src/main/module.json5
++++ b/entry/src/main/module.json5
+@@ -5,6 +5,7 @@
+     "description": "$string:module_desc",
+     "mainElement": "EntryAbility",
+     "deviceTypes": [
++      "phone",
+       "tablet",
+       "2in1"
+     ],

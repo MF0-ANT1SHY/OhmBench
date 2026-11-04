@@ -18,7 +18,7 @@
       "ref": "clean-app/browser_history_delete_no_transaction/unfixed",
       "tree": "29abf85fdf8613d8b71cfb40ce6de41be0f9a0df",
       "production_patches": [
-        "hosts_patches/browser/production-clear-history.patch"
+        "hosts_patches/browser/browser_history_delete_no_transaction-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "3a6ace31b223eb567a84b1d6d17d265cd3d000d94d19c5d38963e2cccba42f90"
     },
@@ -26,7 +26,7 @@
       "ref": "clean-app/browser_history_delete_no_transaction/fixed",
       "tree": "be84808097cc57985aca37d414e3b450fc1f7a32",
       "production_patches": [
-        "hosts_patches/browser/production-clear-history.patch"
+        "hosts_patches/browser/browser_history_delete_no_transaction-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "3338ed364eca4b86f77797ecbd658769223ebe409f3dbd5688f51a566c5fdf55"
     }

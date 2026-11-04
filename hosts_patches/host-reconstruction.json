@@ -19,7 +19,7 @@
           "tree": "83229456c247987eaa418ea094b8b65cddb02c22",
           "app_tree": "be84808097cc57985aca37d414e3b450fc1f7a32",
           "production_patches": [
-            "hosts_patches/browser/production-clear-history.patch"
+            "hosts_patches/browser/browser_history_delete_no_transaction-fixed.patch"
           ]
         },
         "case/browser_history_delete_no_transaction/unfixed": {
@@ -27,7 +27,7 @@
           "tree": "46f3821de88c3d309552d55308c95eaba7c3ad67",
           "app_tree": "29abf85fdf8613d8b71cfb40ce6de41be0f9a0df",
           "production_patches": [
-            "hosts_patches/browser/production-clear-history.patch"
+            "hosts_patches/browser/browser_history_delete_no_transaction-unfixed.patch"
           ]
         },
         "case/browser_history_list_foreach/fixed": {
@@ -63,19 +63,17 @@
         "case/jingmo_dataset_import_no_transaction/fixed": {
           "state": "perf: import the classic-poem dataset with a single batchInsert transaction instead of one autocommit insert per row",
           "tree": "ac69e4f9f62a10ea28840c83cc0f8741788ec151",
-          "app_ref": "clean-app-v2/jingmo_dataset_import_no_transaction/fixed",
           "app_tree": "8c755c793928608da1a4daeffb4b6e4ada27d2c6",
           "production_patches": [
-            "hosts_patches/jingmo/production-dataset-source-settings.patch"
+            "hosts_patches/jingmo/jingmo_dataset_import_no_transaction-fixed.patch"
           ]
         },
         "case/jingmo_dataset_import_no_transaction/unfixed": {
           "state": "perf: pick a random poem via a random id range scan instead of order by random() which sorts the whole table on every refresh",
           "tree": "2eadaf75ff4f636cd8f04ca1ac52c6f3279b622a",
-          "app_ref": "clean-app-v2/jingmo_dataset_import_no_transaction/unfixed",
           "app_tree": "d1023a18fcb6aae9d1ca031f768ad75620954767",
           "production_patches": [
-            "hosts_patches/jingmo/production-dataset-source-settings.patch"
+            "hosts_patches/jingmo/jingmo_dataset_import_no_transaction-unfixed.patch"
           ]
         },
         "case/jingmo_random_poem_orderby_random/fixed": {
@@ -89,19 +87,17 @@
         "case/jingmo_sync_page_reimport/fixed": {
           "state": "perf: skip re-importing the classic-poem dataset when it is already present instead of re-running the full import on every sync-page open",
           "tree": "8101cbf9b28e027904a750305aedeeec43a74202",
-          "app_ref": "clean-app-v2/jingmo_sync_page_reimport/fixed",
           "app_tree": "0c00962020f73ba6fb8e01b3da47f3160769eb88",
           "production_patches": [
-            "hosts_patches/jingmo/production-dataset-source-settings.patch"
+            "hosts_patches/jingmo/jingmo_sync_page_reimport-fixed.patch"
           ]
         },
         "case/jingmo_sync_page_reimport/unfixed": {
           "state": "perf: import the classic-poem dataset with a single batchInsert transaction instead of one autocommit insert per row",
           "tree": "ac69e4f9f62a10ea28840c83cc0f8741788ec151",
-          "app_ref": "clean-app-v2/jingmo_sync_page_reimport/unfixed",
           "app_tree": "8c755c793928608da1a4daeffb4b6e4ada27d2c6",
           "production_patches": [
-            "hosts_patches/jingmo/production-dataset-source-settings.patch"
+            "hosts_patches/jingmo/jingmo_sync_page_reimport-unfixed.patch"
           ]
         }
       }
@@ -114,39 +110,33 @@
         "case/cloudmusic_play_time_high_frequency_update/fixed": {
           "state": "perf: update the global play-time state only when the displayed second changes instead of on every high-frequency timeUpdate callback",
           "tree": "86e2414cd33836172a421d2cf9749e9fd1a0b94a",
-          "app_ref": "clean-app-v4/cloudmusic_play_time_high_frequency_update/fixed",
           "app_tree": "843c42a4e041972ed1bb7bc754fe66d62c4a40b7",
           "production_patches": [
-            "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-            "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
+            "hosts_patches/cloudmusic/cloudmusic_play_time_high_frequency_update-fixed.patch"
           ]
         },
         "case/cloudmusic_play_time_high_frequency_update/unfixed": {
           "state": "perf: filter local songs in SQLite with a LIKE predicate instead of materializing the whole table and filtering in memory",
           "tree": "2846ea4d65fe74a0290de6c36b3d5815be288073",
-          "app_ref": "clean-app-v4/cloudmusic_play_time_high_frequency_update/unfixed",
           "app_tree": "0b5dec7ee0528cc56e306a9686d3c20d46a27485",
           "production_patches": [
-            "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-            "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
+            "hosts_patches/cloudmusic/cloudmusic_play_time_high_frequency_update-unfixed.patch"
           ]
         },
         "case/cloudmusic_search_result_foreach/fixed": {
           "state": "perf: render song search results with LazyForEach and a data source so off-screen result rows are not created eagerly",
           "tree": "9fce0f474edb3690c2c562d83cc82629ae42fb24",
-          "app_ref": "clean-app-v3/cloudmusic_search_result_foreach/fixed",
           "app_tree": "e3471407d84d006ca33e7401fdb1881c829e56a0",
           "production_patches": [
-            "hosts_patches/cloudmusic/search-large-page-fixed-v2.patch"
+            "hosts_patches/cloudmusic/cloudmusic_search_result_foreach-fixed.patch"
           ]
         },
         "case/cloudmusic_search_result_foreach/unfixed": {
           "state": "perf: update the global play-time state only when the displayed second changes instead of on every high-frequency timeUpdate callback",
           "tree": "86e2414cd33836172a421d2cf9749e9fd1a0b94a",
-          "app_ref": "clean-app-v3/cloudmusic_search_result_foreach/unfixed",
           "app_tree": "4f85a008f5da6713dd500d451e466d4332ebd356",
           "production_patches": [
-            "hosts_patches/cloudmusic/search-large-page-unfixed-v2.patch"
+            "hosts_patches/cloudmusic/cloudmusic_search_result_foreach-unfixed.patch"
           ]
         }
       }
@@ -160,92 +150,80 @@
           "state": "perf: render the article list and card grid with LazyForEach over a data source so off-screen articles are not built eagerly",
           "tree": "012f18c7b80113b0119917ca97a5d6a6536650f7",
           "app_tree": "ddd1a920cb12be31fb13fb73950066705ff65cf0",
-          "app_ref": "clean-app-v2/sheafreader_article_list_foreach/fixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_article_list_foreach-fixed.patch"
           ]
         },
         "case/sheafreader_article_list_foreach/unfixed": {
           "state": "perf: render the article list view eagerly through Scroll and Column so every article card builds upfront",
           "tree": "dfe283c40ad1c8401dd37201e85dccf945c2513c",
           "app_tree": "291205d3edc3fe744204764ded4fa70e8ed0cff0",
-          "app_ref": "clean-app-v2/sheafreader_article_list_foreach/unfixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_article_list_foreach-unfixed.patch"
           ]
         },
         "case/sheafreader_extract_tag_tolowercase/fixed": {
           "state": "perf: use bounded native marker searches for tag and CDATA extraction without full-fragment copies or regexp scans",
           "tree": "914c45be73bbdd599cf09029098f0ea6bff961e4",
           "app_tree": "c211382c799c5d1f8a034ee91424a701e207d1e3",
-          "app_ref": "clean-app-v3/sheafreader_extract_tag_tolowercase/fixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch",
-            "hosts_patches/sheafreader/production-native-tag-search.patch"
+            "hosts_patches/sheafreader/sheafreader_extract_tag_tolowercase-fixed.patch"
           ]
         },
         "case/sheafreader_extract_tag_tolowercase/unfixed": {
           "state": "upstream-base:e04ef65",
           "tree": "afc2ecbc7de30ebdf0580018ab615aba7590a3de",
           "app_tree": "fe0da4cdae56960086e28000e0a08dc4d02f4a04",
-          "app_ref": "clean-app-v2/sheafreader_extract_tag_tolowercase/unfixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_extract_tag_tolowercase-unfixed.patch"
           ]
         },
         "case/sheafreader_insert_duplicate_exception/fixed": {
           "state": "perf: let SQLite ignore duplicate article inserts via conflict resolution instead of throwing and catching a constraint exception per existing row",
           "tree": "7ea7f7cfd78e0f1a97b76a48171a643c59f4892e",
           "app_tree": "0b54a503d5bfbd066f3f85caeb7403ad3e5adf0e",
-          "app_ref": "clean-app-v2/sheafreader_insert_duplicate_exception/fixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_insert_duplicate_exception-fixed.patch"
           ]
         },
         "case/sheafreader_insert_duplicate_exception/unfixed": {
           "state": "perf: fetch all feed unread counts with one GROUP BY query instead of one COUNT per feed",
           "tree": "d0697246ea3b53223b7b370ecb901a3eeda3cf40",
           "app_tree": "88948fc3c60907d9f0a25cbb28a16a4b0d4e5ecb",
-          "app_ref": "clean-app-v2/sheafreader_insert_duplicate_exception/unfixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_insert_duplicate_exception-unfixed.patch"
           ]
         },
         "case/sheafreader_refresh_feeds_sequential/fixed": {
           "state": "perf: refresh feeds with bounded concurrency (4 workers) instead of fetching every source strictly sequentially",
           "tree": "4b512d02c35abc48453ad713fe944ba816bbbcdf",
           "app_tree": "29b4e350573fc64a3383c1d5b31c30700da254e0",
-          "app_ref": "clean-app-v3/sheafreader_refresh_feeds_sequential/fixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch",
-            "hosts_patches/sheafreader/refresh-concurrent-totals-v3.patch"
+            "hosts_patches/sheafreader/sheafreader_refresh_feeds_sequential-fixed.patch"
           ]
         },
         "case/sheafreader_refresh_feeds_sequential/unfixed": {
           "state": "perf: render the article list and card grid with LazyForEach over a data source so off-screen articles are not built eagerly",
           "tree": "012f18c7b80113b0119917ca97a5d6a6536650f7",
           "app_tree": "ddd1a920cb12be31fb13fb73950066705ff65cf0",
-          "app_ref": "clean-app-v2/sheafreader_refresh_feeds_sequential/unfixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_refresh_feeds_sequential-unfixed.patch"
           ]
         },
         "case/sheafreader_unread_counts_n_plus_1/fixed": {
           "state": "perf: fetch all feed unread counts with one GROUP BY query instead of one COUNT per feed",
           "tree": "d0697246ea3b53223b7b370ecb901a3eeda3cf40",
           "app_tree": "88948fc3c60907d9f0a25cbb28a16a4b0d4e5ecb",
-          "app_ref": "clean-app-v2/sheafreader_unread_counts_n_plus_1/fixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_unread_counts_n_plus_1-fixed.patch"
           ]
         },
         "case/sheafreader_unread_counts_n_plus_1/unfixed": {
           "state": "perf: refresh feeds with bounded concurrency (4 workers) instead of fetching every source strictly sequentially",
           "tree": "4b512d02c35abc48453ad713fe944ba816bbbcdf",
           "app_tree": "fe04f28b6470e2ca7da74b154d6656a39190d01d",
-          "app_ref": "clean-app-v2/sheafreader_unread_counts_n_plus_1/unfixed",
           "production_patches": [
-            "hosts_patches/sheafreader/production-phone-support.patch"
+            "hosts_patches/sheafreader/sheafreader_unread_counts_n_plus_1-unfixed.patch"
           ]
         }
       }
@@ -258,19 +236,17 @@
         "case/sepweather_font_register_per_page/fixed": {
           "state": "perf: register custom fonts once per process instead of re-loading the TTFs on every MainPage creation",
           "tree": "3264b46ab990081c90469f9095e6a1bf96f717d7",
-          "app_ref": "clean-app-v3/sepweather_font_register_per_page/fixed",
           "app_tree": "7a05838c171ffc589790e291937af857e628c916",
           "production_patches": [
-            "hosts_patches/sepweather/page-title-font-fixed-v2.patch"
+            "hosts_patches/sepweather/sepweather_font_register_per_page-fixed.patch"
           ]
         },
         "case/sepweather_font_register_per_page/unfixed": {
           "state": "build: refresh ohpm lockfile for headless CI build",
           "tree": "370125e32dcc9e352b052fbe25a8098878ad0ac7",
-          "app_ref": "clean-app-v3/sepweather_font_register_per_page/unfixed",
           "app_tree": "42f2e82c38df53356755551f93e240e5c11efb33",
           "production_patches": [
-            "hosts_patches/sepweather/page-title-font-unfixed-v2.patch"
+            "hosts_patches/sepweather/sepweather_font_register_per_page-unfixed.patch"
           ]
         }
       }
@@ -283,37 +259,33 @@
         "case/weatherassistant_http_session_leak/fixed": {
           "state": "fix: destroy the HTTP session after each weather request to avoid leaking connections and fds",
           "tree": "f0a6c3388039a37e99a1b922dfa889916440b8a0",
-          "app_ref": "clean-app-v3/weatherassistant_http_session_leak/fixed",
           "app_tree": "c0a58c0017e87dfb1c4984e8dc76a4aa6d7ef419",
           "production_patches": [
-            "hosts_patches/weatherassistant/sessions-hourly-forecast-fixed-v5.patch"
+            "hosts_patches/weatherassistant/weatherassistant_http_session_leak-fixed.patch"
           ]
         },
         "case/weatherassistant_http_session_leak/unfixed": {
           "state": "perf: also retain every full weather response body for the lifetime of the app",
           "tree": "53a80521604b9d78ecce523623c36ca8dd3d9458",
-          "app_ref": "clean-app-v3/weatherassistant_http_session_leak/unfixed",
           "app_tree": "f391f3f176d03c8029b08b4169e33b351a4916b0",
           "production_patches": [
-            "hosts_patches/weatherassistant/sessions-hourly-forecast-unfixed-v5.patch"
+            "hosts_patches/weatherassistant/weatherassistant_http_session_leak-unfixed.patch"
           ]
         },
         "case/weatherassistant_remote_weather_icons/fixed": {
           "state": "perf: bundle weather icons as local raw resources instead of fetching static glyphs from a remote CDN on every render",
           "tree": "9542890dec7276586992a10a72fe723731107419",
-          "app_ref": "clean-app-v3/weatherassistant_remote_weather_icons/fixed",
           "app_tree": "098fabd11c7c3f8267551c28c7e6cd3f31f96a2c",
           "production_patches": [
-            "hosts_patches/weatherassistant/icons-ordinary-origin-fixed-v2.patch"
+            "hosts_patches/weatherassistant/weatherassistant_remote_weather_icons-fixed.patch"
           ]
         },
         "case/weatherassistant_remote_weather_icons/unfixed": {
           "state": "fix: destroy the HTTP session after each weather request to avoid leaking connections and fds",
           "tree": "f0a6c3388039a37e99a1b922dfa889916440b8a0",
-          "app_ref": "clean-app-v3/weatherassistant_remote_weather_icons/unfixed",
           "app_tree": "0ff272c018812dce29db0c487b741ce001b22d0d",
           "production_patches": [
-            "hosts_patches/weatherassistant/icons-ordinary-origin-unfixed-v2.patch"
+            "hosts_patches/weatherassistant/weatherassistant_remote_weather_icons-unfixed.patch"
           ]
         }
       }
@@ -346,28 +318,25 @@
         "case/ytmusic_history_json_parse_per_row/fixed": {
           "state": "patch-series commit 2",
           "tree": "6e5d4f8c79e76325caf474b620fe1560a4881f1d",
-          "app_ref": "clean-app/ytmusic_history_json_parse_per_row/fixed-v2",
           "app_tree": "5de823520486d769850274e7d5bcb3ea804207d2",
           "production_patches": [
-            "hosts_patches/ytmusic/history-lazy-v2.patch"
+            "hosts_patches/ytmusic/ytmusic_history_json_parse_per_row-fixed.patch"
           ]
         },
         "case/ytmusic_search_no_debounce/unfixed": {
           "state": "patch-series commit 2",
           "tree": "6e5d4f8c79e76325caf474b620fe1560a4881f1d",
-          "app_ref": "clean-app-v3/ytmusic_search_no_debounce/unfixed",
           "app_tree": "27f90889d4707e3772dc2a526e907d82683618ff",
           "production_patches": [
-            "hosts_patches/ytmusic/search-ordinary-origin-unfixed-v2.patch"
+            "hosts_patches/ytmusic/ytmusic_search_no_debounce-unfixed.patch"
           ]
         },
         "case/ytmusic_search_no_debounce/fixed": {
           "state": "patch-series commit 3",
           "tree": "73d702e49b2e7ec1974e5035e8eaf2c70ebb4d82",
-          "app_ref": "clean-app-v3/ytmusic_search_no_debounce/fixed",
           "app_tree": "57d85de89a8510285fa3125a162f3cce94b0c326",
           "production_patches": [
-            "hosts_patches/ytmusic/search-ordinary-origin-fixed-v2.patch"
+            "hosts_patches/ytmusic/ytmusic_search_no_debounce-fixed.patch"
           ]
         },
         "case/ytmusic_current_playing_timeupdate/unfixed": {

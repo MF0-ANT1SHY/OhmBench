@@ -15,20 +15,18 @@
   ],
   "source": {
     "unfixed": {
-      "ref": "clean-app-v4/cloudmusic_play_time_high_frequency_update/unfixed",
+      "ref": "clean-app/cloudmusic_play_time_high_frequency_update/unfixed",
       "tree": "0b5dec7ee0528cc56e306a9686d3c20d46a27485",
       "production_patches": [
-        "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-        "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
+        "hosts_patches/cloudmusic/cloudmusic_play_time_high_frequency_update-unfixed.patch"
       ],
       "reference_unsigned_hap_sha256": "e857d6f19362359404cecc6023ffd90623a6c10e76b7599a5d94d3d38a774953"
     },
     "fixed": {
-      "ref": "clean-app-v4/cloudmusic_play_time_high_frequency_update/fixed",
+      "ref": "clean-app/cloudmusic_play_time_high_frequency_update/fixed",
       "tree": "843c42a4e041972ed1bb7bc754fe66d62c4a40b7",
       "production_patches": [
-        "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-        "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
+        "hosts_patches/cloudmusic/cloudmusic_play_time_high_frequency_update-fixed.patch"
       ],
       "reference_unsigned_hap_sha256": "bfce3dc40d63a7652feaad1c10486764d235389e3abebd776ac3e4ec320488ae"
     }
