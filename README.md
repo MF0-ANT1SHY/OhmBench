@@ -1,11 +1,7 @@
 # OhmBench
 
-A benchmark of real performance bugs in open-source HarmonyOS (ArkTS) applications, for
-evaluating performance-diagnosis tools.
-
-**30 cases from 9 apps: 21 included, 9 excluded.** Excluded cases build and run but
-did not meet their performance oracle; they are kept for reference and must not be used for
-evaluation.
+A benchmark of performance bugs in HarmonyOS applications, for
+evaluating performance-diagnosis abilities.
 
 ## What the benchmark provides
 
@@ -15,8 +11,6 @@ evaluation.
 | **Build** | `tools/` — reconstruct the sources from public upstreams and build both variants | — |
 | **Extend** | the [case standard](#extension-standard) every new case must follow | the new case's prompt, source + patch and oracle |
 | **Collect / evaluate** | the [evaluation standard](#collection-and-evaluation-standard): what to measure per case and how | the code that runs a tool, collects the measurements and scores them |
-
-No benchmark code, counters, custom traces or instrumentation are compiled into the apps.
 
 ## Repository layout
 
