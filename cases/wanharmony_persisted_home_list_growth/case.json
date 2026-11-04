@@ -1,0 +1,87 @@
+{
+  "id": "wanharmony_persisted_home_list_growth",
+  "status": "included",
+  "host_app": {
+    "name": "WanHarmony (WanAndroid 客户端)",
+    "repository": "https://github.com/zjmok/WanHarmony",
+    "upstream_base_commit": "dd45ad2",
+    "bundle_name": "org.example.wan.ohos",
+    "local_path": "hosts/wanharmony"
+  },
+  "category": "resource_retention",
+  "perf_scenarios": [
+    "列表滑动",
+    "状态更新"
+  ],
+  "bug_description": "The home list is linked to PersistentStorage. Loaded pages accumulate in the persistent homeList as well as the visible session list. Under the normal twelve-swipe workload, the unfixed app retains more process memory than the fixed app, which persists only its first-page snapshot. Whole-preferences file traffic includes cookies and old keys; this case does not claim a 3x reduction in file-write volume or exclusive attribution of those writes.",
+  "fix_summary": "Persist only the first-page snapshot in homeListCache. Keep later loaded pages in component state. This bounds the active persisted list; it does not eliminate all preferences writes.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/wanharmony_persisted_home_list_growth/unfixed",
+      "tree": "4335f38febb7059d241de4f6ef22ade69767e729",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "0f49cab6d143afade5ff2f597154434b01f022b3898d8129180c3435f8783c11"
+    },
+    "fixed": {
+      "ref": "clean-app/wanharmony_persisted_home_list_growth/fixed",
+      "tree": "892d60f0762ef9cbf11fc32972f2b4116df74aa1",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "df1d6aa039fe134c34ac639b3eb73e708f4f942da69024b29dd2cdd5083c10ca"
+    }
+  },
+  "testcase": {
+    "name": "MemLoad_wanharmony_0030",
+    "py_file": "testcase/MemLoad_wanharmony_0030.py",
+    "descriptor": "testcase/MemLoad_wanharmony_0030.json",
+    "install_dir": "perf_testing/hapray/testcases/org.example.wan.ohos",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/MemLoad_wanharmony_0030.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf",
+      "memory"
+    ],
+    "step_duration_s": 60,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "app_pss_bytes",
+    "definition": "Pss of the app process after the workload, from the periodic smaps_rollup snapshots in memory/.",
+    "comparison": "unfixed >= 1.3 * fixed over >= 3 rounds per variant",
+    "workload_notes": "Raise PSS gate from 1.2x to 1.3x in every pair. Replace whole-file traffic attribution with actual native cache contents and successful paired UI/network progress.",
+    "evidence": {
+      "unfixed": [
+        144357376,
+        144671744,
+        140647424
+      ],
+      "fixed": [
+        105409536,
+        105155584,
+        105619456
+      ],
+      "paired_ratios": [
+        1.3694906692312923,
+        1.375787556845293,
+        1.331643139688203
+      ],
+      "median_ratio": 1.3694906692312923,
+      "required_ratio": 1.3,
+      "rounds_per_variant": 3
+    }
+  }
+}

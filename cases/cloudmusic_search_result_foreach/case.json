@@ -1,0 +1,85 @@
+{
+  "id": "cloudmusic_search_result_foreach",
+  "status": "included",
+  "host_app": {
+    "name": "CloudMusic-HarmonyOSNext (仿网易云音乐)",
+    "repository": "https://github.com/Chenlvin/CloudMusic-HarmonyOSNext",
+    "upstream_base_commit": "724702c",
+    "bundle_name": "cc.chenlvin.cloudmusic",
+    "local_path": "hosts/cloudmusic"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "列表滑动",
+    "网络结果渲染",
+    "组件创建"
+  ],
+  "bug_description": "Eager ForEach creates all song result rows on a large search page. LazyForEach creates visible rows as needed. Both revised variants request 1000 songs per page and advance offsets by actual response length; the original 30-song-page negative is archived.",
+  "fix_summary": "Keep normal search and pagination while using LazyForEach with the song data source to avoid eager offscreen row construction.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v3/cloudmusic_search_result_foreach/unfixed",
+      "tree": "4f85a008f5da6713dd500d451e466d4332ebd356",
+      "production_patches": [
+        "hosts_patches/cloudmusic/search-large-page-unfixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "cc4104c393ebe1e023f767f0bbe886149f5843c378fd9a1d96bd96a74e6875ae"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/cloudmusic_search_result_foreach/fixed",
+      "tree": "e3471407d84d006ca33e7401fdb1881c829e56a0",
+      "production_patches": [
+        "hosts_patches/cloudmusic/search-large-page-fixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "cbf493ed156ee55707e827ce6a2b028491ad3279d4fdebf18bd6495e8f76c174"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_cloudmusic_0040",
+    "py_file": "testcase/PerfLoad_cloudmusic_0040.py",
+    "descriptor": "testcase/PerfLoad_cloudmusic_0040.json",
+    "install_dir": "perf_testing/hapray/testcases/cc.chenlvin.cloudmusic",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_cloudmusic_0040.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 480,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 2.0 * fixed over >= 3 rounds per variant",
+    "workload_notes": "All three paired ratios and median must reach 2.0x. Native search requests and list rows are verified in each trial. Both variants use the same 1000-song page size and response-sized pagination;",
+    "evidence": {
+      "unfixed": [
+        1060174524,
+        1045821912,
+        1044303565
+      ],
+      "fixed": [
+        472633416,
+        471042623,
+        465363469
+      ],
+      "median_ratio": 2.220227769069637,
+      "rounds_per_variant": 3
+    }
+  }
+}

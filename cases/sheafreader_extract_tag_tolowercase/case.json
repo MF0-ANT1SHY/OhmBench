@@ -1,0 +1,84 @@
+{
+  "id": "sheafreader_extract_tag_tolowercase",
+  "status": "included",
+  "host_app": {
+    "name": "Sheaf-Reader (束阅 RSS 阅读器)",
+    "repository": "https://github.com/simon2137/Sheaf-Reader",
+    "upstream_base_commit": "e04ef65",
+    "bundle_name": "com.sheafreader.hm",
+    "local_path": "hosts/sheafreader"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "数据库读取",
+    "网络结果渲染"
+  ],
+  "bug_description": "FeedParser.extractTag locates the closing tag with xml.toLowerCase().indexOf(...), materializing a full lowercase copy of the item fragment for every extracted tag. Parsing one RSS item extracts ~6 tags (title/link/description/date/guid/author), so each refresh of a feed with N items allocates and scans ~6N full-fragment lowercase copies on the parsing thread, increasing GC pressure and feed-refresh latency.",
+  "fix_summary": "Use native tag-prefix and CDATA-marker searches, folding only bounded tag names; avoid full-fragment lowercase copies and whole-body regexp scans while retaining case-insensitive extraction.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v2/sheafreader_extract_tag_tolowercase/unfixed",
+      "tree": "fe0da4cdae56960086e28000e0a08dc4d02f4a04",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch"
+      ],
+      "reference_unsigned_hap_sha256": "be83d4a5203a04d189b40bb6f78cfe85e8b0cf744ba602a571ccbe602aedd574"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/sheafreader_extract_tag_tolowercase/fixed",
+      "tree": "c211382c799c5d1f8a034ee91424a701e207d1e3",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch",
+        "hosts_patches/sheafreader/production-native-tag-search.patch"
+      ],
+      "reference_unsigned_hap_sha256": "045258596066ad562dc26511f10d7f874932d82e5a2c2d9be24bf60ab63cef86"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_sheafreader_0020",
+    "py_file": "testcase/PerfLoad_sheafreader_0020.py",
+    "descriptor": "testcase/PerfLoad_sheafreader_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/com.sheafreader.hm",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_sheafreader_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 90,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        53541274550,
+        53550002296,
+        53475898980
+      ],
+      "fixed": [
+        43257363759,
+        43213142754,
+        43269045728
+      ],
+      "median_ratio": 1.237737806869018,
+      "rounds_per_variant": 3
+    }
+  }
+}

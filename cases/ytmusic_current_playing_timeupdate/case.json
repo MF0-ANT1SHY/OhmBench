@@ -1,0 +1,79 @@
+{
+  "id": "ytmusic_current_playing_timeupdate",
+  "status": "included",
+  "host_app": {
+    "name": "Youtube-Music-ArkTS-Clone",
+    "repository": "https://github.com/Charles-Stark/Youtube-Music-ArkTS-Clone",
+    "upstream_base_commit": "f925981",
+    "bundle_name": "com.example.myapplication",
+    "local_path": "hosts/ytmusic"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "动画",
+    "状态更新"
+  ],
+  "bug_description": "The now-playing page assigns the raw millisecond position from AVPlayer's timeUpdate callback into a page-level @State on every callback (~10/s). The whole player page (cover image, title, slider, controls) re-renders at callback frequency although the slider position and time labels only visibly change once per second, wasting UI-thread CPU throughout playback.",
+  "fix_summary": "The state is assigned only when the whole-second part of the position changes.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/ytmusic_current_playing_timeupdate/unfixed",
+      "tree": "73d702e49b2e7ec1974e5035e8eaf2c70ebb4d82",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "744d22d0c5ffc50d8f0e51239b4ea99368a0292836f95924c66acf306fd4ec04"
+    },
+    "fixed": {
+      "ref": "clean-app/ytmusic_current_playing_timeupdate/fixed",
+      "tree": "f80bfeac1b993798db6b531e59b3ad90eb6def64",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "585676afe9a6b5b26e31fc2fd5b465b38c77601caae8dd18404de98a1bff154c"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_ytmusic_0010",
+    "py_file": "testcase/PerfLoad_ytmusic_0010.py",
+    "descriptor": "testcase/PerfLoad_ytmusic_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.myapplication",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_ytmusic_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 70,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1064745383,
+        1060708477,
+        1098371574
+      ],
+      "fixed": [
+        203852201,
+        215081945,
+        215838507
+      ],
+      "median_ratio": 4.950417307226788,
+      "rounds_per_variant": 3
+    }
+  }
+}

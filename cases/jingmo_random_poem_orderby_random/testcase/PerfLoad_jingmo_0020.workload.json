@@ -1,0 +1,57 @@
+{
+  "bundle": "com.hefengbao.jingmo.hw",
+  "ability": "EntryAbility",
+  "description": "jingmo (京墨文库)页面操作",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "京墨文库",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "经典诗文"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "山水诗 [1-9][0-9]*",
+        "match": "regex"
+      }
+    }
+  ],
+  "measured": [
+    {
+      "op": "repeat",
+      "count": 20,
+      "actions": [
+        {
+          "op": "tap",
+          "selector": {
+            "text": "刷新"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "山水诗 [1-9][0-9]*",
+            "match": "regex"
+          }
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "山水诗 [1-9][0-9]*",
+        "match": "regex"
+      }
+    }
+  ]
+}

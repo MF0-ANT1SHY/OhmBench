@@ -1,0 +1,83 @@
+{
+  "id": "ytmusic_history_json_parse_per_row",
+  "status": "included",
+  "host_app": {
+    "name": "Youtube-Music-ArkTS-Clone",
+    "repository": "https://github.com/Charles-Stark/Youtube-Music-ArkTS-Clone",
+    "upstream_base_commit": "f925981",
+    "bundle_name": "com.example.myapplication",
+    "local_path": "hosts/ytmusic"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "列表滑动",
+    "状态更新",
+    "组件创建"
+  ],
+  "bug_description": "The history page eagerly creates every row and repeatedly decodes each stored JSON string. The revised fix uses a lazy list and caches decoded entries by their exact stored string. This case evaluates the combined reduction in eager row construction and repeated decoding; it does not attribute the full performance gain to JSON parsing alone.",
+  "fix_summary": "Build history rows on demand, reuse decoded song objects, preserve newest-first order, and delete using the exact original storage key. Keep normal song navigation and the complete remaining history.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/ytmusic_history_json_parse_per_row/unfixed",
+      "tree": "b708e385576817b0291209da9dde6190c4d4f672",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "9ebe2d06e0b0aa7f31200789530b8f11e3322b88b8a0dcd17b334a355a4f9c5d"
+    },
+    "fixed": {
+      "ref": "clean-app/ytmusic_history_json_parse_per_row/fixed-v2",
+      "tree": "5de823520486d769850274e7d5bcb3ea804207d2",
+      "production_patches": [
+        "hosts_patches/ytmusic/history-lazy-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "0c26c438a7f460290dbd45e7d4d3bbbcce397e2e582d52869ff3378fd6f99cc6"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_ytmusic_0020",
+    "py_file": "testcase/PerfLoad_ytmusic_0020.py",
+    "descriptor": "testcase/PerfLoad_ytmusic_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.myapplication",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_ytmusic_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 60,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.3 * fixed over >= 3 rounds per variant",
+    "workload_notes": "Combined lazy row construction and cached decoding, not isolated JSON parsing. Identical 1,000-song native histories and normal UI workload. Three pairs must each meet 1.3x.",
+    "evidence": {
+      "unfixed": [
+        6512780327,
+        6408099493,
+        6447864138
+      ],
+      "fixed": [
+        1973214588,
+        1955811644,
+        1949797800
+      ],
+      "median_ratio": 3.296771525918986,
+      "rounds_per_variant": 3
+    }
+  }
+}

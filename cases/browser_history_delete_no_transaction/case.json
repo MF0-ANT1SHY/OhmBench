@@ -1,0 +1,83 @@
+{
+  "id": "browser_history_delete_no_transaction",
+  "status": "included",
+  "host_app": {
+    "name": "browser (小狐狸浏览器)",
+    "repository": "https://github.com/langwudong/browser",
+    "upstream_base_commit": "f44fff7",
+    "bundle_name": "com.example.nanvision",
+    "local_path": "hosts/browser"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ],
+  "bug_description": "Clearing browsing history (settings -> clear history) walks every per-day history table, selects all row IDs and executes one standalone DELETE statement per row, each in its own implicit transaction (autocommit). With hundreds of history entries this causes hundreds of individual journal/fsync cycles, making the clear operation and the following UI freeze noticeably long.",
+  "fix_summary": "All clear-history DELETE statements are wrapped in a single RDB transaction (beginTransaction/commit with rollback on error): one bulk DELETE per table inside one commit.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/browser_history_delete_no_transaction/unfixed",
+      "tree": "29abf85fdf8613d8b71cfb40ce6de41be0f9a0df",
+      "production_patches": [
+        "hosts_patches/browser/production-clear-history.patch"
+      ],
+      "reference_unsigned_hap_sha256": "3a6ace31b223eb567a84b1d6d17d265cd3d000d94d19c5d38963e2cccba42f90"
+    },
+    "fixed": {
+      "ref": "clean-app/browser_history_delete_no_transaction/fixed",
+      "tree": "be84808097cc57985aca37d414e3b450fc1f7a32",
+      "production_patches": [
+        "hosts_patches/browser/production-clear-history.patch"
+      ],
+      "reference_unsigned_hap_sha256": "3338ed364eca4b86f77797ecbd658769223ebe409f3dbd5688f51a566c5fdf55"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_browser_0020",
+    "py_file": "testcase/PerfLoad_browser_0020.py",
+    "descriptor": "testcase/PerfLoad_browser_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.nanvision",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_browser_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 20,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1843064109,
+        1861622479,
+        1877101942
+      ],
+      "fixed": [
+        62688675,
+        59118103,
+        59449886
+      ],
+      "median_ratio": 31.31414716253619,
+      "rounds_per_variant": 3
+    }
+  }
+}

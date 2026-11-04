@@ -1,0 +1,48 @@
+{
+  "bundle": "com.itcast.pass_interview",
+  "ability": "PhoneAbility",
+  "description": "interview-handbook-project (面试通)页面操作",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "热门题库"
+      }
+    }
+  ],
+  "measured": [
+    {
+      "op": "tap",
+      "selector": {
+        "text": "搜索题目",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "hint": "请输入关键词"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "搜索记录"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "搜索记录"
+      }
+    }
+  ]
+}

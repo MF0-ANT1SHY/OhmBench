@@ -1,0 +1,81 @@
+{
+  "id": "interviewapp_search_history_unbounded",
+  "status": "included",
+  "host_app": {
+    "name": "interview-handbook-project (面试通)",
+    "repository": "https://github.com/HarmonyOS-Next/interview-handbook-project",
+    "upstream_base_commit": "1e05347",
+    "bundle_name": "com.itcast.pass_interview",
+    "local_path": "hosts/interviewapp"
+  },
+  "category": "resource_retention",
+  "perf_scenarios": [
+    "状态更新",
+    "页面切换"
+  ],
+  "bug_description": "The search-history store persists every keyword as its own preference key and never bounds the number of entries. The history grows without limit, the history component renders an ever-growing ForEach, and preferences storage/flush volume grows with every search.",
+  "fix_summary": "History is kept as a single ordered JSON list capped at the 20 most recent keywords.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/interviewapp_search_history_unbounded/unfixed",
+      "tree": "4085ad189b70ef72a88ddc0010fdf6890b12aa49",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "82852c0c1e05422b84aa9d3f1c70c60bf77d5f371ca5c41a2ca5c787cec3532e"
+    },
+    "fixed": {
+      "ref": "clean-app/interviewapp_search_history_unbounded/fixed",
+      "tree": "6ead8b753ec2a2f67ecdbc52bd53a454f2942b9f",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "dc8c86eba41cb1b96150e052ac156f337a4ab8dd018c869294d3b446568c0c93"
+    }
+  },
+  "testcase": {
+    "name": "MemLoad_interviewapp_0030",
+    "py_file": "testcase/MemLoad_interviewapp_0030.py",
+    "descriptor": "testcase/MemLoad_interviewapp_0030.json",
+    "install_dir": "perf_testing/hapray/testcases/com.itcast.pass_interview",
+    "driver": "DeviceTest",
+    "module": "phone",
+    "ability": "PhoneAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/MemLoad_interviewapp_0030.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf",
+      "memory"
+    ],
+    "step_duration_s": 900,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "app_pss_bytes",
+    "definition": "Final absolute app-process PSS after opening the normal history page and a fixed three-second settling period. Kernel smaps_rollup samples bracket the entire page-opening workload. Every trial uses a freshly restored production state derived from the same 2,500 search submissions.",
+    "comparison": "unfixed >= 1.3 * fixed over >= 3 rounds per variant",
+    "workload_notes": "Measure the normal visible history page rather than search results after its history UI is removed. Identical 2,500-submission production states; unchanged business code; threshold raised from 1.2x to 1.3x.",
+    "evidence": {
+      "unfixed": [
+        364454912,
+        358107136,
+        365289472
+      ],
+      "fixed": [
+        77057024,
+        77926400,
+        76762112
+      ],
+      "median_ratio": 4.729678010923443,
+      "rounds_per_variant": 3
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "id": "weatherassistant_http_session_leak",
+  "status": "included",
+  "host_app": {
+    "name": "HarmonyOS-Next-Weather-Assistant",
+    "repository": "https://github.com/AlatusLee/HarmonyOS-Next-Weather-Assistant",
+    "upstream_base_commit": "d3c7060",
+    "bundle_name": "com.alatus.futureweather",
+    "local_path": "hosts/weatherassistant"
+  },
+  "category": "resource_retention",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面切换"
+  ],
+  "bug_description": "getWeatherUtil.getWeather creates a new http.createHttp() session for every weather request, retains the session and the full response body in the viewmodel, and never calls request.destroy(). Each city refresh leaks an HTTP session plus its complete response for the lifetime of the app, so repeated refreshes and multi-city loads accumulate retained memory. The revised business-only workload uses all ten already-supported cities, ordinary seven-day hourly responses, an accessible detail page displaying all hourly fields, and identical bundled weather icons. Synthetic fixture values are identical between variants; actual retrieval time is displayed separately. The performance claim is warmed process-PSS growth, not a count of retained sockets or exact live malloc bytes. No payload padding or artificial service delay is used. PSS boundaries follow successful system GC requests and fixed waits; completed GC, exact live-heap ownership, and file-descriptor counts are not claimed.",
+  "fix_summary": "Sessions are no longer retained after creation, and each request session is destroyed in a finally handler after the response/error callback completes.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v3/weatherassistant_http_session_leak/unfixed",
+      "tree": "f391f3f176d03c8029b08b4169e33b351a4916b0",
+      "production_patches": [
+        "hosts_patches/weatherassistant/sessions-hourly-forecast-unfixed-v5.patch"
+      ],
+      "reference_unsigned_hap_sha256": "a1439555cb78fe4b0f6f97027fd41b08dc61a37291314e324dc0dbe74fd8c88d"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/weatherassistant_http_session_leak/fixed",
+      "tree": "c0a58c0017e87dfb1c4984e8dc76a4aa6d7ef419",
+      "production_patches": [
+        "hosts_patches/weatherassistant/sessions-hourly-forecast-fixed-v5.patch"
+      ],
+      "reference_unsigned_hap_sha256": "7f0c4f9f0940cd1adb41f1fc06c1bd00e6fbfc0ab9a6478b8f69bc16c24804aa"
+    }
+  },
+  "testcase": {
+    "name": "MemLoad_weatherassistant_0010",
+    "py_file": "testcase/MemLoad_weatherassistant_0010.py",
+    "descriptor": "testcase/MemLoad_weatherassistant_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/com.alatus.futureweather",
+    "driver": "DeviceTest",
+    "module": "alatus",
+    "ability": "AlatusAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/MemLoad_weatherassistant_0010.workload.json"
+  },
+  "collection": {
+    "method": "external_native_kernel_pss",
+    "modes": [
+      "memory"
+    ],
+    "step_duration_s": 1200,
+    "rounds": 3
+  },
+  "test_oracle": {
+    "metric": "app_gc_requested_pss_growth_bytes",
+    "definition": "Observed warmed whole-process kernel PSS growth after successful native GC requests and fixed ten-second waits; GC completion is not claimed. Lower growth is min(post PSS) minus max(baseline PSS); upper growth is max(post PSS) minus min(baseline PSS), with three raw kernel samples at each boundary. Compare unfixed lower growth with fixed upper growth under the frozen three-fold and five-MiB gates.",
+    "comparison": "each of 3 pairs: unfixed lower growth >= 3 * max(fixed upper growth, 1 MiB), with >= 5 MiB unfixed growth and >= 5 MiB excess growth",
+    "workload_notes": "Measure conservative observed kernel PSS growth after successful native GC requests plus fixed ten-second waits around forty ordinary ten-city refreshes after ten warmup returns. All three pairs and conservative median must meet 3x, with a 1 MiB denominator floor, at least 5 MiB unfixed lower growth and 5 MiB excess growth.",
+    "evidence": {
+      "unfixed": [
+        41846784,
+        42250240,
+        43941888
+      ],
+      "fixed": [
+        -404480,
+        374784,
+        4646912
+      ],
+      "paired_ratios": [
+        39.904296875,
+        40.29296875,
+        9.418901098901099
+      ],
+      "median_ratio": 40.29296875,
+      "rounds_per_variant": 3
+    }
+  }
+}

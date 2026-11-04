@@ -1,0 +1,94 @@
+{
+  "id": "sepweather_font_register_per_page",
+  "status": "included",
+  "host_app": {
+    "name": "SepWeather",
+    "repository": "https://github.com/SeaEpoch/SepWeather",
+    "upstream_base_commit": "e7b92b4",
+    "bundle_name": "cn.seayj.sepweather",
+    "local_path": "hosts/sepweather"
+  },
+  "category": "memory",
+  "perf_scenarios": [
+    "页面启动",
+    "页面切换"
+  ],
+  "bug_description": "Revised per-page font-family lifetime: ordinary secondary-page titles use the same complete bundled CJK font. Unfixed registers a unique font family for each page instance; fixed reuses one family. Normal city-manager visits retain duplicate font resources in the unfixed process. Original same-family MainPage recreation and parsing premises remain unverified and archived; no weather network or CPU claim.",
+  "fix_summary": "Share one immutable page-title font family across secondary-page instances instead of allocating a new family on every visit.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v3/sepweather_font_register_per_page/unfixed",
+      "tree": "42f2e82c38df53356755551f93e240e5c11efb33",
+      "production_patches": [
+        "hosts_patches/sepweather/page-title-font-unfixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "dd28a7b09b6743bcfc673da45e225066e985d0cfb0192f6788fa3828e3922435"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/sepweather_font_register_per_page/fixed",
+      "tree": "7a05838c171ffc589790e291937af857e628c916",
+      "production_patches": [
+        "hosts_patches/sepweather/page-title-font-fixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "c4d95997f5005579c614dfceb8288306bee8408110f546037777314193f2ae1e"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_sepweather_0010",
+    "py_file": "testcase/PerfLoad_sepweather_0010.py",
+    "descriptor": "testcase/PerfLoad_sepweather_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/cn.seayj.sepweather",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_sepweather_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 30,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "app_pss_bytes",
+    "definition": "Final absolute whole-process kernel PSS after one warmup and forty normal city-manager page visits. Every pair must meet 2.0x and 64 MiB excess. No CPU or original same-family reparse claim.",
+    "comparison": "unfixed >= 2.0 * fixed and unfixed - fixed >= 64 MiB in each of 3 paired rounds",
+    "workload_notes": "Explicit business revision to per-page CJK title font-family lifetime. Measure final absolute kernel PSS after forty ordinary city-manager visits. All three pairs must reach 2.0x and 64 MiB excess, with identical city content and title pixels.",
+    "evidence": {
+      "unfixed": [
+        263899136,
+        262072320,
+        262572032
+      ],
+      "fixed": [
+        98931712,
+        91774976,
+        99804160
+      ],
+      "paired_ratios": [
+        2.6674878121991865,
+        2.855596715165581,
+        2.6308726209408504
+      ],
+      "paired_excess_bytes": [
+        164967424,
+        170297344,
+        162767872
+      ],
+      "median_ratio": 2.6540734683738214,
+      "rounds_per_variant": 3
+    }
+  }
+}

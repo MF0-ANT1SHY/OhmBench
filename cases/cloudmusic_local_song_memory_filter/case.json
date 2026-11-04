@@ -1,0 +1,86 @@
+{
+  "id": "cloudmusic_local_song_memory_filter",
+  "status": "excluded",
+  "exclusion_reason": "Clean measurements did not meet the declared oracle threshold (median ratio 1.102).",
+  "host_app": {
+    "name": "CloudMusic-HarmonyOSNext (仿网易云音乐)",
+    "repository": "https://github.com/Chenlvin/CloudMusic-HarmonyOSNext",
+    "upstream_base_commit": "724702c",
+    "bundle_name": "cc.chenlvin.cloudmusic",
+    "local_path": "hosts/cloudmusic"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ],
+  "bug_description": "Searching local songs materializes the entire songs table via getAllSongs() (already loaded in full by the page) and then filters with Array.filter over songFile strings in memory for every search submission. With a large local library the search does O(total_songs) string work on the UI path instead of an indexed SQLite LIKE query that returns only matching rows.",
+  "fix_summary": "A getSongsByKeyword query (RdbPredicates.like on songFile, with LIKE-wildcard escaping) performs the filtering in SQLite; the page search handler awaits it directly instead of filtering the full in-memory list.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v4/cloudmusic_local_song_memory_filter/unfixed",
+      "tree": "7f1ad4a5829283cc440789b46875fd3ff8879f4c",
+      "production_patches": [
+        "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
+        "hosts_patches/cloudmusic/production-local-interactions-js.patch"
+      ],
+      "reference_unsigned_hap_sha256": "d8c2d7e9ddc3a7011f4e2b88dbdd012040186aedea587d10ca212a19c33b73c8"
+    },
+    "fixed": {
+      "ref": "clean-app-v4/cloudmusic_local_song_memory_filter/fixed",
+      "tree": "0b5dec7ee0528cc56e306a9686d3c20d46a27485",
+      "production_patches": [
+        "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
+        "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
+      ],
+      "reference_unsigned_hap_sha256": "e857d6f19362359404cecc6023ffd90623a6c10e76b7599a5d94d3d38a774953"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_cloudmusic_0020",
+    "py_file": "testcase/PerfLoad_cloudmusic_0020.py",
+    "descriptor": "testcase/PerfLoad_cloudmusic_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/cc.chenlvin.cloudmusic",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_cloudmusic_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 180,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        2045600548,
+        2054389977,
+        2030748226
+      ],
+      "fixed": [
+        1855940154,
+        1855603380,
+        1877265799
+      ],
+      "median_ratio": 1.1021910073938732,
+      "rounds_per_variant": 3
+    }
+  }
+}

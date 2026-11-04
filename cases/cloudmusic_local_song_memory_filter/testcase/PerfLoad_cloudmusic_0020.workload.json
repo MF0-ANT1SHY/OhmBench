@@ -1,0 +1,135 @@
+{
+  "bundle": "cc.chenlvin.cloudmusic",
+  "ability": "EntryAbility",
+  "description": "CloudMusic-HarmonyOSNext (仿网易云音乐)页面操作",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "发现",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "本地曲库",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "共 10000 首歌曲",
+        "match": "exact"
+      },
+      "timeout_s": 60
+    }
+  ],
+  "measured": [
+    {
+      "op": "input",
+      "selector": {
+        "type": "SearchField"
+      },
+      "value": "blue"
+    },
+    {
+      "op": "key",
+      "key": 2054
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*00|0)",
+        "match": "regex"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "input",
+      "selector": {
+        "type": "SearchField"
+      },
+      "value": "jazz"
+    },
+    {
+      "op": "key",
+      "key": 2054
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*01|1)",
+        "match": "regex"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "input",
+      "selector": {
+        "type": "SearchField"
+      },
+      "value": "music"
+    },
+    {
+      "op": "key",
+      "key": 2054
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*02|2)",
+        "match": "regex"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "input",
+      "selector": {
+        "type": "SearchField"
+      },
+      "value": "blue"
+    },
+    {
+      "op": "key",
+      "key": 2054
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*00|0)",
+        "match": "regex"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "input",
+      "selector": {
+        "type": "SearchField"
+      },
+      "value": "jazz"
+    },
+    {
+      "op": "key",
+      "key": 2054
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*01|1)",
+        "match": "regex"
+      },
+      "timeout_s": 30
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Track (?:[0-9]*01|1)",
+        "match": "regex"
+      }
+    }
+  ]
+}

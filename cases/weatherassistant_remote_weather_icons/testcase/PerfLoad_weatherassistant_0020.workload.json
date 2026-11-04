@@ -1,0 +1,33 @@
+{
+  "bundle": "com.alatus.futureweather",
+  "ability": "AlatusAbility",
+  "description": "Open the weather forecast",
+  "setup": [
+    {
+      "op": "stop"
+    }
+  ],
+  "measured": [
+    {
+      "op": "launch"
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "深圳市",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "近期天气",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    }
+  ]
+}

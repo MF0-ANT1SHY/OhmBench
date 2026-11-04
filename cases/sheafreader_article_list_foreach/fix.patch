@@ -1,0 +1,204 @@
+diff --git a/entry/src/main/ets/components/ArticleListView.ets b/entry/src/main/ets/components/ArticleListView.ets
+index b54526b..223c3e4 100644
+--- a/entry/src/main/ets/components/ArticleListView.ets
++++ b/entry/src/main/ets/components/ArticleListView.ets
+@@ -59,9 +59,55 @@ struct ChipView {
+  * `MagazineCard` / `CompactCard` — and every layout honours the same
+  * `ViewConfigs` bits, which is what makes "Customised" meaningful.
+  */
++/**
++ * Lazy data source for the article list: rows are created only when they
++ * enter the viewport instead of eagerly for every loaded article.
++ */
++class ArticleDataSource implements IDataSource {
++  private articles: Article[] = [];
++  private listeners: DataChangeListener[] = [];
++
++  totalCount(): number {
++    return this.articles.length;
++  }
++
++  getData(index: number): Article {
++    return this.articles[index];
++  }
++
++  registerDataChangeListener(listener: DataChangeListener): void {
++    if (this.listeners.indexOf(listener) < 0) {
++      this.listeners.push(listener);
++    }
++  }
++
++  unregisterDataChangeListener(listener: DataChangeListener): void {
++    const pos: number = this.listeners.indexOf(listener);
++    if (pos >= 0) {
++      this.listeners.splice(pos, 1);
++    }
++  }
++
++  setArticles(articles: Article[]): void {
++    this.articles = articles;
++    this.listeners.forEach((listener: DataChangeListener) => {
++      listener.onDataReloaded();
++    });
++  }
++}
++
+ @Component
+ export struct ArticleListView {
+-  @ObjectLink store: AppStore;
++  @ObjectLink @Watch('onStoreArticlesChanged') store: AppStore;
++  private articleDataSource: ArticleDataSource = new ArticleDataSource();
++
++  aboutToAppear(): void {
++    this.articleDataSource.setArticles(this.store.articles);
++  }
++
++  onStoreArticlesChanged(): void {
++    this.articleDataSource.setArticles(this.store.articles);
++  }
+   /** Width of this pane, used to size the card grid. */
+   @Prop paneWidth: number;
+   onArticleSelect: (articleId: number) => void = () => {
+@@ -802,7 +848,7 @@ export struct ArticleListView {
+         .justifyContent(FlexAlign.Center)
+       } else if (this.store.viewType === ViewType.Cards) {
+         Grid() {
+-          ForEach(this.store.articles, (article: Article) => {
++          LazyForEach(this.articleDataSource, (article: Article) => {
+             GridItem() {
+               Column() {
+                 GridCard({
+@@ -843,74 +889,75 @@ export struct ArticleListView {
+         .width('100%')
+         .scrollBar(BarState.Auto)
+       } else {
+-        Scroll() {
+-          Column() {
+-            ForEach(this.store.articles, (article: Article) => {
++        List() {
++          LazyForEach(this.articleDataSource, (article: Article) => {
++            ListItem() {
+               Column() {
+-                Column() {
+-                  if (this.store.viewType === ViewType.Compact) {
+-                    CompactCard({
+-                      article: article,
+-                      isSelected: article.id === this.store.selectedArticleId,
+-                      isDarkMode: this.store.isDarkMode,
+-                      fadeRead: this.fadeRead(),
+-                      onItemClick: () => {
+-                        this.onArticleSelect(article.id);
+-                      }
+-                    })
+-                  } else if (this.store.viewType === ViewType.Magazine) {
+-                    MagazineCard({
+-                      article: article,
+-                      isSelected: article.id === this.store.selectedArticleId,
+-                      isDarkMode: this.store.isDarkMode,
+-                      showCover: this.showCover(),
+-                      showSnippet: this.showSnippet(),
+-                      fadeRead: this.fadeRead(),
+-                      onItemClick: () => {
+-                        this.onArticleSelect(article.id);
+-                      },
+-                      onStarClick: () => {
+-                        this.onStarToggle(article.id);
+-                      }
+-                    })
+-                  } else {
+-                    ListCard({
+-                      article: article,
+-                      isSelected: article.id === this.store.selectedArticleId,
+-                      isDarkMode: this.store.isDarkMode,
+-                      showCover: this.showCover(),
+-                      showSnippet: this.showSnippet(),
+-                      fadeRead: this.fadeRead(),
+-                      onItemClick: () => {
+-                        this.onArticleSelect(article.id);
+-                      },
+-                      onStarClick: () => {
+-                        this.onStarToggle(article.id);
+-                      }
+-                    })
+-                  }
++                if (this.store.viewType === ViewType.Compact) {
++                  CompactCard({
++                    article: article,
++                    isSelected: article.id === this.store.selectedArticleId,
++                    isDarkMode: this.store.isDarkMode,
++                    fadeRead: this.fadeRead(),
++                    onItemClick: () => {
++                      this.onArticleSelect(article.id);
++                    }
++                  })
++                } else if (this.store.viewType === ViewType.Magazine) {
++                  MagazineCard({
++                    article: article,
++                    isSelected: article.id === this.store.selectedArticleId,
++                    isDarkMode: this.store.isDarkMode,
++                    showCover: this.showCover(),
++                    showSnippet: this.showSnippet(),
++                    fadeRead: this.fadeRead(),
++                    onItemClick: () => {
++                      this.onArticleSelect(article.id);
++                    },
++                    onStarClick: () => {
++                      this.onStarToggle(article.id);
++                    }
++                  })
++                } else {
++                  ListCard({
++                    article: article,
++                    isSelected: article.id === this.store.selectedArticleId,
++                    isDarkMode: this.store.isDarkMode,
++                    showCover: this.showCover(),
++                    showSnippet: this.showSnippet(),
++                    fadeRead: this.fadeRead(),
++                    onItemClick: () => {
++                      this.onArticleSelect(article.id);
++                    },
++                    onStarClick: () => {
++                      this.onStarToggle(article.id);
++                    }
++                  })
+                 }
+-                .width('100%')
+-                // The mouse trigger lives on the inner node and the touch trigger
+-                // on the outer one: a second bindContextMenu on the same node
+-                // replaces the first rather than adding a trigger.
+-                .bindContextMenu(this.ArticleMenu(article), ResponseType.RightClick)
+-                Divider()
+-                  .strokeWidth(1)
+-                  .color(this.dividerColor())
+-                  .margin({ left: 12, right: 12 })
+               }
+-              .bindContextMenu(this.ArticleMenu(article), ResponseType.LongPress)
+-            }, (article: Article) => this.rowKey(article))
+-            if (this.store.canLoadMore) {
++              .width('100%')
++              // The mouse trigger lives on the inner node and the touch trigger
++              // on the outer one: a second bindContextMenu on the same node
++              // replaces the first rather than adding a trigger.
++              .bindContextMenu(this.ArticleMenu(article), ResponseType.RightClick)
++            }
++            .bindContextMenu(this.ArticleMenu(article), ResponseType.LongPress)
++          }, (article: Article) => this.rowKey(article))
++          if (this.store.canLoadMore) {
++            ListItem() {
+               this.LoadMoreFooter()
+             }
+           }
+-          .width('100%')
+         }
+         .layoutWeight(1)
+         .width('100%')
+         .scrollBar(BarState.Auto)
++        .divider({
++          strokeWidth: 1,
++          color: this.dividerColor(),
++          startMargin: 12,
++          endMargin: 12
++        })
+       }
+     }
+     .width('100%')

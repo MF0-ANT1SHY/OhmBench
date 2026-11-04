@@ -1,0 +1,80 @@
+{
+  "id": "browser_history_list_foreach",
+  "status": "included",
+  "host_app": {
+    "name": "browser (小狐狸浏览器)",
+    "repository": "https://github.com/langwudong/browser",
+    "upstream_base_commit": "f44fff7",
+    "bundle_name": "com.example.nanvision",
+    "local_path": "hosts/browser"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "列表滑动",
+    "组件创建",
+    "页面切换"
+  ],
+  "bug_description": "The browsing-history dialog renders each day's entries with a plain ForEach inside ListItemGroup, so when the dialog opens, HistoryItem components for every recorded entry (including off-screen ones) are created eagerly, and scrolling re-creates components instead of recycling them. Opening the history dialog and scrolling it is slow once history grows.",
+  "fix_summary": "History entries are rendered with LazyForEach backed by a per-group IDataSource implementation, so row components are created on demand as they enter the viewport and recycled while scrolling.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/browser_history_list_foreach/unfixed",
+      "tree": "83229456c247987eaa418ea094b8b65cddb02c22",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "01cdcb78bae2b553d8093dc9f58b1e309a16554f4f986f07ef234211a72306aa"
+    },
+    "fixed": {
+      "ref": "clean-app/browser_history_list_foreach/fixed",
+      "tree": "ca8cdb46a27f193e2d1e80db3cb72c0f3efc63a4",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "c3b2002c04af5ceb9ebe96d13b20a0603b1177074a1848fae60a4a0c10737520"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_browser_0030",
+    "py_file": "testcase/PerfLoad_browser_0030.py",
+    "descriptor": "testcase/PerfLoad_browser_0030.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.nanvision",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_browser_0030.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 20,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        10968865584,
+        10978280673,
+        10936138517
+      ],
+      "fixed": [
+        4040506851,
+        4035677834,
+        4048744455
+      ],
+      "median_ratio": 2.7147251541685358,
+      "rounds_per_variant": 3
+    }
+  }
+}

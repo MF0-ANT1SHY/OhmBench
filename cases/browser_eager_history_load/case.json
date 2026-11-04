@@ -1,0 +1,79 @@
+{
+  "id": "browser_eager_history_load",
+  "status": "included",
+  "host_app": {
+    "name": "browser (小狐狸浏览器)",
+    "repository": "https://github.com/langwudong/browser",
+    "upstream_base_commit": "f44fff7",
+    "bundle_name": "com.example.nanvision",
+    "local_path": "hosts/browser"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "页面启动",
+    "数据库读取"
+  ],
+  "bug_description": "On application startup the main page eagerly queries every per-day history table in the RDB database and materializes all browsing-history rows in memory (Index.aboutToAppear -> RdbUtils.queryAllDate + queryHistoriesByDate for each date), even though history is only consumed when the user opens the browsing-history dialog. Cold-start latency and startup CPU grow linearly with the number of recorded history entries.",
+  "fix_summary": "History is loaded lazily on first open of the history dialog (PagesDialog.loadHistoryData), and RdbUtils.queryHistoriesByDate now actually awaits the RDB query instead of returning an unfilled array.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/browser_eager_history_load/unfixed",
+      "tree": "4a496ee498c760e81d3c36c685bbd441c9a43372",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "60cb5758870c38979c397996ca747a5289269c8f3afebbd37d81cf333fa63155"
+    },
+    "fixed": {
+      "ref": "clean-app/browser_eager_history_load/fixed",
+      "tree": "0ba445d9e65201d8b2c135dc64f17cafa5c4a2ee",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "6bedaa0a8c722900518731cd26772395a01b197169921cfb0bd7e079a6ae11b5"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_browser_0010",
+    "py_file": "testcase/PerfLoad_browser_0010.py",
+    "descriptor": "testcase/PerfLoad_browser_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.nanvision",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_browser_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 15,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1777740431,
+        1756342612,
+        1805539155
+      ],
+      "fixed": [
+        1313976611,
+        1285360539,
+        1308952979
+      ],
+      "median_ratio": 1.3581392605547522,
+      "rounds_per_variant": 3
+    }
+  }
+}

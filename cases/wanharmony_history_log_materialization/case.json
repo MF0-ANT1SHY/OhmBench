@@ -1,0 +1,79 @@
+{
+  "id": "wanharmony_history_log_materialization",
+  "status": "excluded",
+  "exclusion_reason": "Clean unfixed/fixed builds did not show the required performance difference on the declared workload during screening (median ratio 0.998).",
+  "host_app": {
+    "name": "WanHarmony (WanAndroid 客户端)",
+    "repository": "https://github.com/zjmok/WanHarmony",
+    "upstream_base_commit": "dd45ad2",
+    "bundle_name": "org.example.wan.ohos",
+    "local_path": "hosts/wanharmony"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面切换"
+  ],
+  "bug_description": "WebPage.onTitleReceive serializes the ENTIRE browsing-history list with JSON.stringify(list.map(...)) twice (before and after every recorded page visit), and HistoryPage.aboutToAppear stringifies the whole list again when the history page opens. With a large history this materializes and stringifies hundreds of entries on every page-load title event, blocking the web page load path and the history page transition.",
+  "fix_summary": "The debug logs report the list size only, removing full-list map + JSON.stringify on the page-load and page-open paths.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/wanharmony_history_log_materialization/unfixed",
+      "tree": "41efd76077ad95ba36a279f8d4874c6d2310bca7",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "db2e9771b7e993302e7f2a3fc6236097b0eab50da62c3460551cfd702a85b8bd"
+    },
+    "fixed": {
+      "ref": "clean-app/wanharmony_history_log_materialization/fixed",
+      "tree": "4335f38febb7059d241de4f6ef22ade69767e729",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "4a499cf607d52b77169c49fdc35960a5b3af4f877208d29088d81845840d08ee"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_wanharmony_0010",
+    "py_file": "testcase/PerfLoad_wanharmony_0010.py",
+    "descriptor": "testcase/PerfLoad_wanharmony_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/org.example.wan.ohos",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_wanharmony_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 180,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "trace_cpu_ms",
+    "definition": "Native app on-CPU sched_switch intervals clipped to external native-clock markers around five complete normal history page loads; not wall time or app counters.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        9277.974
+      ],
+      "fixed": [
+        9294.78
+      ],
+      "paired_ratios": [
+        0.9981918883502353
+      ],
+      "median_ratio": 0.9981918883502353,
+      "rounds_per_variant": 1
+    }
+  }
+}

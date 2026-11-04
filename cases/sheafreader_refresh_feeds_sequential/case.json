@@ -1,0 +1,90 @@
+{
+  "id": "sheafreader_refresh_feeds_sequential",
+  "status": "included",
+  "host_app": {
+    "name": "Sheaf-Reader (束阅 RSS 阅读器)",
+    "repository": "https://github.com/simon2137/Sheaf-Reader",
+    "upstream_base_commit": "e04ef65",
+    "bundle_name": "com.sheafreader.hm",
+    "local_path": "hosts/sheafreader"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面启动"
+  ],
+  "bug_description": "Sequential fetching adds the latency of each due subscription. This revision measures normal startup through automatic all-feed refresh under a declared 1.5-second RSS response delay. It does not claim lower CPU time; the original CPU-negative result is archived.",
+  "fix_summary": "Fetch due feeds using four bounded workers and add each completed inserted count after await, preserving totals under out-of-order completion.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v2/sheafreader_refresh_feeds_sequential/unfixed",
+      "tree": "ddd1a920cb12be31fb13fb73950066705ff65cf0",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch"
+      ],
+      "reference_unsigned_hap_sha256": "1852850ec8d0db976946ea409dcf723216bf44c9de87f17897578ab27985c382"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/sheafreader_refresh_feeds_sequential/fixed",
+      "tree": "29b4e350573fc64a3383c1d5b31c30700da254e0",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch",
+        "hosts_patches/sheafreader/refresh-concurrent-totals-v3.patch"
+      ],
+      "reference_unsigned_hap_sha256": "51693c73b8e5b0ed9fb23e852b07498e03e41a21d71a5168ad1ccd19ed231270"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_sheafreader_0040",
+    "py_file": "testcase/PerfLoad_sheafreader_0040.py",
+    "descriptor": "testcase/PerfLoad_sheafreader_0040.json",
+    "install_dir": "perf_testing/hapray/testcases/com.sheafreader.hm",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_sheafreader_0040.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 60,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "startup_refresh_elapsed_s",
+    "definition": "Elapsed normal startup including all-feed refresh under identical 1.5-second RSS response latency. Every unfixed lower timing bound must exceed 1.5 times its paired fixed upper bound; native CPU is diagnostic only.",
+    "comparison": "unfixed conservative lower bound >= 1.5 * fixed upper bound over 3 paired rounds",
+    "workload_notes": "Measure complete ordinary startup and automatic all-feed refresh under identical declared 1.5-second RSS response latency. All three conservative lower/upper paired ratios must reach 1.5x. Native scheduling is diagnostic; Concurrent inserted totals are corrected.",
+    "evidence": {
+      "unfixed": [
+        21.25579310000103,
+        21.574176899999657,
+        21.187260400000014
+      ],
+      "fixed": [
+        9.72918910000044,
+        9.796314799999891,
+        9.960387299999638
+      ],
+      "paired_conservative_ratios": [
+        1.8567428193989528,
+        1.8735227455124577,
+        1.7951272436965613
+      ],
+      "median_ratio": 1.844020161540805,
+      "rounds_per_variant": 3
+    }
+  }
+}

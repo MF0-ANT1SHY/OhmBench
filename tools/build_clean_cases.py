@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""Build all 60 business-only HAPs in new worktrees; audit compiled artifacts."""
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import time
+from pathlib import Path
+
+from audit_clean_app import audit_hap, audit_source
+from clean_sources import app_ref
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def build_case(case, variant, output, toolchain, mode, source_ref=None):
+    cid = case["id"]
+    repo = ROOT / case["host_app"]["local_path"]
+    # Isolated candidates may be compiled before changing the published source
+    # mapping. The receipt still binds the exact audited ref and source tree.
+    ref = source_ref or app_ref(case, variant)
+    dest = output / cid / variant
+    dest.mkdir(parents=True, exist_ok=True)
+    source = audit_source(repo, ref)
+    if not source["passed"]:
+        raise RuntimeError(f"injected source: {source['findings']}")
+    receipt = dest / "build.json"
+    if receipt.exists():
+        old = json.loads(receipt.read_text())
+        if old.get("status") == "PASS" and old.get("source", {}).get("tree") == source["tree"] and old.get("mode") == mode:
+            audit = audit_hap(dest / "app-unsigned.hap", toolchain / "sdk/default/openharmony/toolchains/ark_disasm")
+            if audit["passed"] and audit["sha256"] == old["hap"]["sha256"]:
+                old["ref"] = ref
+                receipt.write_text(json.dumps(old, indent=2) + "\n")
+                print(f"{cid}/{variant}: verified existing clean build", flush=True)
+                return old
+    # Adjacent cases often share the exact same business source state. Reuse only
+    # a compiled artifact whose tree, mode, hash AND bytecode audit all match.
+    candidates = sorted(output.glob("*/unfixed/build.json")) + sorted(output.glob("*/fixed/build.json"))
+    for candidate in candidates:
+        if candidate == receipt:
+            continue
+        cached = json.loads(candidate.read_text())
+        if cached.get("status") != "PASS" or cached.get("mode") != mode or cached.get("source", {}).get("tree") != source["tree"]:
+            continue
+        cached_hap = candidate.parent / "app-unsigned.hap"
+        audit = audit_hap(cached_hap, toolchain / "sdk/default/openharmony/toolchains/ark_disasm")
+        if audit["passed"] and audit["sha256"] == cached["hap"]["sha256"]:
+            shutil.copyfile(cached_hap, dest / "app-unsigned.hap")
+            shutil.copyfile(candidate.parent / "build.log", dest / "build.log")
+            result = {**cached, "case": cid, "variant": variant, "ref": ref,
+                      "reused_from": str(candidate.relative_to(output)), "hap": audit}
+            receipt.write_text(json.dumps(result, indent=2) + "\n")
+            print(f"{cid}/{variant}: PASS (verified identical-tree artifact)", flush=True)
+            return result
+    wt = output / "worktrees" / cid / (variant + "-" + source["tree"][:12])
+    if wt.exists():
+        actual = subprocess.check_output(["git", "-C", str(wt), "rev-parse", "HEAD^{tree}"], text=True).strip()
+        if not receipt.exists() or actual != source["tree"]:
+            raise RuntimeError(f"unrecognized unfinished worktree: {wt}")
+    else:
+        wt.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["git", "-C", str(repo), "worktree", "add", "--detach", str(wt), ref], check=True, capture_output=True)
+    env = os.environ.copy()
+    env["DEVECO_SDK_HOME"] = str(toolchain / "sdk")
+    env["PATH"] = str(toolchain / "bin") + os.pathsep + env["PATH"]
+    started = time.time()
+    result = {"case": cid, "variant": variant, "ref": ref, "mode": mode, "source": source,
+              "status": "FAIL", "toolchain": str(toolchain)}
+    try:
+        with (dest / "build.log").open("w") as log:
+            subprocess.run([str(toolchain / "bin/ohpm"), "install"], cwd=wt, env=env,
+                           stdout=log, stderr=subprocess.STDOUT, check=True, timeout=600)
+            # Package-manager updates may not silently change the claimed source tree.
+            dirty_names = subprocess.check_output(["git", "-C", str(wt), "diff", "--name-only"], text=True).splitlines()
+            for name in dirty_names:
+                if not name.endswith("oh-package-lock.json5"):
+                    continue
+                original = subprocess.check_output(["git", "-C", str(wt), "show", f"HEAD:{name}"])
+                installed = (wt / name).read_bytes()
+                # ohpm 5.1.3 adds a formatting-only metadata flag to old locks.
+                # Restore it only if this is the ENTIRE difference, not a dependency update.
+                normalized = installed.replace(b'"stableOrder": true,\n    "enableUnifiedLockfile": false', b'"stableOrder": true')
+                if normalized == original:
+                    (wt / name).write_bytes(original)
+                    result.setdefault("package_manager_metadata_restored", []).append(name)
+            dirty = subprocess.check_output(["git", "-C", str(wt), "diff", "--name-only"], text=True).strip()
+            if dirty:
+                raise RuntimeError(f"dependency install changed tracked source: {dirty}")
+            subprocess.run([str(toolchain / "bin/hvigorw"), "--mode", "module", "-p", "product=default",
+                            "-p", f"buildMode={mode}", "assembleHap", "--no-daemon"],
+                           cwd=wt, env=env, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=900)
+        artifacts = [p for p in wt.rglob("*-unsigned.hap")
+                     if p.parent.name == "default" and p.parent.parent.name == "outputs"]
+        if len(artifacts) != 1:
+            raise RuntimeError(f"expected one unsigned HAP, got {artifacts}")
+        target = dest / "app-unsigned.hap"
+        shutil.copyfile(artifacts[0], target)
+        result["hap"] = audit_hap(target, toolchain / "sdk/default/openharmony/toolchains/ark_disasm")
+        if not result["hap"]["passed"]:
+            raise RuntimeError(f"injected HAP: {result['hap']['findings']}")
+        result["status"] = "PASS"
+    except Exception as exc:
+        result["error"] = str(exc)
+    result["elapsed_s"] = round(time.time() - started, 2)
+    receipt.write_text(json.dumps(result, indent=2) + "\n")
+    print(f"{cid}/{variant}: {result['status']} ({result['elapsed_s']}s) {result.get('error', '')}", flush=True)
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("cases", nargs="*")
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/clean")
+    parser.add_argument("--toolchain", type=Path, default=ROOT / "toolchain/command-line-tools")
+    parser.add_argument("--mode", choices=["debug", "release"], default="release")
+    args = parser.parse_args()
+    output, toolchain = args.output.resolve(), args.toolchain.resolve()
+    failed = False
+    for path in sorted((ROOT / "cases").glob("*/case.json")):
+        case = json.loads(path.read_text())
+        if args.cases and case["id"] not in args.cases:
+            continue
+        for variant in ("unfixed", "fixed"):
+            try:
+                result = build_case(case, variant, output, toolchain, args.mode)
+                failed |= result["status"] != "PASS"
+            except Exception as exc:
+                print(f"{case['id']}/{variant}: {exc}", flush=True)
+                failed = True
+    return int(failed)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,159 @@
+{
+  "bundle": "com.alatus.futureweather",
+  "ability": "AlatusAbility",
+  "description": "Refresh the saved city forecasts",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "添加"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "深圳市",
+        "match": "exact"
+      },
+      "timeout_s": 60
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "近期天气",
+        "match": "exact"
+      },
+      "timeout_s": 60
+    },
+    {
+      "op": "repeat",
+      "count": 10,
+      "actions": [
+        {
+          "op": "tap",
+          "selector": {
+            "text": "添加"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "添加城市列表"
+          }
+        },
+        {
+          "op": "tap",
+          "selector": {
+            "text": "完成"
+          }
+        },
+        {
+          "op": "pause",
+          "seconds": 0.2
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "添加"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "深圳市",
+            "match": "exact"
+          },
+          "timeout_s": 60
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "近期天气",
+            "match": "exact"
+          },
+          "timeout_s": 60
+        }
+      ]
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "measured": [
+    {
+      "op": "repeat",
+      "count": 40,
+      "actions": [
+        {
+          "op": "tap",
+          "selector": {
+            "text": "添加"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "添加城市列表"
+          }
+        },
+        {
+          "op": "tap",
+          "selector": {
+            "text": "完成"
+          }
+        },
+        {
+          "op": "pause",
+          "seconds": 0.2
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "添加"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "深圳市",
+            "match": "exact"
+          },
+          "timeout_s": 60
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "近期天气",
+            "match": "exact"
+          },
+          "timeout_s": 60
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "添加"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "深圳市",
+        "match": "exact"
+      },
+      "timeout_s": 60
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "近期天气",
+        "match": "exact"
+      },
+      "timeout_s": 60
+    }
+  ]
+}

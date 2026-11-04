@@ -1,0 +1,66 @@
+{
+  "bundle": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "description": "通过普通搜索栏导航15次并保存同一日期的浏览记录",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "小狐狸浏览器"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "hint": "搜索或输入网址",
+        "match": "exact"
+      },
+      "timeout_s": 30
+    }
+  ],
+  "measured": [
+    {
+      "op": "repeat",
+      "count": 15,
+      "actions": [
+        {
+          "op": "input",
+          "selector": {
+            "hint": "搜索或输入网址",
+            "match": "exact"
+          },
+          "value": "https://example.com"
+        },
+        {
+          "op": "key",
+          "key": 2054
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.",
+            "match": "exact"
+          },
+          "timeout_s": 60
+        },
+        {
+          "op": "pause",
+          "seconds": 1
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "op": "point",
+      "x": 0.5,
+      "y": 0.92
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Example Domain"
+      }
+    }
+  ]
+}

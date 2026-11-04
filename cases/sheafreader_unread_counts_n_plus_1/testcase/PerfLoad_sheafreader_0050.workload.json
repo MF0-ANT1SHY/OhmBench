@@ -1,0 +1,35 @@
+{
+  "bundle": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "description": "Open the reader and load subscription unread badges",
+  "setup": [
+    {
+      "op": "stop"
+    }
+  ],
+  "measured": [
+    {
+      "op": "launch"
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Journal 1 article 1",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "type": "Button",
+        "bounds": "[195,326][296,427]",
+        "enabled": "true",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    }
+  ]
+}

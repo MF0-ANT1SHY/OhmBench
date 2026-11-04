@@ -1,0 +1,85 @@
+{
+  "id": "weatherassistant_remote_weather_icons",
+  "status": "included",
+  "host_app": {
+    "name": "HarmonyOS-Next-Weather-Assistant",
+    "repository": "https://github.com/AlatusLee/HarmonyOS-Next-Weather-Assistant",
+    "upstream_base_commit": "d3c7060",
+    "bundle_name": "com.alatus.futureweather",
+    "local_path": "hosts/weatherassistant"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "图片加载",
+    "页面启动",
+    "页面切换"
+  ],
+  "bug_description": "Remote static icons delay a normal cold-cache forecast launch. Both variants use the same ordinary forecast fixture; unfixed downloads identical icon bytes with a declared four-second image-response delay, while fixed loads bundled images. This does not claim the original weather provider key works or a warm-cache speedup.",
+  "fix_summary": "The four weather glyphs are bundled as local rawfile resources and referenced with $rawfile, eliminating the network fetches and speeding up first render.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v3/weatherassistant_remote_weather_icons/unfixed",
+      "tree": "0ff272c018812dce29db0c487b741ce001b22d0d",
+      "production_patches": [
+        "hosts_patches/weatherassistant/icons-ordinary-origin-unfixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "2d2f650a0bbd69e895c8797fec5ed13e1913908eda640be345ce50e64032e465"
+    },
+    "fixed": {
+      "ref": "clean-app-v3/weatherassistant_remote_weather_icons/fixed",
+      "tree": "098fabd11c7c3f8267551c28c7e6cd3f31f96a2c",
+      "production_patches": [
+        "hosts_patches/weatherassistant/icons-ordinary-origin-fixed-v2.patch"
+      ],
+      "reference_unsigned_hap_sha256": "4f3fa785462ba232b8484cee2965e58a4b08e89ef0bc77f43c467d388dbac6d6"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_weatherassistant_0020",
+    "py_file": "testcase/PerfLoad_weatherassistant_0020.py",
+    "descriptor": "testcase/PerfLoad_weatherassistant_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/com.alatus.futureweather",
+    "driver": "DeviceTest",
+    "module": "alatus",
+    "ability": "AlatusAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_weatherassistant_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 25,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "startup_icons_elapsed_s",
+    "definition": "Cold launch until all nine weather icons are pixel-complete, with identical ordinary forecasts and image bytes under declared four-second remote-image latency. Every paired conservative ratio and median must reach 2.0x. Native scheduler CPU is diagnostic only.",
+    "comparison": "unfixed conservative lower bound >= 2.0 * fixed upper bound over 3 paired rounds",
+    "workload_notes": "Measure elapsed cold launch until all native icons are complete. All three conservative paired ratios and median must reach 2.0x. All nine native icon regions must match complete reference pixels. Both variants receive identical ordinary four-day forecasts and image bytes; unfixed uses four-second delayed remote images, fixed uses bundled files. Cold cache only;",
+    "evidence": {
+      "unfixed": [
+        5.178534800001216,
+        5.248315900000307,
+        5.398252799997863
+      ],
+      "fixed": [
+        1.6858432000008179,
+        1.7835522000023047,
+        1.7441524000023492
+      ],
+      "median_ratio": 2.272420575171862,
+      "rounds_per_variant": 3
+    }
+  }
+}

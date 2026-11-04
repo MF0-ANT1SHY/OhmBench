@@ -1,0 +1,83 @@
+{
+  "id": "jingmo_sync_page_reimport",
+  "status": "included",
+  "host_app": {
+    "name": "jingmo (京墨文库)",
+    "repository": "https://github.com/hefengbao/jingmo-for-HarmonyOS",
+    "upstream_base_commit": "ddca186",
+    "bundle_name": "com.hefengbao.jingmo.hw",
+    "local_path": "hosts/jingmo"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "数据库读取",
+    "页面切换"
+  ],
+  "bug_description": "Opening the dataset sync page unconditionally re-downloads the full classic-poem dataset JSON and re-runs the bulk import, even when the (static, versioned) dataset is already fully imported. Every re-import re-attempts thousands of inserts that all conflict with existing rows (id primary key), wasting network transfer, parsing, and database work on each visit.",
+  "fix_summary": "Before importing, a single COUNT query checks whether the dataset is already present and skips the download/import entirely when the table is populated.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v2/jingmo_sync_page_reimport/unfixed",
+      "tree": "8c755c793928608da1a4daeffb4b6e4ada27d2c6",
+      "production_patches": [
+        "hosts_patches/jingmo/production-dataset-source-settings.patch"
+      ],
+      "reference_unsigned_hap_sha256": "8c047e72875d5aadc3815291db9d39e935aee3d39d9e4fe7803e5386042ef376"
+    },
+    "fixed": {
+      "ref": "clean-app-v2/jingmo_sync_page_reimport/fixed",
+      "tree": "0c00962020f73ba6fb8e01b3da47f3160769eb88",
+      "production_patches": [
+        "hosts_patches/jingmo/production-dataset-source-settings.patch"
+      ],
+      "reference_unsigned_hap_sha256": "4063f1ea6fec5ecfd7294b1dd913ff5d315b02df6106d38ba5701854341a9e7f"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_jingmo_0030",
+    "py_file": "testcase/PerfLoad_jingmo_0030.py",
+    "descriptor": "testcase/PerfLoad_jingmo_0030.json",
+    "install_dir": "perf_testing/hapray/testcases/com.hefengbao.jingmo.hw",
+    "driver": "DeviceTest",
+    "module": "default",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_jingmo_0030.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 180,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        4506681633,
+        4499744652,
+        4511747452
+      ],
+      "fixed": [
+        1055658926,
+        1099558430,
+        1070568655
+      ],
+      "median_ratio": 4.209614779913391,
+      "rounds_per_variant": 3
+    }
+  }
+}

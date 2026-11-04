@@ -1,0 +1,8 @@
+# Upstream app clones created by tools/reconstruct_clean_hosts.py
+/hosts/
+# Build outputs and locally generated data
+/artifacts/
+# HarmonyOS command-line tools (symlink or directory)
+/toolchain
+__pycache__/
+*.log

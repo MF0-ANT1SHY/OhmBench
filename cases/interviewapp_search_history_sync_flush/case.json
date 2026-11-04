@@ -1,0 +1,79 @@
+{
+  "id": "interviewapp_search_history_sync_flush",
+  "status": "excluded",
+  "exclusion_reason": "Clean unfixed/fixed builds did not show the required performance difference on the declared workload during screening (median ratio 1.005).",
+  "host_app": {
+    "name": "interview-handbook-project (面试通)",
+    "repository": "https://github.com/HarmonyOS-Next/interview-handbook-project",
+    "upstream_base_commit": "1e05347",
+    "bundle_name": "com.itcast.pass_interview",
+    "local_path": "hosts/interviewapp"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "状态更新",
+    "数据库读取"
+  ],
+  "bug_description": "The search-history HistoryStore calls preferences flush() synchronously on every setItem/delItem (i.e., on every recorded search keyword), forcing a disk write on the caller's thread each time. Rapid successive searches each pay a full synchronous flush, adding avoidable I/O latency to the search flow.",
+  "fix_summary": "Flushes are debounced: mutations update the in-memory cache synchronously and a single flush runs 2 seconds after the last mutation.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/interviewapp_search_history_sync_flush/unfixed",
+      "tree": "e77617182614753257cf10aff3244973254c2c97",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "a081ea6e32ccfbe50e32884dd39097ca0c92d89c342cfb8d39e1c37e20f7aa2a"
+    },
+    "fixed": {
+      "ref": "clean-app/interviewapp_search_history_sync_flush/fixed",
+      "tree": "382c9d77994a2b3aa5e42dcac0f81fbae280b8cf",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "92e0f1fefdeed4f2fd43778a0f012c66bd160bab407b0e655d25d827d36d2abc"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_interviewapp_0020",
+    "py_file": "testcase/PerfLoad_interviewapp_0020.py",
+    "descriptor": "testcase/PerfLoad_interviewapp_0020.json",
+    "install_dir": "perf_testing/hapray/testcases/com.itcast.pass_interview",
+    "driver": "DeviceTest",
+    "module": "phone",
+    "ability": "PhoneAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_interviewapp_0020.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 90,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        4137642395
+      ],
+      "fixed": [
+        4116119424
+      ],
+      "paired_ratios": [
+        1.0052289471667186
+      ],
+      "median_ratio": 1.0052289471667186,
+      "rounds_per_variant": 1
+    }
+  }
+}

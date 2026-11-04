@@ -1,0 +1,79 @@
+{
+  "id": "interviewapp_response_log_full_stringify",
+  "status": "excluded",
+  "exclusion_reason": "Clean unfixed/fixed builds did not show the required performance difference on the declared workload during screening (median ratio 1.036).",
+  "host_app": {
+    "name": "interview-handbook-project (面试通)",
+    "repository": "https://github.com/HarmonyOS-Next/interview-handbook-project",
+    "upstream_base_commit": "1e05347",
+    "bundle_name": "com.itcast.pass_interview",
+    "local_path": "hosts/interviewapp"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面启动"
+  ],
+  "bug_description": "The shared HTTP client logs every successful API response with JSON.stringify(res.result).substring(0, 200): the ENTIRE response object (large question lists, article payloads) is serialized into a string only to keep the first 200 characters. Every API call pays a full-payload serialization plus a substring copy on its completion path.",
+  "fix_summary": "The log records only the response code and message fields, removing the full-body JSON.stringify and truncation copy.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/interviewapp_response_log_full_stringify/unfixed",
+      "tree": "382c9d77994a2b3aa5e42dcac0f81fbae280b8cf",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "b2659a41c0242c40f590fc888c6c882dcd166e96a984d9739afb28356069486e"
+    },
+    "fixed": {
+      "ref": "clean-app/interviewapp_response_log_full_stringify/fixed",
+      "tree": "4085ad189b70ef72a88ddc0010fdf6890b12aa49",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "2ee29e3f04dcfc018483fc7c773ddf8ec9fcc53c95ddcb22b29125ae5e06c38b"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_interviewapp_0010",
+    "py_file": "testcase/PerfLoad_interviewapp_0010.py",
+    "descriptor": "testcase/PerfLoad_interviewapp_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/com.itcast.pass_interview",
+    "driver": "DeviceTest",
+    "module": "phone",
+    "ability": "PhoneAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_interviewapp_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 120,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1463268858
+      ],
+      "fixed": [
+        1412255669
+      ],
+      "paired_ratios": [
+        1.0361217802978422
+      ],
+      "median_ratio": 1.0361217802978422,
+      "rounds_per_variant": 1
+    }
+  }
+}

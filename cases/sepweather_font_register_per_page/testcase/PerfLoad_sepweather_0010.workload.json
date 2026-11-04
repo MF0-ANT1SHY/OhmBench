@@ -1,0 +1,117 @@
+{
+  "bundle": "cn.seayj.sepweather",
+  "ability": "EntryAbility",
+  "description": "Open and return from the city manager",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "id": "AddAddressBtn",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "id": "AddAddressBtn",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "城市管理",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "北京",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "pause",
+      "seconds": 0.5
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "id": "AddAddressBtn",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "measured": [
+    {
+      "op": "repeat",
+      "count": 40,
+      "actions": [
+        {
+          "op": "tap",
+          "selector": {
+            "id": "AddAddressBtn",
+            "match": "exact"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "城市管理",
+            "match": "exact"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "text": "北京",
+            "match": "exact"
+          }
+        },
+        {
+          "op": "pause",
+          "seconds": 0.5
+        },
+        {
+          "op": "tap",
+          "selector": {
+            "text": "",
+            "match": "exact"
+          }
+        },
+        {
+          "op": "wait",
+          "selector": {
+            "id": "AddAddressBtn",
+            "match": "exact"
+          },
+          "timeout_s": 120
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "id": "AddAddressBtn",
+        "match": "exact"
+      },
+      "timeout_s": 120
+    }
+  ]
+}

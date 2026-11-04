@@ -1,0 +1,73 @@
+{
+  "bundle": "com.hefengbao.jingmo.hw",
+  "ability": "EntryAbility",
+  "description": "通过正常同步入口导入文库数据",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "京墨"
+      }
+    },
+    {
+      "op": "point",
+      "x": 0.94,
+      "y": 0.07
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "设置"
+      }
+    },
+    {
+      "op": "input",
+      "selector": {
+        "hint": "数据源地址",
+        "match": "exact"
+      },
+      "value": "http://127.0.0.1:18492/api/"
+    },
+    {
+      "op": "key",
+      "key": "Back"
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "type": "Button",
+        "text": "保存数据源",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "已保存",
+        "match": "exact"
+      }
+    }
+  ],
+  "measured": [
+    {
+      "op": "tap",
+      "selector": {
+        "text": "同步数据",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "同步数据",
+        "match": "exact"
+      }
+    }
+  ]
+}

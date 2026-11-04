@@ -1,0 +1,84 @@
+{
+  "id": "sheafreader_article_list_foreach",
+  "status": "included",
+  "host_app": {
+    "name": "Sheaf-Reader (束阅 RSS 阅读器)",
+    "repository": "https://github.com/simon2137/Sheaf-Reader",
+    "upstream_base_commit": "e04ef65",
+    "bundle_name": "com.sheafreader.hm",
+    "local_path": "hosts/sheafreader"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "列表滑动",
+    "组件创建",
+    "页面切换"
+  ],
+  "bug_description": "The article list view renders store.articles through a Scroll container holding a Column with a plain ForEach, which is never virtualised; the card grid also uses a non-caching ForEach. Opening a feed or scrolling loads pages of articles (limit grows with 'load more'), and every accumulated article row/card — including off-screen ones — is built eagerly, with per-card context menus bound, slowing list display and paging in large feeds.",
+  "fix_summary": "Both the list and grid render via LazyForEach over an IDataSource kept in sync with the store, so rows are created on demand as they enter the viewport.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app-v2/sheafreader_article_list_foreach/unfixed",
+      "tree": "291205d3edc3fe744204764ded4fa70e8ed0cff0",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch"
+      ],
+      "reference_unsigned_hap_sha256": "fe8e45af23c444c3739b805adc19f2833bcee9dae358868b86b20ac34608ada7"
+    },
+    "fixed": {
+      "ref": "clean-app-v2/sheafreader_article_list_foreach/fixed",
+      "tree": "ddd1a920cb12be31fb13fb73950066705ff65cf0",
+      "production_patches": [
+        "hosts_patches/sheafreader/production-phone-support.patch"
+      ],
+      "reference_unsigned_hap_sha256": "1852850ec8d0db976946ea409dcf723216bf44c9de87f17897578ab27985c382"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_sheafreader_0010",
+    "py_file": "testcase/PerfLoad_sheafreader_0010.py",
+    "descriptor": "testcase/PerfLoad_sheafreader_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/com.sheafreader.hm",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_sheafreader_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 120,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        12212669871,
+        12238308976,
+        11967515145
+      ],
+      "fixed": [
+        5099750308,
+        5047644852,
+        5041658899
+      ],
+      "median_ratio": 2.4194788320261957,
+      "rounds_per_variant": 3
+    }
+  }
+}

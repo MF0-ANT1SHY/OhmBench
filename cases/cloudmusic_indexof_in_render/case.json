@@ -1,0 +1,80 @@
+{
+  "id": "cloudmusic_indexof_in_render",
+  "status": "excluded",
+  "exclusion_reason": "Clean measurements did not meet the declared oracle threshold (median ratio 1.007).",
+  "host_app": {
+    "name": "CloudMusic-HarmonyOSNext (仿网易云音乐)",
+    "repository": "https://github.com/Chenlvin/CloudMusic-HarmonyOSNext",
+    "upstream_base_commit": "724702c",
+    "bundle_name": "cc.chenlvin.cloudmusic",
+    "local_path": "hosts/cloudmusic"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "列表滑动",
+    "网络结果渲染"
+  ],
+  "bug_description": "In the playlist page content list, every song row build passes sid/index to SongCard as this.list.indexOf(item), twice per row. indexOf is a linear scan over the whole (potentially 1000+) song list, so rendering/scrolling the playlist costs O(n) per row and O(n^2) cumulative, wasting UI-thread time as the list grows.",
+  "fix_summary": "The index already provided by the LazyForEach item generator is passed to SongCard, removing both per-row linear scans.",
+  "source": {
+    "unfixed": {
+      "ref": "clean-app/cloudmusic_indexof_in_render/unfixed",
+      "tree": "21ed09da100d1dba53df5043b1dc50f24d22bc09",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "044214ecd63423a62b0862513abf3938fe77814292b42961f53ebfa0ce344f3d"
+    },
+    "fixed": {
+      "ref": "clean-app/cloudmusic_indexof_in_render/fixed",
+      "tree": "a668180b0569859ca1d7fa7ccb3eb16e9ab7e1f5",
+      "production_patches": [],
+      "reference_unsigned_hap_sha256": "360fb38b3a621067e6729295703906e9fe3dfe177fa8605bfa6c5ebca1e50525"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_cloudmusic_0010",
+    "py_file": "testcase/PerfLoad_cloudmusic_0010.py",
+    "descriptor": "testcase/PerfLoad_cloudmusic_0010.json",
+    "install_dir": "perf_testing/hapray/testcases/cc.chenlvin.cloudmusic",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_cloudmusic_0010.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 60,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "test_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        5952383770,
+        5935725421,
+        5910313879
+      ],
+      "fixed": [
+        5894203971,
+        5880653020,
+        5906285266
+      ],
+      "median_ratio": 1.0070444542137138,
+      "rounds_per_variant": 3
+    }
+  }
+}
