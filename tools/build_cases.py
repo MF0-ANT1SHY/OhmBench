@@ -8,7 +8,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from audit_clean_app import audit_hap, audit_source
+from audit_app import audit_hap, audit_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,7 +30,7 @@ def build_case(case, variant, output, toolchain, mode, source_ref=None):
             if audit["passed"] and audit["sha256"] == old["hap"]["sha256"]:
                 old["ref"] = ref
                 receipt.write_text(json.dumps(old, indent=2) + "\n")
-                print(f"{cid}/{variant}: verified existing clean build", flush=True)
+                print(f"{cid}/{variant}: verified existing build", flush=True)
                 return old
     # Adjacent cases often share the exact same business source state. Reuse only
     # a compiled artifact whose tree, mode, hash AND bytecode audit all match.
@@ -109,7 +109,7 @@ def build_case(case, variant, output, toolchain, mode, source_ref=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("cases", nargs="*")
-    parser.add_argument("--output", type=Path, default=ROOT / "artifacts/clean")
+    parser.add_argument("--output", type=Path, default=ROOT / "artifacts")
     parser.add_argument("--toolchain", type=Path, default=ROOT / "toolchain/command-line-tools")
     parser.add_argument("--mode", choices=["debug", "release"], default="release")
     args = parser.parse_args()

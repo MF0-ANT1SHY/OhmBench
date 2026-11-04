@@ -60,7 +60,7 @@ git apply --index ../cases/<case-id>/fix.patch          # fixed;   git write-tre
 | `root_causes[]` | code locations in the **unfixed** source: `file`, `class`, `symbol` (function, field or constant), `kind` (`function`, `class_member`, `constant`, `module`), `changed_lines`, `scope_lines` |
 | `root_causes[].role` | `primary`: must be found (counts for recall). `related`: also touched by the fix (imports, fields, helpers); a correct suspect but not required |
 | `root_causes[].aliases[]` | alternative locations accepted for that root cause (e.g. the caller of a slow SQL constant) |
-| `performance_oracle` | `metric`, `definition`, pass criterion `comparison`, and the reference `evidence` measured on the clean unfixed/fixed pair (three rounds per variant) |
+| `performance_oracle` | `metric`, `definition`, pass criterion `comparison`, and the reference `evidence` measured on the unfixed/fixed pair (three rounds per variant) |
 
 ## Workload
 
