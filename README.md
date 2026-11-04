@@ -3,161 +3,180 @@
 A benchmark of real performance bugs in open-source HarmonyOS (ArkTS) applications, for
 evaluating performance-diagnosis tools.
 
-OhmBench consists of **data** and **code**:
-
-| | Contents | Where |
-|---|---|---|
-| **Data 1** | App binaries with a performance bug (unfixed HAP, plus the fixed HAP as a control) | [`data/binaries.json`](data/binaries.json), GitHub release, `tools/fetch_binaries.py` |
-| **Data 2** | Problem-description prompt given to a diagnosis tool | `cases/<id>/prompt.json`, [`tools/evaluate/prompt_template.md`](tools/evaluate/prompt_template.md) |
-| **Data 3** | Groundtruth / oracle: root-cause code locations and the performance oracle | `cases/<id>/groundtruth.json` |
-| **Code: extend** | Automation for benchmark developers to add cases | [`tools/extend/`](tools/extend) |
-| **Code: collect** | Collection of each case's dynamic data as HapRay dynamic-data objects | [`tools/collect/`](tools/collect) |
-| **Code: evaluate** | Measurement of diagnosis tools: time, memory, tokens, recall, precision, F1 | [`tools/evaluate/`](tools/evaluate) |
-
-Each case is a pair of business-source states of a real app (**unfixed** / **fixed**) with the
-repair diff, a neutral UI workload and a system-level performance oracle measured on a real
-device. No benchmark code, counters, custom traces or instrumentation are compiled into the apps.
-
-**30 cases from 9 apps: 21 included, 9 excluded** (the excluded cases build and run but
+**30 cases from 9 apps: 21 included, 9 excluded.** Excluded cases build and run but
 did not meet their performance oracle; they are kept for reference and must not be used for
-evaluation). See [Not yet supported](#not-yet-supported) for everything the benchmark does not
-provide yet.
+evaluation.
+
+## What the benchmark provides
+
+| Part | Provided by OhmBench | Provided by the user |
+|---|---|---|
+| **Data** | per case: **source + patch** to build the unfixed and fixed app, the **prompt**, and the **oracle** (groundtruth); a neutral UI workload | a HarmonyOS **signing certificate** (and a device) |
+| **Build** | `tools/` — reconstruct the sources from public upstreams and build both variants | — |
+| **Extend** | the [case standard](#extension-standard) every new case must follow | the new case's prompt, source + patch and oracle |
+| **Collect / evaluate** | the [evaluation standard](#collection-and-evaluation-standard): what to measure per case and how | the code that runs a tool, collects the measurements and scores them |
+
+No benchmark code, counters, custom traces or instrumentation are compiled into the apps.
 
 ## Repository layout
 
 ```
 cases/
-  collection.yaml            HapRay/hiprofiler collection configuration
+  collection.yaml          reference HapRay/hiprofiler collection configuration
   <case-id>/
-    case.json                metadata: status, host app, source trees, testcase, collection
-    prompt.json              [data 2] symptom prompt (included cases only)
-    groundtruth.json         [data 3] mechanism, root-cause locations, performance oracle
-    fix.patch                repair diff, unfixed -> fixed
-    testcase/                HapRay testcase + UI workload plan + shared UI driver
-data/binaries.json           [data 1] HAP manifest: file names, SHA-256, availability
-hosts_patches/               patch series and production adaptations per host app,
-  host-reconstruction.json   expected source tree of every case variant
-tools/
-  fetch_binaries.py          [data 1] download / import HAPs and verify hashes
-  extend/                    [code: extend]
-  collect/                   [code: collect]   (fixtures/: workload data generators)
-  evaluate/                  [code: evaluate]
-tests/                       unit tests (python3 -m unittest discover -s tests)
+    case.json              metadata: status, host app, source trees, testcase, collection
+    prompt.json            prompt given to a diagnosis tool (included cases)
+    groundtruth.json       oracle: mechanism, root-cause locations, performance oracle
+    fix.patch              repair diff, unfixed -> fixed
+    testcase/              HapRay testcase, UI workload plan and shared UI driver
+hosts_patches/
+  host-reconstruction.json expected source tree of every case variant
+  <app>/0001-*.patch ...   patch series on top of the upstream base commit
+  <app>/*.patch            production adaptations applied to specific variants
+tools/                     reconstruction, build and bytecode audit
 ```
-
-Requirements: Python 3.10+ and git. Building needs the HarmonyOS command-line tools
-(SDK 5.1.0 was used); collecting needs a HarmonyOS device, `hdc` and an
-[ArkAnalyzer-HapRay](https://github.com/SMAT-Lab/ArkAnalyzer-HapRay) checkout.
 
 ## Data
 
-### 1. App binaries
+### Source + patch
+
+The source of every variant is reconstructed from the **public upstream repository** plus the
+patches in this repository:
+
+1. `hosts_patches/<app>/0001-*.patch …` — a `git am` series on the upstream base commit;
+2. `cases/<id>/fix.patch` — the repair diff between the two variants of a case;
+3. `hosts_patches/<app>/*.patch` (unnumbered) — production adaptations recorded per variant
+   (`production_patches`), needed for the app to build and run its workload;
+4. `hosts_patches/host-reconstruction.json` — the git tree hash of every variant, before
+   (`tree`) and after (`app_tree`) production adaptations.
 
 ```bash
-python3 tools/fetch_binaries.py [--variant unfixed] [--cases <id> ...]   # -> artifacts/binaries/<id>.<variant>.hap
+python3 tools/reconstruct_clean_hosts.py     # -> hosts/<app> with clean/<id>/<variant> and clean-app/... refs
 ```
 
-Binaries are **unsigned** release HAPs built from the recorded source trees; sign them with your
-own HarmonyOS identity before installing (bundle names must stay unchanged). Every file is
-checked against the SHA-256 in `data/binaries.json`.
+Every reconstructed tree is verified against its recorded hash. All 60 variants (120 refs)
+reconstruct from the public upstreams.
 
-Binaries of the three host apps without an open-source licence (browser, interviewapp, ytmusic)
-are not redistributed. Build them from source and import them:
+### Prompt
 
-```bash
-python3 tools/extend/reconstruct_clean_hosts.py           # clone upstreams, apply patches, verify trees
-python3 tools/extend/build_clean_cases.py <id> ...        # -> artifacts/clean/<id>/<variant>/app-unsigned.hap
-python3 tools/fetch_binaries.py --from-build artifacts/clean --cases <id> ...
-```
+`prompt.json`: `bundle_name`, `ability`, the user-visible `symptom` (Chinese), the `scenario` and
+`perf_scenarios`. It never mentions the cause or the fix.
 
-### 2. Prompts
+### Oracle (groundtruth)
 
-`prompt.json` holds what a diagnosis tool is told: bundle name, entry ability, the user-visible
-symptom (Chinese) and the scenario. `tools/evaluate/prompt_template.md` renders it into the task
-text, including the required output format. Prompts never mention the cause or the fix.
+`groundtruth.json` is evaluator-only:
 
-### 3. Groundtruth / oracle
-
-`groundtruth.json` (evaluator-only) contains:
-
-- `mechanism`, `fix_summary` — the root cause and repair in prose;
-- `root_causes` — machine-checkable code locations in the unfixed source:
-  `file`, `class`, `symbol` (function, field or constant), `changed_lines`, `scope_lines`.
-  `role: primary` locations must be found (recall); `role: related` locations (imports, fields,
-  helpers touched by the fix) count as correct suspects but are not required. `aliases` are
-  alternative locations accepted for a root cause (e.g. the caller of a slow SQL constant);
-- `performance_oracle` — `metric`, `definition`, pass criterion `comparison` and the reference
-  `evidence` measured on the clean unfixed/fixed pair (three rounds per variant).
-
-Root causes were derived from `fix.patch` with `tools/extend/derive_groundtruth.py` and then
-reviewed by hand.
-
-## Code
-
-### Extend (benchmark developers)
-
-| Tool | Purpose |
+| Field | Meaning |
 |---|---|
-| `extend/reconstruct_clean_hosts.py` | Clone each upstream app into `hosts/<app>`, apply the patch series, recover every case variant and verify its tree hash |
-| `extend/build_clean_cases.py` | Build release HAPs of both variants in isolated worktrees; reuse only hash-verified artifacts |
-| `extend/audit_clean_app.py` | Reject benchmark injection in source trees and disassembled HAP bytecode (used by the build) |
-| `extend/new_case.py` | Scaffold a case from an unfixed and a fixed commit: `fix.patch`, patch-series extension, tree records, refs, `case.json`, `prompt.json`, testcase skeleton, derived groundtruth |
-| `extend/derive_groundtruth.py` | Map a repair diff onto the unfixed source and attribute changes to classes/functions |
+| `mechanism`, `fix_summary` | root cause and repair in prose |
+| `root_causes[]` | code locations in the **unfixed** source: `file`, `class`, `symbol` (function, field or constant), `kind` (`function`, `class_member`, `constant`, `module`), `changed_lines`, `scope_lines` |
+| `root_causes[].role` | `primary`: must be found (counts for recall). `related`: also touched by the fix (imports, fields, helpers); a correct suspect but not required |
+| `root_causes[].aliases[]` | alternative locations accepted for that root cause (e.g. the caller of a slow SQL constant) |
+| `performance_oracle` | `metric`, `definition`, pass criterion `comparison`, and the reference `evidence` measured on the clean unfixed/fixed pair (three rounds per variant) |
+
+### Workload
+
+`testcase/` holds a HapRay `PerfTestCase` (`*.py` + `*.json`), its UI plan `*.workload.json`
+(`setup`, `measured`, `verify` actions) and `workload_driver.py`. Copy all files to
+`case.json#testcase.install_dir` of an
+[ArkAnalyzer-HapRay](https://github.com/SMAT-Lab/ArkAnalyzer-HapRay) checkout. Only `measured` is profiled.
+
+## Building the binaries
+
+Requirements: Python 3.10+, git and the HarmonyOS command-line tools (SDK 5.1.0 was used).
 
 ```bash
-python3 tools/extend/new_case.py jingmo jingmo_new_case --unfixed <rev> --fixed <rev> \
-    --category latency --symptom "打开列表时响应变慢。" --scenario "列表页面操作"
+python3 tools/reconstruct_clean_hosts.py
+mkdir -p toolchain && ln -s /path/to/command-line-tools toolchain/command-line-tools   # or pass --toolchain
+python3 tools/build_clean_cases.py [case-id ...]
 ```
 
-New commits must be created on top of the host's patch-series tip. A new case starts with
-`"status": "candidate"`; complete its workload and groundtruth, build it, collect data and set
-`"included"` only after the oracle is met on a device.
+This writes `artifacts/clean/<id>/<variant>/app-unsigned.hap` for both variants and audits the
+disassembled bytecode for injected benchmark code. Builds are not byte-reproducible across
+machines; the source tree is the stable identity (`case.json#source.<variant>.tree`;
+`reference_unsigned_hap_sha256` is the hash of the reference build).
 
-### Collect (developers and users)
+**Signing is up to the user**: sign both HAPs with your own certificate, profile and keystore
+(e.g. `hap-sign-tool` from the SDK toolchain) for your device. Do not change bundle names.
 
-`collect/collect_case.py` installs a case's testcase into a HapRay checkout and runs HapRay's own
-`perf` command, so the output **is** a HapRay dynamic-data object: the `reports/<timestamp>/`
-tree (`<testcase>_round<N>/hiperf|htrace/step*/…`, merged `<testcase>/report/…`) and HapRay's
-`hapray-tool-result.json` (tool-result v1). It can be read directly by the HapRay skill and CLI.
+## Extension standard
 
-```bash
-# preconditions (manual): device attached, signed variant installed, workload data prepared
-python3 tools/collect/collect_case.py <id> --variant unfixed --hapray /path/to/ArkAnalyzer-HapRay
-python3 tools/collect/collect_case.py <id> --variant fixed   --hapray /path/to/ArkAnalyzer-HapRay
-python3 tools/collect/validate_hapray_data.py collected/<id>/unfixed     # layout + contract check
-python3 tools/collect/oracle_metrics.py <id>                              # oracle check from HapRay data
+A new case is a directory `cases/<case-id>/` plus host-source records. The contributor provides
+**prompt**, **source + patch** and **oracle**; follow the existing cases for the exact format.
+
+| Item | Required content |
+|---|---|
+| `case-id` | `<app>_<short_description>` in snake_case |
+| **Source + patch** | The unfixed and fixed states must be reproducible from a public upstream: either already reachable via `hosts_patches/<app>/` or added as new numbered `git format-patch` files on top of the series tip (with `--binary --full-index`). Add both trees to `host-reconstruction.json` (`case/<id>/unfixed`, `case/<id>/fixed`; plus `app_tree`/`production_patches` if adaptations are needed). `fix.patch` = `git diff --binary --full-index <unfixed> <fixed>` and must contain **only** the repair. A new host app needs a new entry with `upstream_repository` and `upstream_base_commit`. |
+| `case.json` | `id`, `status`, `host_app` (`name`, `repository`, `upstream_base_commit`, `bundle_name`, `local_path`), `category`, `perf_scenarios`, `source.<variant>` (`ref`, `tree`, `production_patches`), `testcase`, `collection` |
+| **Prompt** `prompt.json` | `case`, `bundle_name`, `ability`, `symptom` (what a user observes, without cause or fix), `scenario`, `perf_scenarios` |
+| **Oracle** `groundtruth.json` | `case`, `status`, `mechanism`, `fix_summary`, `root_causes` (at least one `primary`; line numbers in the unfixed app source), `performance_oracle` (`metric`, `definition`, `comparison`, `evidence` with ≥ 3 rounds per variant) |
+| `testcase/` | a HapRay testcase and UI workload that reach the faulty code path in **both** variants, with identical data and actions |
+
+Rules:
+
+- No benchmark code in the app: no counters, custom traces, test entry points or instrumentation
+  (`tools/audit_clean_app.py` enforces known patterns).
+- `status` is `included` only if the clean unfixed/fixed pair meets `performance_oracle.comparison`
+  on a real device with the recorded workload; otherwise `excluded` with an `exclusion_reason`.
+- Any workload input data (databases, preferences, backend responses) must be described so that it
+  can be prepared outside the app, identically for both variants.
+
+## Collection and evaluation standard
+
+### Blind input
+
+A tool under evaluation may receive, per case: the **signed unfixed HAP**, `prompt.json`, the
+`testcase/` files, optionally dynamic data collected from the unfixed variant (recommended format:
+a HapRay `perf` report tree with `hapray-tool-result.json`), and optionally the unfixed source
+without git history. It must **not** receive `case.json`, `groundtruth.json`, `fix.patch`, the fixed
+variant, oracle values or `hosts_patches/`. Report which inputs were given.
+
+### Per-case record
+
+Collect one record per (tool, case), e.g. `results/<tool>/<case-id>.json`:
+
+```json
+{
+  "case": "jingmo_random_poem_orderby_random",
+  "tool": "my-tool", "tool_version": "1.0",
+  "inputs": ["hap", "prompt", "testcase", "dynamic_data"],
+  "suspects": [
+    {"rank": 1, "file": "commons/constants/src/main/ets/DbConst.ets", "class": "DbCRUDConst",
+      "symbol": "READ_RANDOM_CLASSICPOEM", "line_start": 28, "line_end": 31, "description": "..."}
+  ],
+  "time_s": 183.2,
+  "memory_peak_bytes": 734003200,
+  "tokens": {"input": 51234, "output": 3120, "total": 54354},
+  "precision": 1.0, "recall": 1.0, "f1": 1.0
+}
 ```
 
-`oracle_metrics.py` computes `hiperf_instructions` (app-process hiperf sample periods from
-`perf.db`) and `trace_cpu_ms` (app-process scheduler time from `trace.db`) per round and checks
-`unfixed >= X * fixed` on the median and on every paired round.
+### Metrics
 
-Workload data generators are in `collect/fixtures/` (SQLite databases, preferences, and HTTP
-services that serve ordinary backend responses). Installing data into an app sandbox needs a
-debuggable test device; services are reached from the device via `hdc rport`. UI plans that
-configure an app's server URL are `collect/fixtures/*.workload.json`.
+| Metric | Definition |
+|---|---|
+| `time_s` | wall-clock time of the whole diagnosis of one case, from tool start to final answer |
+| `memory_peak_bytes` | peak resident memory of the tool's local process tree during the case |
+| `tokens` | LLM tokens consumed for the case (`input`, `output`, `total`), as reported by the model API; `null` for tools without an LLM — do not estimate |
+| `precision` | correct suspects / suspects, over the top-5 suspects by rank |
+| `recall` | `primary` root causes matched by at least one top-5 suspect / `primary` root causes |
+| `f1` | 2·P·R / (P + R); 0 when P + R = 0 |
 
-### Evaluate (tool users)
+Matching of a suspect to a groundtruth location (the root cause itself or one of its `aliases`):
 
-```bash
-python3 tools/evaluate/prepare_input.py inputs/ [--collected collected/] [--include-source]
-python3 tools/evaluate/run_tool.py --inputs inputs/ --out runs/mytool -- \
-    mytool --input {input_dir} --output {prediction}
-python3 tools/evaluate/score.py --predictions runs/mytool/predictions --runs runs/mytool --output report.json
-```
+1. **File**: the trailing path segments agree (at least two segments, or the whole name of a
+   one-segment path); extensions (`.ets`, `.ts`, `.js`) are ignored, and ABC record names
+   (`&entry/src/main/ets/pages/Index&`) are reduced to their path.
+2. **Function level** (default): additionally, the suspect's `symbol` names the location's `symbol`
+   (the last component of `Class.method` counts), or the suspect's line range overlaps the location's
+   `scope_lines` (functions) or `changed_lines` (fields, constants, module code).
+3. A suspect is **correct** if it matches any `primary` or `related` location. A file-level variant
+   (rule 1 only) may be reported in addition and must be labelled as such.
 
-- `prepare_input.py` builds the blind input per case: unfixed `app.hap`, `prompt.json`/`prompt.md`,
-  `testcase/`, optionally the unfixed HapRay data (`hapray/`) and source (`source/`). It never copies
-  `case.json`, `groundtruth.json`, `fix.patch`, fixed builds or `hosts_patches/`.
-- `run_tool.py` runs any tool command per case and records **wall time**, **CPU time**, **peak memory**
-  (RSS of the tool's process tree) and **tokens** (from the prediction's `usage` object or `usage.json`).
-- `score.py` matches the top-k suspects (default 5) against `root_causes` and reports per-case and
-  macro/micro **precision**, **recall** and **F1**, plus cost statistics.
-  - `--level function` (default): same file and same symbol, or overlapping lines;
-  - `--level file`: same file only.
-  - precision = correct suspects / suspects; recall = primary root causes found / primary root causes.
-
-Predictions follow [`tools/evaluate/prediction.schema.json`](tools/evaluate/prediction.schema.json).
+A case without an answer scores P = R = F1 = 0 and keeps its measured cost. Report per-case records
+and the **macro average** over all 21 included cases (and optionally micro averages, pooling
+suspects and root causes). Use the same model, budget and inputs for all cases of a run.
 
 ## Host applications
 
@@ -175,32 +194,29 @@ Predictions follow [`tools/evaluate/prediction.schema.json`](tools/evaluate/pred
 
 ## Included cases
 
-`HAP` = binary redistributed in the release; `HapRay oracle` = oracle checkable by
-`oracle_metrics.py` from HapRay data.
-
-| Case | App | Category | Oracle metric | Pass criterion | Ref. median ratio | Primary root causes | HAP | HapRay oracle |
-|---|---|---|---|---|---|---|---|---|
-| `browser_eager_history_load` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.36 | 1 | no | yes |
-| `browser_history_delete_no_transaction` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 31.31 | 1 | no | yes |
-| `browser_history_list_foreach` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.71 | 1 | no | yes |
-| `cloudmusic_play_time_high_frequency_update` | CloudMusic-HarmonyOSNext (仿网易云音乐) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 3.02 | 1 | yes | yes |
-| `cloudmusic_search_result_foreach` | CloudMusic-HarmonyOSNext (仿网易云音乐) | latency | `hiperf_instructions` | unfixed >= 2.0 * fixed over >= 3 rounds per variant | 2.22 | 1 | yes | yes |
-| `interviewapp_search_history_unbounded` | interview-handbook-project (面试通) | resource_retention | `app_pss_bytes` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 4.73 | 2 | no | no |
-| `jingmo_dataset_import_no_transaction` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.18 | 1 | yes | yes |
-| `jingmo_random_poem_orderby_random` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 7.85 | 1 | yes | yes |
-| `jingmo_sync_page_reimport` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 4.21 | 1 | yes | yes |
-| `sepweather_font_register_per_page` | SepWeather | memory | `app_pss_bytes` | unfixed >= 2.0 * fixed and unfixed - fixed >= 64 MiB in each of 3 paired rounds | 2.65 | 2 | yes | no |
-| `sheafreader_article_list_foreach` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.42 | 1 | yes | yes |
-| `sheafreader_extract_tag_tolowercase` | Sheaf-Reader (束阅 RSS 阅读器) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.24 | 1 | yes | yes |
-| `sheafreader_insert_duplicate_exception` | Sheaf-Reader (束阅 RSS 阅读器) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.50 | 1 | yes | yes |
-| `sheafreader_refresh_feeds_sequential` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `startup_refresh_elapsed_s` | unfixed conservative lower bound >= 1.5 * fixed upper bound over 3 paired rounds | 1.84 | 1 | yes | no |
-| `sheafreader_unread_counts_n_plus_1` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `trace_cpu_ms` | unfixed >= 2.0 * fixed over >= 3 rounds per variant | 13.44 | 1 | yes | yes |
-| `wanharmony_persisted_home_list_growth` | WanHarmony (WanAndroid 客户端) | resource_retention | `app_pss_bytes` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 1.37 | 2 | yes | no |
-| `weatherassistant_http_session_leak` | HarmonyOS-Next-Weather-Assistant | resource_retention | `app_gc_requested_pss_growth_bytes` | each of 3 pairs: unfixed lower growth >= 3 * max(fixed upper growth, 1 MiB), with >= 5 MiB unfixed growth and >= 5 MiB excess growth | 40.29 | 1 | yes | no |
-| `weatherassistant_remote_weather_icons` | HarmonyOS-Next-Weather-Assistant | latency | `startup_icons_elapsed_s` | unfixed conservative lower bound >= 2.0 * fixed upper bound over 3 paired rounds | 2.27 | 1 | yes | no |
-| `ytmusic_current_playing_timeupdate` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 4.95 | 1 | no | yes |
-| `ytmusic_history_json_parse_per_row` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 3.30 | 1 | no | yes |
-| `ytmusic_search_no_debounce` | Youtube-Music-ArkTS-Clone | network | `search_response_body_bytes` | unfixed >= 5.0 * fixed successful search response bytes over 3 paired rounds | 5.50 | 1 | no | no |
+| Case | App | Category | Oracle metric | Pass criterion | Ref. median ratio | Primary root causes |
+|---|---|---|---|---|---|---|
+| `browser_eager_history_load` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.36 | 1 |
+| `browser_history_delete_no_transaction` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 31.31 | 1 |
+| `browser_history_list_foreach` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.71 | 1 |
+| `cloudmusic_play_time_high_frequency_update` | CloudMusic-HarmonyOSNext (仿网易云音乐) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 3.02 | 1 |
+| `cloudmusic_search_result_foreach` | CloudMusic-HarmonyOSNext (仿网易云音乐) | latency | `hiperf_instructions` | unfixed >= 2.0 * fixed over >= 3 rounds per variant | 2.22 | 1 |
+| `interviewapp_search_history_unbounded` | interview-handbook-project (面试通) | resource_retention | `app_pss_bytes` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 4.73 | 2 |
+| `jingmo_dataset_import_no_transaction` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.18 | 1 |
+| `jingmo_random_poem_orderby_random` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 7.85 | 1 |
+| `jingmo_sync_page_reimport` | jingmo (京墨文库) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 4.21 | 1 |
+| `sepweather_font_register_per_page` | SepWeather | memory | `app_pss_bytes` | unfixed >= 2.0 * fixed and unfixed - fixed >= 64 MiB in each of 3 paired rounds | 2.65 | 2 |
+| `sheafreader_article_list_foreach` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 2.42 | 1 |
+| `sheafreader_extract_tag_tolowercase` | Sheaf-Reader (束阅 RSS 阅读器) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.24 | 1 |
+| `sheafreader_insert_duplicate_exception` | Sheaf-Reader (束阅 RSS 阅读器) | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 1.50 | 1 |
+| `sheafreader_refresh_feeds_sequential` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `startup_refresh_elapsed_s` | unfixed conservative lower bound >= 1.5 * fixed upper bound over 3 paired rounds | 1.84 | 1 |
+| `sheafreader_unread_counts_n_plus_1` | Sheaf-Reader (束阅 RSS 阅读器) | latency | `trace_cpu_ms` | unfixed >= 2.0 * fixed over >= 3 rounds per variant | 13.44 | 1 |
+| `wanharmony_persisted_home_list_growth` | WanHarmony (WanAndroid 客户端) | resource_retention | `app_pss_bytes` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 1.37 | 2 |
+| `weatherassistant_http_session_leak` | HarmonyOS-Next-Weather-Assistant | resource_retention | `app_gc_requested_pss_growth_bytes` | each of 3 pairs: unfixed lower growth >= 3 * max(fixed upper growth, 1 MiB), with >= 5 MiB unfixed growth and >= 5 MiB excess growth | 40.29 | 1 |
+| `weatherassistant_remote_weather_icons` | HarmonyOS-Next-Weather-Assistant | latency | `startup_icons_elapsed_s` | unfixed conservative lower bound >= 2.0 * fixed upper bound over 3 paired rounds | 2.27 | 1 |
+| `ytmusic_current_playing_timeupdate` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 4.95 | 1 |
+| `ytmusic_history_json_parse_per_row` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 3.30 | 1 |
+| `ytmusic_search_no_debounce` | Youtube-Music-ArkTS-Clone | network | `search_response_body_bytes` | unfixed >= 5.0 * fixed successful search response bytes over 3 paired rounds | 5.50 | 1 |
 
 ## Excluded cases
 
@@ -216,47 +232,19 @@ Predictions follow [`tools/evaluate/prediction.schema.json`](tools/evaluate/pred
 | `wanharmony_html_decode_per_render` | WanHarmony (WanAndroid 客户端) | latency | `hiperf_instructions` | 1.04 |
 | `wanharmony_web_progress_log_storm` | WanHarmony (WanAndroid 客户端) | cpu | `hiperf_instructions` | 0.99 |
 
-## Not yet supported
+## Known limitations
 
-The following parts of the definition above are **not** provided yet.
-
-**Data**
-
-- **Binaries of unlicensed apps.** The 14 HAPs of browser, interviewapp and ytmusic cases are not
-  redistributed; build them locally (`data/binaries.json` records the reference hashes). Local builds
-  are not byte-identical to the reference builds; source trees are.
-- **Signed binaries.** HAPs are unsigned; signing is device/identity specific and left to the user.
-- **Prompts for excluded cases.** Only the 21 included cases have `prompt.json`. Two included cases
-  (`sheafreader_extract_tag_tolowercase`, `sheafreader_insert_duplicate_exception`) share the same
-  workload and therefore the same symptom text.
-- **Mechanism-level groundtruth.** `mechanism` is prose; whether a tool explains the mechanism
-  correctly is not scored automatically (only code locations are). Root-cause locations of the
-  excluded cases are derived but not reviewed.
-
-**Collect**
-
-- **No collected dynamic data is shipped.** Collection requires a device; run `collect_case.py` yourself.
-- **Device preparation is manual**: signing, installation, installing workload data into the app
-  sandbox, starting fixture services and port forwarding. Earlier automation depended on a specific
-  lab setup and was removed.
-- **Oracle check for 7 included cases.** Their oracles use metrics that HapRay `perf` does not produce
-  (`app_pss_bytes`, `app_gc_requested_pss_growth_bytes`, `startup_refresh_elapsed_s`,
-  `startup_icons_elapsed_s`, `search_response_body_bytes`). The external collectors used for the
-  reference evidence are not part of the repository, so these oracles cannot be re-verified with the
-  included code; `oracle_metrics.py` reports them as `unsupported`.
-- **Absolute values.** Reference evidence was captured with the original collectors, not HapRay
-  `perf`; compare unfixed/fixed ratios, not absolute numbers.
-
-**Evaluate**
-
-- **Mechanism / explanation scoring** (e.g. an LLM judge) is not implemented.
-- **Token usage** is only recorded when the tool reports it; it is never estimated. Peak memory covers
-  the tool's local process tree only (not remote model servers or the device).
-- **Baseline results** for existing tools are not included.
-
-**Extend**
-
-- `new_case.py` requires new commits on top of the host's patch-series tip; it does not scaffold
-  production adaptations, write the UI workload, the mechanism text or the performance evidence, and it
-  does not decide inclusion (that needs on-device collection and the oracle check).
-- Adding a new host app (upstream repository) to `host-reconstruction.json` is manual.
+- **Workload data preparation is not specified per case in machine-readable form.** Several workloads
+  need prepared data (e.g. large databases, preferences, ordinary backend responses served to the app,
+  such as `http://127.0.0.1:18492/api/` in the Jingmo workloads); the requirements are only described
+  in prose (`groundtruth.json#mechanism`, `performance_oracle.workload_notes`, testcase `setup`).
+- **Some oracles need non-HapRay measurements.** Seven included cases use `app_pss_bytes`,
+  `app_gc_requested_pss_growth_bytes`, `startup_refresh_elapsed_s`, `startup_icons_elapsed_s` or
+  `search_response_body_bytes`, which HapRay `perf` does not report; the reference values were taken
+  with external collectors that are not part of this repository. Compare unfixed/fixed ratios, not
+  absolute values.
+- **Mechanism correctness is not part of the scoring standard**; only code locations are scored.
+- Prompts exist for included cases only; two cases (`sheafreader_extract_tag_tolowercase`,
+  `sheafreader_insert_duplicate_exception`) share one workload and therefore one symptom text.
+  Root-cause locations of excluded cases were not reviewed.
+- Three host apps (browser, interviewapp, ytmusic) have no licence upstream.
