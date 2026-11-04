@@ -3,7 +3,7 @@
 Requirements: Python 3.10+, git and the HarmonyOS command-line tools (SDK 5.1.0 was used).
 
 ```bash
-python3 tools/reconstruct_clean_hosts.py
+python3 tools/prepare_sources.py
 mkdir -p toolchain && ln -s /path/to/command-line-tools toolchain/command-line-tools   # or pass --toolchain
 python3 tools/build_clean_cases.py [case-id ...]
 ```

@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/pages/SearchPage.ets b/entry/src/main/ets/pages/SearchPage.ets
-index 1817d0b..08072f3 100644
+index 1817d0bee57d0dbf748cffbd44cf990dd77744d3..08072f35bcd7b8eb4ed7a209f2b43e50cbbe15d2 100644
 --- a/entry/src/main/ets/pages/SearchPage.ets
 +++ b/entry/src/main/ets/pages/SearchPage.ets
 @@ -6,6 +6,20 @@ import { SongProps } from '../models/song';

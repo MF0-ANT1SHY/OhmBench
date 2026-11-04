@@ -4,7 +4,7 @@
   "host_app": {
     "name": "HarmonyOS-Next-Weather-Assistant",
     "repository": "https://github.com/AlatusLee/HarmonyOS-Next-Weather-Assistant",
-    "upstream_base_commit": "d3c7060",
+    "upstream_base_commit": "d3c7060a8ff7f7656175e83fa32536b11e136556",
     "bundle_name": "com.alatus.futureweather",
     "local_path": "hosts/weatherassistant"
   },
@@ -14,20 +14,14 @@
     "页面切换"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/weatherassistant_http_session_leak/unfixed",
       "tree": "f391f3f176d03c8029b08b4169e33b351a4916b0",
-      "production_patches": [
-        "hosts_patches/weatherassistant/weatherassistant_http_session_leak-unfixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "a1439555cb78fe4b0f6f97027fd41b08dc61a37291314e324dc0dbe74fd8c88d"
     },
     "fixed": {
-      "ref": "clean-app/weatherassistant_http_session_leak/fixed",
       "tree": "c0a58c0017e87dfb1c4984e8dc76a4aa6d7ef419",
-      "production_patches": [
-        "hosts_patches/weatherassistant/weatherassistant_http_session_leak-fixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "7f0c4f9f0940cd1adb41f1fc06c1bd00e6fbfc0ab9a6478b8f69bc16c24804aa"
     }
   },

@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/pages/CurrentPlaying.ets b/entry/src/main/ets/pages/CurrentPlaying.ets
-index 467abea..bab5540 100644
+index 467abea505c545489a6a517f2736c5007640ff75..bab55405b5b50250f5148279579f14b36b21347f 100644
 --- a/entry/src/main/ets/pages/CurrentPlaying.ets
 +++ b/entry/src/main/ets/pages/CurrentPlaying.ets
 @@ -9,18 +9,25 @@ import { common } from '@kit.AbilityKit'

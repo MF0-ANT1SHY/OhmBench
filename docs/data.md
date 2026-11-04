@@ -9,35 +9,41 @@ cases/
     case.json              metadata: status, host app, source trees, testcase, collection
     prompt.json            prompt given to a diagnosis tool
     groundtruth.json       oracle: mechanism, root-cause locations, performance oracle
+    source.patch           upstream base commit -> unfixed source
     fix.patch              repair diff, unfixed -> fixed
     testcase/              HapRay testcase, UI workload plan and shared UI driver
-hosts_patches/
-  host-reconstruction.json expected source tree of every case variant
-  <app>/0001-*.patch ...   patch series on top of the upstream base commit
-  <app>/<case-id>-<variant>.patch   build/run adaptation of one case variant
 docs/                      documentation linked from README.md
 tools/                     reconstruction, build and bytecode audit
 ```
 
 ## Source + patch
 
-The source of every variant is reconstructed from the **public upstream repository** plus the
-patches in this repository:
+Each case is self-contained. Its source is reconstructed from the **public upstream repository**
+(`case.json#host_app.repository`) and two patches in the case directory:
 
-1. `hosts_patches/<app>/0001-*.patch …` — a `git am` series on the upstream base commit;
-2. `cases/<id>/fix.patch` — the repair diff between the two variants of a case;
-3. `hosts_patches/<app>/<case-id>-<variant>.patch` — the adaptation of one variant (listed in its
-   `production_patches`), needed for the app to install and run its workload on a device; it is
-   the diff from `tree` to `app_tree`, applied with `git apply`;
-4. `hosts_patches/host-reconstruction.json` — the git tree hash of every variant, before
-   (`tree`) and after (`app_tree`) production adaptations.
+| Variant | How it is obtained |
+|---|---|
+| unfixed | `host_app.upstream_base_commit` + `source.patch` |
+| fixed | unfixed + `fix.patch` |
+
+`source.patch` contains everything that differs from upstream in the unfixed variant: build
+adaptations (e.g. SDK 5.1 project settings, lockfiles), adaptations needed to install and run the
+workload on a device, and the bug. `fix.patch` contains only the repair. `case.json#source.<variant>.tree`
+is the git tree hash of each variant; the root-cause line numbers in `groundtruth.json` refer to
+the unfixed tree.
 
 ```bash
-python3 tools/reconstruct_clean_hosts.py     # -> hosts/<app> with clean/<id>/<variant> and clean-app/... refs
+python3 tools/prepare_sources.py [case-id ...]   # -> hosts/<app>, tags case/<case-id>/{unfixed,fixed}
 ```
 
-Every reconstructed tree is verified against its recorded hash. All 60 variants (120 refs)
-reconstruct from the public upstreams.
+The script verifies every tree against its recorded hash. Done by hand, one variant is:
+
+```bash
+git clone <host_app.repository> app && cd app
+git checkout --detach <host_app.upstream_base_commit>
+git apply --index ../cases/<case-id>/source.patch       # unfixed; git write-tree == source.unfixed.tree
+git apply --index ../cases/<case-id>/fix.patch          # fixed;   git write-tree == source.fixed.tree
+```
 
 ## Prompt
 

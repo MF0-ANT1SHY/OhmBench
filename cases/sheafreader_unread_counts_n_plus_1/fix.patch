@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/data/DatabaseManager.ets b/entry/src/main/ets/data/DatabaseManager.ets
-index de400bc..ac6d8d1 100644
+index de400bc42e9c59128e8b4e353fd65cc247bb2dc2..ac6d8d1138055eb4742b749f177f7c548bb85947 100644
 --- a/entry/src/main/ets/data/DatabaseManager.ets
 +++ b/entry/src/main/ets/data/DatabaseManager.ets
 @@ -588,6 +588,23 @@ export class DatabaseManager {
@@ -27,7 +27,7 @@ index de400bc..ac6d8d1 100644
      if (!this.store) return 0;
      const sql = 'SELECT COUNT(*) as cnt FROM articles WHERE starred = 1';
 diff --git a/entry/src/main/ets/services/FeedService.ets b/entry/src/main/ets/services/FeedService.ets
-index 8845e09..45c7eca 100644
+index 8845e09ea7d30b0044a02aaed8d5b354dbbda100..45c7eca5f56a136f4f836cba76842767227061f2 100644
 --- a/entry/src/main/ets/services/FeedService.ets
 +++ b/entry/src/main/ets/services/FeedService.ets
 @@ -190,8 +190,11 @@ export class FeedService {

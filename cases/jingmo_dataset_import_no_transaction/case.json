@@ -4,7 +4,7 @@
   "host_app": {
     "name": "jingmo (京墨文库)",
     "repository": "https://github.com/hefengbao/jingmo-for-HarmonyOS",
-    "upstream_base_commit": "ddca186",
+    "upstream_base_commit": "ddca186ee1d9477401f209bceda1c612a58c4c04",
     "bundle_name": "com.hefengbao.jingmo.hw",
     "local_path": "hosts/jingmo"
   },
@@ -14,20 +14,14 @@
     "网络结果渲染"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/jingmo_dataset_import_no_transaction/unfixed",
       "tree": "d1023a18fcb6aae9d1ca031f768ad75620954767",
-      "production_patches": [
-        "hosts_patches/jingmo/jingmo_dataset_import_no_transaction-unfixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "14273edd1e5cfef7f57b7e94b7aeb8bced8884315684cbcbe6d3b1a1c33f5062"
     },
     "fixed": {
-      "ref": "clean-app/jingmo_dataset_import_no_transaction/fixed",
       "tree": "8c755c793928608da1a4daeffb4b6e4ada27d2c6",
-      "production_patches": [
-        "hosts_patches/jingmo/jingmo_dataset_import_no_transaction-fixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "8c047e72875d5aadc3815291db9d39e935aee3d39d9e4fe7803e5386042ef376"
     }
   },

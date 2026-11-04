@@ -1,0 +1,207 @@
+diff --git a/build-profile.json5 b/build-profile.json5
+index 24eb09e85cadd02bea57d3d354eb16ab4f292313..3789541340bcea6330cd0a82f3811a0a7ad670a8 100644
+--- a/build-profile.json5
++++ b/build-profile.json5
+@@ -1,64 +1,10 @@
+ {
+   "app": {
+-    "signingConfigs": [
+-      {
+-        "name": "default",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "storePassword": "0000001B1FE3A8F8F584D30040BCC24511FFBFB5EB08B6284AF696034C9F665EBB8DBB2397C94F951B95A2",
+-          "certpath": "D:/HMOS/Cer/CloudMusic/Key/CloudMusic.cer",
+-          "keyAlias": "test",
+-          "keyPassword": "0000001B9B493F8630FC0B5B1FF838EC990075C99F355F2C84C581242F6FF58FA62F60656E475F483BE0B7",
+-          "profile": "D:/HMOS/Cer/CloudMusic/Key/cloudmusicRelease.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "D:/HMOS/Cer/CloudMusic/Key/CloudMusic.p12"
+-        }
+-      },
+-      {
+-        "name": "cc",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001A7CC5C9F615A7CA9E1AAADB50A02CF9D94E801DA1DAF9014B73D8A2086871E28689B2A8E2FE1E",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001AD3082165B0DC0A88714D0564B5D89A193BA54564FD9978F5CDAC6DE997502F5FEF48A2AE2851"
+-        }
+-      },
+-      {
+-        "name": "sbwy",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001BC952FAB226D63B8A568C1F729927807D849359CDCAB5971D5425D4FC30B5846BA00647BFEBB7D6",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001BD358959921785795E1532E826BB32C0FDC1212D5A5B67FEF58F15DBFA75619C6AA50E26808D7EB"
+-        }
+-      },
+-      {
+-        "name": "test",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001A85D5A9297FBCD0BEC04801E1CF635D8212150AA5E21DAB1DCB9F323C2291D66D166EFE836CFF",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001A9E3E73ED36AEEBF31DA50BD530E13A45EB5B84B1D0DAB9BD1D0C155912DA80DAD818D43D38FE"
+-        }
+-      }
+-    ],
++    "signingConfigs": [],
+     "products": [
+       {
+         "name": "default",
+-        "signingConfig": "cc",
+-        "compatibleSdkVersion": "5.0.4(16)",
++                "compatibleSdkVersion": "5.0.4(16)",
+         "runtimeOS": "HarmonyOS",
+         "buildOption": {
+           "strictMode": {
+diff --git a/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets b/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
+index c50aa9dc8475e7925bd67435aa7aac1814677075..4095a71a8fd7a1e6c5125dc0ac2d20bd879ac078 100644
+--- a/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
++++ b/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
+@@ -76,6 +76,27 @@ class RelationalStoreUtils {
+     }
+   }
+ 
++  /**
++   * 按关键词在 SQLite 中过滤歌曲，避免全表物化后在内存中过滤
++   * @param keyword 搜索关键词
++   * @returns LocalSong[]
++   */
++  async getSongsByKeyword(keyword: string): Promise<LocalSong[]> {
++    const columns = ['id', 'songId', 'name', 'artists', 'picFile', 'songFile', 'lyricFile']
++    // 转义 LIKE 通配符，保证关键词按字面匹配
++    const escaped = keyword.replace(/[\\%_]/g, (ch: string) => '\\' + ch)
++    const predicates = new relationalStore.RdbPredicates(TABLE_SONGS)
++      .like('songFile', `%${escaped}%`)
++
++    try {
++      const resultSet = await this.store.query(predicates, columns)
++      return await this.parseResultSet(resultSet)
++    } catch (e) {
++      LogUtil.error(TAG, 'Failed to get songs by keyword: ' + e.message)
++      return []
++    }
++  }
++
+   /**
+    * 解析查询结果
+    * @param resultSet
+diff --git a/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets b/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
+index 42d0453c3b80a1f04e3e3ed08f50cb3422db88ec..0e3bfc698385cabaecca6f89f97a3469d19f8d6c 100644
+--- a/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
++++ b/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
+@@ -19,6 +19,7 @@ class AVPlayerUtils {
+   private updateFlag: boolean = false
+   private isSeeking: boolean = false
+   private errorFlag: boolean = false
++  private lastReportedSecond: number = -1
+ 
+   getCurrentTime() {
+     return this.avPlayer!.currentTime
+@@ -81,7 +82,12 @@ class AVPlayerUtils {
+             AVSessionUtils.playState(avPlayer.currentTime)
+           }, 1000)
+         } else {
+-          AppStorage.setOrCreate(StorageConstants.PLAY_TIME, time)
++          // 播放进度展示以秒为单位：仅当秒数变化时才更新全局状态，避免高频 timeUpdate 触发整页重绘
++          const second: number = Math.floor(time / 1000)
++          if (second !== this.lastReportedSecond) {
++            this.lastReportedSecond = second
++            AppStorage.setOrCreate(StorageConstants.PLAY_TIME, time)
++          }
+         }
+       })
+     } catch (e) {
+diff --git a/entry/src/main/ets/pages/local/LocalSongPage.ets b/entry/src/main/ets/pages/local/LocalSongPage.ets
+index b3560b0e26809e8d3d37818f71dc7ff43b80dc27..4baa1f274a55e96f4c259ea24e6881bb805eda9a 100644
+--- a/entry/src/main/ets/pages/local/LocalSongPage.ets
++++ b/entry/src/main/ets/pages/local/LocalSongPage.ets
+@@ -241,16 +241,15 @@ export struct LocalSongPage {
+     .backgroundColor($r('app.color.background'))
+   }
+ 
+-  private handelSearch() {
++  private async handelSearch() {
+     try {
+       this.selectedSongs = []
+       if (!this.searchKeyword) {
+         this.dataSourceFiltered.setData([])
+       }
+       const keyword = this.searchKeyword.trim().toLowerCase()
+-      this.dataSourceFiltered.setData(this.localSongs.filter((item: LocalSong) => {
+-        return item.songFile.toString().toLowerCase().includes(keyword)
+-      }))
++      // 直接在 SQLite 中按关键词过滤，避免全表加载后在内存中过滤
++      this.dataSourceFiltered.setData(await RelationalStoreUtils.getSongsByKeyword(keyword))
+     } catch (e) {
+       ToastUtil.showToast('搜索时出错')
+       LogUtil.error(TAG, 'Error while handelSearch: ' + e.message)
+diff --git a/entry/src/main/ets/pages/playlist/PlayListPage.ets b/entry/src/main/ets/pages/playlist/PlayListPage.ets
+index efbae0b8bd97b9e478d04bbd11bd8d899bd2faf2..23e10d2f30e558316754cca547d08b0196fa3c75 100644
+--- a/entry/src/main/ets/pages/playlist/PlayListPage.ets
++++ b/entry/src/main/ets/pages/playlist/PlayListPage.ets
+@@ -248,10 +248,10 @@ export struct PlayListPage {
+                 alias: [],
+                 fee: item.fee
+               },
+-              sid: this.list.indexOf(item),
++              sid: index,
+               playlist: this.param.playList,
+               picUrl: item.al?.picUrl ?? $r('app.media.ic_public_music'),
+-              index: this.list.indexOf(item),
++              index: index,
+               listPlayAction: async () => { await this.playSong(index) }
+             })
+               .layoutWeight(1)
+diff --git a/entry/src/main/ets/pages/search/SearchSongsList.ets b/entry/src/main/ets/pages/search/SearchSongsList.ets
+index 4c98cb40e43cc22acf3dae36d9450edad2b6da8d..7727df368292f82af17c226326ed589da2db15c9 100644
+--- a/entry/src/main/ets/pages/search/SearchSongsList.ets
++++ b/entry/src/main/ets/pages/search/SearchSongsList.ets
+@@ -11,6 +11,7 @@ import { SongCard } from "../../components/cards/SongCard"
+  * 搜索结果——单曲列表
+  */
+ const TAG = "[SearchSongsList] "
++const SONG_PAGE_SIZE: number = 1000
+ 
+ @Component
+ export struct SearchSongsList {
+@@ -97,9 +98,9 @@ export struct SearchSongsList {
+       this.isLoadingMore = true // 加载更多
+     }
+     try {
+-      const result = await searchSongs(this.searchKeyword, offset)
++      const result = await searchSongs(this.searchKeyword, offset, SONG_PAGE_SIZE)
+       this.songList = [...this.songList, ...result.list] // 合并歌曲列表
+-      this.songOffset += 30
++      this.songOffset += result.list.length
+       this.hasMoreSongs = result.hasMore
+     } catch (e) {
+       LogUtil.error(TAG, 'Error fetching songs: ', JSON.stringify(e))
+diff --git a/oh-package-lock.json5 b/oh-package-lock.json5
+index cc629ae95069deb69182d65376dcfc9ad226d74b..3ea91715600aed57ae9cca9f29943a6235559e4c 100644
+--- a/oh-package-lock.json5
++++ b/oh-package-lock.json5
+@@ -1,6 +1,7 @@
+ {
+   "meta": {
+-    "stableOrder": true
++    "stableOrder": true,
++    "enableUnifiedLockfile": false
+   },
+   "lockfileVersion": 3,
+   "ATTENTION": "THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.",

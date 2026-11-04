@@ -6,7 +6,7 @@ A tool under evaluation may receive, per case: the **signed unfixed HAP**, `prom
 `testcase/` files, optionally dynamic data collected from the unfixed variant (recommended format:
 a HapRay `perf` report tree with `hapray-tool-result.json`), and optionally the unfixed source
 without git history. It must **not** receive `case.json`, `groundtruth.json`, `fix.patch`, the fixed
-variant, oracle values or `hosts_patches/`. Report which inputs were given.
+variant, oracle values, `source.patch` (its hunks point at the modified code) or the reconstruction repositories under `hosts/`. Report which inputs were given.
 
 ## Per-case record
 

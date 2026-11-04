@@ -4,7 +4,7 @@
   "host_app": {
     "name": "WanHarmony (WanAndroid 客户端)",
     "repository": "https://github.com/zjmok/WanHarmony",
-    "upstream_base_commit": "dd45ad2",
+    "upstream_base_commit": "dd45ad238328c4ac857992b69fe9457c87c279f3",
     "bundle_name": "org.example.wan.ohos",
     "local_path": "hosts/wanharmony"
   },
@@ -14,16 +14,14 @@
     "状态更新"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/wanharmony_persisted_home_list_growth/unfixed",
       "tree": "4335f38febb7059d241de4f6ef22ade69767e729",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "0f49cab6d143afade5ff2f597154434b01f022b3898d8129180c3435f8783c11"
     },
     "fixed": {
-      "ref": "clean-app/wanharmony_persisted_home_list_growth/fixed",
       "tree": "892d60f0762ef9cbf11fc32972f2b4116df74aa1",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "df1d6aa039fe134c34ac639b3eb73e708f4f942da69024b29dd2cdd5083c10ca"
     }
   },

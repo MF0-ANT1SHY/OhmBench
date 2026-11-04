@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets b/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
-index 42d0453..0e3bfc6 100644
+index 42d0453c3b80a1f04e3e3ed08f50cb3422db88ec..0e3bfc698385cabaecca6f89f97a3469d19f8d6c 100644
 --- a/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
 +++ b/entry/src/main/ets/common/utils/play/AVPlayerUtils.ets
 @@ -19,6 +19,7 @@ class AVPlayerUtils {

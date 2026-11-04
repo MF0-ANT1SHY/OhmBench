@@ -1,0 +1,50 @@
+diff --git a/build-profile.json5 b/build-profile.json5
+index 9e9b42ae0376f750382d535dee1c3be765f057d7..d6d91ab8c63f0099eb09e06ad13c9e5f83b1fe6e 100644
+--- a/build-profile.json5
++++ b/build-profile.json5
+@@ -5,7 +5,7 @@
+       {
+         "name": "default",
+         "signingConfig": "default",
+-        "targetSdkVersion": "6.0.1(21)",
++        "targetSdkVersion": "5.1.0(18)",
+         "compatibleSdkVersion": "5.0.5(17)",
+         "runtimeOS": "HarmonyOS",
+         "buildOption": {
+diff --git a/features/classicalliterature/classicpoem/src/main/ets/pages/ClassicPoem.ets b/features/classicalliterature/classicpoem/src/main/ets/pages/ClassicPoem.ets
+index b4fb00519020c3882ba03f2e665ff250f4940ba9..c8a037fa76fb75ffde017646fecf443cc0fda1b2 100644
+--- a/features/classicalliterature/classicpoem/src/main/ets/pages/ClassicPoem.ets
++++ b/features/classicalliterature/classicpoem/src/main/ets/pages/ClassicPoem.ets
+@@ -76,9 +76,7 @@ export struct ClassicPoem {
+         "icon": Icon.ic_public_refresh,
+         "action": () => { this.refresh() }
+       }
+-    ], {
+-      "hideItemValue": true
+-    })
++    ])
+     .onReady((ctx: NavDestinationContext) => {
+       this.pageStack = ctx.pathStack
+     })
+diff --git a/hvigor/hvigor-config.json5 b/hvigor/hvigor-config.json5
+index 37293711fe064959b842f813b24cb84fa8349eb4..aa5edd6a2470997348d0c5d28b548553fdf16296 100644
+--- a/hvigor/hvigor-config.json5
++++ b/hvigor/hvigor-config.json5
+@@ -1,5 +1,5 @@
+ {
+-  "modelVersion": "6.0.1",
++  "modelVersion": "5.1.0",
+   "dependencies": {
+   },
+   "execution": {
+diff --git a/oh-package.json5 b/oh-package.json5
+index e833b19dc80e7c6566b50cba60ad4e12762afcbd..6bc882d82d33c6965d34d6556da03f4f31805745 100644
+--- a/oh-package.json5
++++ b/oh-package.json5
+@@ -1,5 +1,5 @@
+ {
+-  "modelVersion": "6.0.1",
++  "modelVersion": "5.1.0",
+   "description": "Please describe the basic information.",
+   "dependencies": {
+   },

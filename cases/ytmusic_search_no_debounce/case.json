@@ -4,7 +4,7 @@
   "host_app": {
     "name": "Youtube-Music-ArkTS-Clone",
     "repository": "https://github.com/Charles-Stark/Youtube-Music-ArkTS-Clone",
-    "upstream_base_commit": "f925981",
+    "upstream_base_commit": "f925981b8a5c4483be371bfd672722526b4986cf",
     "bundle_name": "com.example.myapplication",
     "local_path": "hosts/ytmusic"
   },
@@ -14,20 +14,14 @@
     "状态更新"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/ytmusic_search_no_debounce/unfixed",
       "tree": "27f90889d4707e3772dc2a526e907d82683618ff",
-      "production_patches": [
-        "hosts_patches/ytmusic/ytmusic_search_no_debounce-unfixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "129de34ec8ab009fc5fd70b6d503d7e45829b73540ecfc7b28877ea24472bd23"
     },
     "fixed": {
-      "ref": "clean-app/ytmusic_search_no_debounce/fixed",
       "tree": "57d85de89a8510285fa3125a162f3cce94b0c326",
-      "production_patches": [
-        "hosts_patches/ytmusic/ytmusic_search_no_debounce-fixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "e1566fa40058fab5fa8b132f38e87392af270ea966f4dd0bb783f4f952e12404"
     }
   },

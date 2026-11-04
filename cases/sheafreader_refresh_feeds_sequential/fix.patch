@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/services/FeedService.ets b/entry/src/main/ets/services/FeedService.ets
-index 26d38d4..4be935d 100644
+index 26d38d4c292139fd1f4a1d8bf74590495e398e83..4be935dcb4fe37d8875565d97337ea31fba3018b 100644
 --- a/entry/src/main/ets/services/FeedService.ets
 +++ b/entry/src/main/ets/services/FeedService.ets
 @@ -158,20 +158,26 @@ export class FeedService {

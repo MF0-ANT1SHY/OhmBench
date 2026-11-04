@@ -1,5 +1,5 @@
 diff --git a/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets b/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
-index 0efecc8..960b802 100644
+index 0efecc89bcacc3cdb9a0fc2d6fed0bcddfda17a4..960b8029572f031295a9ac88d1ff13390136fc5f 100644
 --- a/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
 +++ b/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
 @@ -69,6 +69,26 @@ export class  ClassicPoemDao {
@@ -30,7 +30,7 @@ index 0efecc8..960b802 100644
      let classicPoem: ClassicPoem | null = null
  
 diff --git a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
-index 99e2f28..239b4f4 100644
+index 99e2f2874e3657b26d996c12447154a9beac2c29..239b4f4b4803bafb528bd71f8fc23bcc72a52b55 100644
 --- a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 +++ b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 @@ -53,6 +53,12 @@ class DatasetViewModel {

@@ -1,4 +1,4 @@
-# Upstream app clones created by tools/reconstruct_clean_hosts.py
+# Upstream app clones created by tools/prepare_sources.py
 /hosts
 # Build outputs
 /artifacts/

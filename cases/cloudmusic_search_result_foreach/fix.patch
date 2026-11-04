@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/pages/search/SearchSongsList.ets b/entry/src/main/ets/pages/search/SearchSongsList.ets
-index 7727df3..3b7c5eb 100644
+index 7727df368292f82af17c226326ed589da2db15c9..3b7c5eb7d149de42c147cf0aa26e137d2507f439 100644
 --- a/entry/src/main/ets/pages/search/SearchSongsList.ets
 +++ b/entry/src/main/ets/pages/search/SearchSongsList.ets
 @@ -6,6 +6,7 @@ import { Song } from "../../common/entities/song/Song"

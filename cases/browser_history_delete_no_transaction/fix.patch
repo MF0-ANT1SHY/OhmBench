@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/utils/RdbUtils.ets b/entry/src/main/ets/utils/RdbUtils.ets
-index 5f3c789..7ac3795 100644
+index 5f3c789ef6abc90f4b0e5eea9b81db54a4d46eef..7ac37952c87b13b5ee4450f8dd795cf8a258995e 100644
 --- a/entry/src/main/ets/utils/RdbUtils.ets
 +++ b/entry/src/main/ets/utils/RdbUtils.ets
 @@ -166,22 +166,24 @@ export default class RdbUtils {

@@ -1,5 +1,5 @@
 diff --git a/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets b/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
-index ae8b612..0efecc8 100644
+index ae8b6126de60c9f32143c0b406377d368e11de24..0efecc89bcacc3cdb9a0fc2d6fed0bcddfda17a4 100644
 --- a/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
 +++ b/features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets
 @@ -37,6 +37,38 @@ export class  ClassicPoemDao {
@@ -42,7 +42,7 @@ index ae8b612..0efecc8 100644
      let classicPoem: ClassicPoem | null = null
  
 diff --git a/features/settings/src/main/ets/pages/SyncData.ets b/features/settings/src/main/ets/pages/SyncData.ets
-index 2077628..f7ece9a 100644
+index 2077628f355c0c626eed22d09b8fd3915fccc6e1..f7ece9a6c9351a59d0d867ce04720281a0b2ee6c 100644
 --- a/features/settings/src/main/ets/pages/SyncData.ets
 +++ b/features/settings/src/main/ets/pages/SyncData.ets
 @@ -24,13 +24,10 @@ export struct SyncData {
@@ -62,7 +62,7 @@ index 2077628..f7ece9a 100644
        this.logger.error(`code = ${error.code}, msg = ${error.message}`)
      })
 diff --git a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
-index 5e4af63..99e2f28 100644
+index 5e4af63b0c9ca3c0d472f5af6f3731f4ec405ca0..99e2f2874e3657b26d996c12447154a9beac2c29 100644
 --- a/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 +++ b/features/settings/src/main/ets/viewmodel/DatasetViewModel.ets
 @@ -51,6 +51,12 @@ class DatasetViewModel {

@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/pages/Index.ets b/entry/src/main/ets/pages/Index.ets
-index 4395494..6c6be76 100644
+index 43954947dbd6e79b71bf0d3211c1742c7f774107..6c6be76da39be84a3333128941f734519794eac9 100644
 --- a/entry/src/main/ets/pages/Index.ets
 +++ b/entry/src/main/ets/pages/Index.ets
 @@ -61,11 +61,7 @@ struct Index {
@@ -16,7 +16,7 @@ index 4395494..6c6be76 100644
      // 开启软键盘高度变化的监听
      window.getLastWindow(getContext(this), (err, data) => {
 diff --git a/entry/src/main/ets/utils/RdbUtils.ets b/entry/src/main/ets/utils/RdbUtils.ets
-index 1a0daad..fc11825 100644
+index 1a0daad5551534a5b71083449a4c526405299411..fc1182576f36fe36e14d5408f55363fb5e17497b 100644
 --- a/entry/src/main/ets/utils/RdbUtils.ets
 +++ b/entry/src/main/ets/utils/RdbUtils.ets
 @@ -112,34 +112,32 @@ export default class RdbUtils {
@@ -73,7 +73,7 @@ index 1a0daad..fc11825 100644
      return histories
    }
 diff --git a/entry/src/main/ets/view/PagesDialog.ets b/entry/src/main/ets/view/PagesDialog.ets
-index efac653..b117b24 100644
+index efac6538893cb743e3f4492a7dfdd87fad75cf0f..b117b247c9b1fd2859b07f32b82a016b19aadbc2 100644
 --- a/entry/src/main/ets/view/PagesDialog.ets
 +++ b/entry/src/main/ets/view/PagesDialog.ets
 @@ -1,6 +1,7 @@

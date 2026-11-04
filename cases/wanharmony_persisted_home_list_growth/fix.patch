@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/pages/HomePage.ets b/entry/src/main/ets/pages/HomePage.ets
-index 9c36d72..722f0b2 100644
+index 9c36d72046c985bfe517ed96aae78c05239298bd..722f0b236fd3d6447f683c82e864bf3039d9bb6f 100644
 --- a/entry/src/main/ets/pages/HomePage.ets
 +++ b/entry/src/main/ets/pages/HomePage.ets
 @@ -9,7 +9,8 @@ let service: WanService

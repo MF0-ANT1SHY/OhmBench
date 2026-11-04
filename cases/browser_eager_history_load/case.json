@@ -4,7 +4,7 @@
   "host_app": {
     "name": "browser (小狐狸浏览器)",
     "repository": "https://github.com/langwudong/browser",
-    "upstream_base_commit": "f44fff7",
+    "upstream_base_commit": "f44fff759c50c162739c1585149018e6f0277471",
     "bundle_name": "com.example.nanvision",
     "local_path": "hosts/browser"
   },
@@ -14,16 +14,14 @@
     "数据库读取"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/browser_eager_history_load/unfixed",
       "tree": "4a496ee498c760e81d3c36c685bbd441c9a43372",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "60cb5758870c38979c397996ca747a5289269c8f3afebbd37d81cf333fa63155"
     },
     "fixed": {
-      "ref": "clean-app/browser_eager_history_load/fixed",
       "tree": "0ba445d9e65201d8b2c135dc64f17cafa5c4a2ee",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "6bedaa0a8c722900518731cd26772395a01b197169921cfb0bd7e079a6ae11b5"
     }
   },

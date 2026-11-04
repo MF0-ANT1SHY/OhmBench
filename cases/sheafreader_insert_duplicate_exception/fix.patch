@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/data/DatabaseManager.ets b/entry/src/main/ets/data/DatabaseManager.ets
-index ac6d8d1..6104b46 100644
+index ac6d8d1138055eb4742b749f177f7c548bb85947..6104b46c36d0e4d7e05a093e7b7d624bf5a18ad8 100644
 --- a/entry/src/main/ets/data/DatabaseManager.ets
 +++ b/entry/src/main/ets/data/DatabaseManager.ets
 @@ -331,7 +331,9 @@ export class DatabaseManager {

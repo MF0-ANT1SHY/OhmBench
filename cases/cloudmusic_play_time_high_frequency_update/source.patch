@@ -1,0 +1,442 @@
+diff --git a/build-profile.json5 b/build-profile.json5
+index 24eb09e85cadd02bea57d3d354eb16ab4f292313..3789541340bcea6330cd0a82f3811a0a7ad670a8 100644
+--- a/build-profile.json5
++++ b/build-profile.json5
+@@ -1,64 +1,10 @@
+ {
+   "app": {
+-    "signingConfigs": [
+-      {
+-        "name": "default",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "storePassword": "0000001B1FE3A8F8F584D30040BCC24511FFBFB5EB08B6284AF696034C9F665EBB8DBB2397C94F951B95A2",
+-          "certpath": "D:/HMOS/Cer/CloudMusic/Key/CloudMusic.cer",
+-          "keyAlias": "test",
+-          "keyPassword": "0000001B9B493F8630FC0B5B1FF838EC990075C99F355F2C84C581242F6FF58FA62F60656E475F483BE0B7",
+-          "profile": "D:/HMOS/Cer/CloudMusic/Key/cloudmusicRelease.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "D:/HMOS/Cer/CloudMusic/Key/CloudMusic.p12"
+-        }
+-      },
+-      {
+-        "name": "cc",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001A7CC5C9F615A7CA9E1AAADB50A02CF9D94E801DA1DAF9014B73D8A2086871E28689B2A8E2FE1E",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\cc_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001AD3082165B0DC0A88714D0564B5D89A193BA54564FD9978F5CDAC6DE997502F5FEF48A2AE2851"
+-        }
+-      },
+-      {
+-        "name": "sbwy",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001BC952FAB226D63B8A568C1F729927807D849359CDCAB5971D5425D4FC30B5846BA00647BFEBB7D6",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\sbwy_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001BD358959921785795E1532E826BB32C0FDC1212D5A5B67FEF58F15DBFA75619C6AA50E26808D7EB"
+-        }
+-      },
+-      {
+-        "name": "test",
+-        "type": "HarmonyOS",
+-        "material": {
+-          "certpath": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.cer",
+-          "keyAlias": "debugKey",
+-          "keyPassword": "0000001A85D5A9297FBCD0BEC04801E1CF635D8212150AA5E21DAB1DCB9F323C2291D66D166EFE836CFF",
+-          "profile": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p7b",
+-          "signAlg": "SHA256withECDSA",
+-          "storeFile": "C:\\Users\\zcy01\\.ohos\\config\\test_CloudMusic-HMOS_49Cx5ZkdoyjQADe6JwU6Rz-R50i5AkaXO1mOEwbzolc=.p12",
+-          "storePassword": "0000001A9E3E73ED36AEEBF31DA50BD530E13A45EB5B84B1D0DAB9BD1D0C155912DA80DAD818D43D38FE"
+-        }
+-      }
+-    ],
++    "signingConfigs": [],
+     "products": [
+       {
+         "name": "default",
+-        "signingConfig": "cc",
+-        "compatibleSdkVersion": "5.0.4(16)",
++                "compatibleSdkVersion": "5.0.4(16)",
+         "runtimeOS": "HarmonyOS",
+         "buildOption": {
+           "strictMode": {
+diff --git a/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets b/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
+index c50aa9dc8475e7925bd67435aa7aac1814677075..4095a71a8fd7a1e6c5125dc0ac2d20bd879ac078 100644
+--- a/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
++++ b/entry/src/main/ets/common/utils/data/RelationalStoreUtils.ets
+@@ -76,6 +76,27 @@ class RelationalStoreUtils {
+     }
+   }
+ 
++  /**
++   * 按关键词在 SQLite 中过滤歌曲，避免全表物化后在内存中过滤
++   * @param keyword 搜索关键词
++   * @returns LocalSong[]
++   */
++  async getSongsByKeyword(keyword: string): Promise<LocalSong[]> {
++    const columns = ['id', 'songId', 'name', 'artists', 'picFile', 'songFile', 'lyricFile']
++    // 转义 LIKE 通配符，保证关键词按字面匹配
++    const escaped = keyword.replace(/[\\%_]/g, (ch: string) => '\\' + ch)
++    const predicates = new relationalStore.RdbPredicates(TABLE_SONGS)
++      .like('songFile', `%${escaped}%`)
++
++    try {
++      const resultSet = await this.store.query(predicates, columns)
++      return await this.parseResultSet(resultSet)
++    } catch (e) {
++      LogUtil.error(TAG, 'Failed to get songs by keyword: ' + e.message)
++      return []
++    }
++  }
++
+   /**
+    * 解析查询结果
+    * @param resultSet
+diff --git a/entry/src/main/ets/pages/local/LocalSongPage.ets b/entry/src/main/ets/pages/local/LocalSongPage.ets
+index b3560b0e26809e8d3d37818f71dc7ff43b80dc27..cf539b735c028eaa8f98e5f96a3e8d5840697b70 100644
+--- a/entry/src/main/ets/pages/local/LocalSongPage.ets
++++ b/entry/src/main/ets/pages/local/LocalSongPage.ets
+@@ -94,134 +94,122 @@ export struct LocalSongPage {
+           .justifyContent(FlexAlign.Center)
+         } else {
+           Column() {
+-            Column() {
+-              Grid() {
+-                GridItem() {
+-                  Search({
+-                    placeholder: $r('app.string.Search_content'),
+-                    icon: '/resources/base/media/ic_public_search_filled.svg'
+-                  })
+-                    .id('search')
+-                    .height(Constants.HEIGHT_SEARCH)
+-                    .width('100%')
+-                    .searchButton('搜索')
+-                    .onChange((value) => {
+-                      if(value == '') {
+-                        this.filteredSongs = []
+-                        this.selectedSongs = []
+-                        this.searchKeyword = ''
+-                      }
+-                    })
+-                    .onSubmit((value) => {
+-                      this.searchKeyword = value
+-                      this.handelSearch()
+-                    })
+-                }
+-                GridItem() {
+-                  if (this.localSongs.length > 0) {
+-                    Row() {
+-                      Text(this.isSelecting ? `已选 ${this.selectedSongs.length} 项` : `共 ${this.localSongs.length} 首歌曲`)
+-                        .fontSize(Constants.FONT_SIZE_COMMON)
+-                      Row({ space: 20 }) {
+-                        if(!this.isSelecting) {
+-                          // Image($r('app.media.ic_files_name_drive'))
+-                          //   .width(Constants.SIZE_ICON_BUTTON_BAR)
+-                          //   .aspectRatio(1)
+-                          //   .fillColor(this.isSorted ? $r('app.color.blue') : Color.Gray)
+-                          //   .onClick(() => {
+-                          //     this.isSorted = !this.isSorted
+-                          //     if (this.searchKeyword) {
+-                          //       this.filteredSongs = this.getSortedList(this.filteredSongs)
+-                          //     }
+-                          //   })
+-                        } else {
+-                          if(this.selectedSongs.length > 0) {
+-                            Image($r('app.media.ic_public_delete'))
+-                              .width(Constants.SIZE_ICON_BUTTON_BAR)
+-                              .aspectRatio(1)
+-                              .fillColor(Color.Gray)
+-                              .onClick(() => {
+-                                this.handleDelete()
+-                              })
+-                            Image($r('app.media.ic_public_folder'))
+-                              .width(Constants.SIZE_ICON_BUTTON_BAR)
+-                              .aspectRatio(1)
+-                              .fillColor(Color.Gray)
+-                              .onClick(() => {
+-                                FileUtils.saveFile(this.selectedSongs)
+-                              })
+-                          }
+-                          CheckboxGroup({ group: 'fileCard' })
+-                            .width(Constants.SIZE_ICON_BUTTON_BAR - 5)
+-                            .height(Constants.SIZE_ICON_BUTTON_BAR - 5)
+-                        }
+-
+-                        Image($r('app.media.ic_gallery_material_select_checkbox'))
++            Column({ space: 10 }) {
++              Search({
++                placeholder: $r('app.string.Search_content'),
++                icon: '/resources/base/media/ic_public_search_filled.svg'
++              })
++                .id('search')
++                .height(Constants.HEIGHT_SEARCH)
++                .width('100%')
++                .searchButton('搜索')
++                .onChange((value) => {
++                  if(value == '') {
++                    this.filteredSongs = []
++                    this.selectedSongs = []
++                    this.searchKeyword = ''
++                  }
++                })
++                .onSubmit((value) => {
++                  this.searchKeyword = value
++                  this.handelSearch()
++                })
++              if (this.localSongs.length > 0) {
++                Row() {
++                  Text(this.isSelecting ? `已选 ${this.selectedSongs.length} 项` : `共 ${this.localSongs.length} 首歌曲`)
++                    .fontSize(Constants.FONT_SIZE_COMMON)
++                  Row({ space: 20 }) {
++                    if(!this.isSelecting) {
++                      // Image($r('app.media.ic_files_name_drive'))
++                      //   .width(Constants.SIZE_ICON_BUTTON_BAR)
++                      //   .aspectRatio(1)
++                      //   .fillColor(this.isSorted ? $r('app.color.blue') : Color.Gray)
++                      //   .onClick(() => {
++                      //     this.isSorted = !this.isSorted
++                      //     if (this.searchKeyword) {
++                      //       this.filteredSongs = this.getSortedList(this.filteredSongs)
++                      //     }
++                      //   })
++                    } else {
++                      if(this.selectedSongs.length > 0) {
++                        Image($r('app.media.ic_public_delete'))
+                           .width(Constants.SIZE_ICON_BUTTON_BAR)
+                           .aspectRatio(1)
+-                          .fillColor(this.isSelecting ? $r('app.color.blue') : Color.Gray)
++                          .fillColor(Color.Gray)
+                           .onClick(() => {
+-                            animateTo({ duration: 100, curve: Curve.EaseInOut }, () => {
+-                              this.isSelecting = !this.isSelecting
+-                              this.selectedSongs = []
+-                            })
++                            this.handleDelete()
+                           })
+-                      }
+-                      .height(30)
+-                    }
+-                    .justifyContent(FlexAlign.SpaceBetween)
+-                    .width('100%')
+-                  }
+-                  else {
+-                    Column({ space: 20 }) {
+-                      Text('本地文件列表为空\n\n右上方入口支持上传本地音频').width('100%').textAlign(TextAlign.Center).padding({ left: 30, right: 30, top: 10 })
+-                      if(this.filesList.length > 0) {
+-                        Button('迁移旧版本数据').padding({ left: 10, right: 10, top: 5, bottom: 5 })
+-                          .onClick(() => { this.isShowMigration = true })
+-                          .bindSheet(this.isShowMigration, this.Migration(), {
+-                            preferType: SheetType.CENTER,
+-                            height: SheetSize.MEDIUM,
+-                            dragBar: false,
+-                            showClose: false,
+-                            backgroundColor: Color.Transparent,
+-                            blurStyle: BlurStyle.Regular,
+-                            onDisappear: () => { this.isShowMigration = false }
++                        Image($r('app.media.ic_public_folder'))
++                          .width(Constants.SIZE_ICON_BUTTON_BAR)
++                          .aspectRatio(1)
++                          .fillColor(Color.Gray)
++                          .onClick(() => {
++                            FileUtils.saveFile(this.selectedSongs)
+                           })
+                       }
++                      Checkbox()
++                        .select(this.isSelectionComplete())
++                        .onChange((checked: boolean) => {
++                          this.selectedSongs = checked ? [...this.getSelectionSongs()] : []
++                        })
++                        .width(Constants.SIZE_ICON_BUTTON_BAR - 5)
++                        .height(Constants.SIZE_ICON_BUTTON_BAR - 5)
+                     }
+-                  }
+-                }
+ 
+-                GridItem() {
+-                  GridRow({ columns: { xs: 1, sm: 1, md: 1, lg: 2, xl: 2 } }) {
+-                    if(!this.searchKeyword) {
+-                      this.ListContent(this.dataSource)
+-                    } else {
+-                      this.ListContent(this.dataSourceFiltered)
+-                    }
++                    Image($r('app.media.ic_gallery_material_select_checkbox'))
++                      .width(Constants.SIZE_ICON_BUTTON_BAR)
++                      .aspectRatio(1)
++                      .fillColor(this.isSelecting ? $r('app.color.blue') : Color.Gray)
++                      .onClick(() => {
++                        animateTo({ duration: 100, curve: Curve.EaseInOut }, () => {
++                          this.isSelecting = !this.isSelecting
++                          this.selectedSongs = []
++                        })
++                      })
+                   }
++                  .height(30)
+                 }
++                .justifyContent(FlexAlign.SpaceBetween)
+                 .width('100%')
+-
+-                GridItem()
+-                  .height(px2vp(this.bottomRectHeight) + Constants.HEIGHT_MINI)
+               }
++              else {
++                Column({ space: 20 }) {
++                  Text('本地文件列表为空\n\n右上方入口支持上传本地音频').width('100%').textAlign(TextAlign.Center).padding({ left: 30, right: 30, top: 10 })
++                  if(this.filesList.length > 0) {
++                    Button('迁移旧版本数据').padding({ left: 10, right: 10, top: 5, bottom: 5 })
++                      .onClick(() => { this.isShowMigration = true })
++                      .bindSheet(this.isShowMigration, this.Migration(), {
++                        preferType: SheetType.CENTER,
++                        height: SheetSize.MEDIUM,
++                        dragBar: false,
++                        showClose: false,
++                        backgroundColor: Color.Transparent,
++                        blurStyle: BlurStyle.Regular,
++                        onDisappear: () => { this.isShowMigration = false }
++                      })
++                  }
++                }
++              }
++              Grid() {
++                if (!this.searchKeyword) {
++                  this.ListContent(this.dataSource)
++                } else {
++                  this.ListContent(this.dataSourceFiltered)
++                }
++              }
++              .columnsTemplate(this.breakpoint === 'lg' || this.breakpoint === 'xl' ? '1fr 1fr' : '1fr')
++              .columnsGap(10)
++              .rowsGap(10)
+               .edgeEffect(EdgeEffect.Spring)
+               .scrollBar(BarState.Off)
+-              .rowsGap(10)
+-              .columnsGap(10)
+-              .columnsTemplate('1fr')
+-              .layoutDirection(GridDirection.Column)
+-              .backgroundColor($r('app.color.background'))
+-              .height('100%')
+               .width('100%')
+-              .padding({ left: 10, right: 10 })
+               .layoutWeight(1)
+-              .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
+-              .backToTop(true)
++
++              Blank()
++                .height(px2vp(this.bottomRectHeight) + Constants.HEIGHT_MINI)
+             }
+-            .justifyContent(FlexAlign.Center)
+-            .layoutWeight(1)
++            .padding({ left: 10, right: 10 })
++            .height('100%')
+             .width('100%')
+           }
+           .width('100%')
+@@ -241,16 +229,16 @@ export struct LocalSongPage {
+     .backgroundColor($r('app.color.background'))
+   }
+ 
+-  private handelSearch() {
++  private async handelSearch() {
+     try {
+       this.selectedSongs = []
+       if (!this.searchKeyword) {
+         this.dataSourceFiltered.setData([])
+       }
+       const keyword = this.searchKeyword.trim().toLowerCase()
+-      this.dataSourceFiltered.setData(this.localSongs.filter((item: LocalSong) => {
+-        return item.songFile.toString().toLowerCase().includes(keyword)
+-      }))
++      // 直接在 SQLite 中按关键词过滤，避免全表加载后在内存中过滤
++      this.dataSourceFiltered.setData((await RelationalStoreUtils.getSongsByKeyword(keyword)).reverse())
++      this.dataSourceFiltered.notifyDataReload()
+     } catch (e) {
+       ToastUtil.showToast('搜索时出错')
+       LogUtil.error(TAG, 'Error while handelSearch: ' + e.message)
+@@ -307,7 +295,7 @@ export struct LocalSongPage {
+   @Builder ListContent(dataSource: LazyData<LocalSong>) {
+     LazyForEach(dataSource,
+       (item: LocalSong, index: number) => {
+-        GridCol() {
++        GridItem() {
+           Row({ space: 5 }) {
+             FileCard({
+               localSong: item
+@@ -328,19 +316,38 @@ export struct LocalSongPage {
+     LocalMigrationSheet({ isShowMigration: this.isShowMigration })
+   }
+ 
++  private isSelectionComplete(): boolean {
++    const count = this.searchKeyword ? this.dataSourceFiltered.totalCount() : this.localSongs.length
++    return count > 0 && this.selectedSongs.length === count
++  }
++
++  private getSelectionSongs(): LocalSong[] {
++    if (!this.searchKeyword) {
++      return this.localSongs
++    }
++    const songs: LocalSong[] = []
++    for (let index = 0; index < this.dataSourceFiltered.totalCount(); index++) {
++      songs.push(this.dataSourceFiltered.getData(index))
++    }
++    return songs
++  }
++
+   @Builder CardCheckBox(localSong: LocalSong) {
+     Checkbox({ group: 'fileCard' })
++      .select(this.selectedSongs.some(item => item.id === localSong.id))
+       .shape(CheckBoxShape.ROUNDED_SQUARE)
+       .width(Constants.SIZE_ICON_BUTTON_BAR)
+       .aspectRatio(1)
+       .onChange((value) => {
+         if(value) {
+           animateTo({ duration: 100, curve: Curve.Ease }, () => {
+-            this.selectedSongs.push(localSong)
++            if (!this.selectedSongs.some(item => item.id === localSong.id)) {
++              this.selectedSongs.push(localSong)
++            }
+           })
+         } else {
+           animateTo({ duration: 100, curve: Curve.Ease }, () => {
+-            this.selectedSongs = this.selectedSongs.filter(item => item.name !== localSong.name)
++            this.selectedSongs = this.selectedSongs.filter(item => item.id !== localSong.id)
+           })
+         }
+       })
+diff --git a/entry/src/main/ets/pages/playlist/PlayListPage.ets b/entry/src/main/ets/pages/playlist/PlayListPage.ets
+index efbae0b8bd97b9e478d04bbd11bd8d899bd2faf2..23e10d2f30e558316754cca547d08b0196fa3c75 100644
+--- a/entry/src/main/ets/pages/playlist/PlayListPage.ets
++++ b/entry/src/main/ets/pages/playlist/PlayListPage.ets
+@@ -248,10 +248,10 @@ export struct PlayListPage {
+                 alias: [],
+                 fee: item.fee
+               },
+-              sid: this.list.indexOf(item),
++              sid: index,
+               playlist: this.param.playList,
+               picUrl: item.al?.picUrl ?? $r('app.media.ic_public_music'),
+-              index: this.list.indexOf(item),
++              index: index,
+               listPlayAction: async () => { await this.playSong(index) }
+             })
+               .layoutWeight(1)
+diff --git a/oh-package-lock.json5 b/oh-package-lock.json5
+index cc629ae95069deb69182d65376dcfc9ad226d74b..3ea91715600aed57ae9cca9f29943a6235559e4c 100644
+--- a/oh-package-lock.json5
++++ b/oh-package-lock.json5
+@@ -1,6 +1,7 @@
+ {
+   "meta": {
+-    "stableOrder": true
++    "stableOrder": true,
++    "enableUnifiedLockfile": false
+   },
+   "lockfileVersion": 3,
+   "ATTENTION": "THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.",

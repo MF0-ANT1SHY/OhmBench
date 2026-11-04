@@ -1,0 +1,207 @@
+diff --git a/entry/src/main/ets/pages/HistoryPage.ets b/entry/src/main/ets/pages/HistoryPage.ets
+index f19f1d626408a254c83bc492f507372904249a4e..7a83d2489129327abc75094c77f6da82a0ffeae4 100644
+--- a/entry/src/main/ets/pages/HistoryPage.ets
++++ b/entry/src/main/ets/pages/HistoryPage.ets
+@@ -19,11 +19,7 @@ export struct HistoryPage {
+   dataSource = new RefreshDataSource()
+ 
+   aboutToAppear(): void {
+-    log(`historyList = ${JSON.stringify(
+-      this.historyList.map(it => {
+-        return`${it.time} [${it.title}](${it.url})`
+-      })
+-    )}`, "historyList")
++    log(`historyList.size = ${this.historyList.length}`, "historyList")
+   }
+ 
+   build() {
+diff --git a/entry/src/main/ets/pages/HomePage.ets b/entry/src/main/ets/pages/HomePage.ets
+index 98909e90990bf1bfe945ab976bc2b8303996a193..9c36d72046c985bfe517ed96aae78c05239298bd 100644
+--- a/entry/src/main/ets/pages/HomePage.ets
++++ b/entry/src/main/ets/pages/HomePage.ets
+@@ -1,4 +1,5 @@
+ import { WanService } from '../api/services/WanService';
++import { TextUtils } from '../utils/TextUtils';
+ import { DataX } from '../data/ArticlesTree';
+ import { ArticleComponent } from './components/ArticleComponent';
+ import { BannerItem } from '../data/BannerItem';
+@@ -157,7 +158,7 @@ export struct HomePage {
+       this.bannerList = result
+     })
+     service.getHomeTopList().then(result => {
+-      this.homeTopList = result
++      this.homeTopList = TextUtils.decodeArticleList(result)
+     })
+     this.loadList()
+   }
+@@ -165,11 +166,11 @@ export struct HomePage {
+   loadList() {
+     service.getHomeList(this.currentPage).then(result => {
+       if (this.currentPage == 0) {
+-        // 加载首页
+-        this.homeList = result.datas // 不要清空数组再 concat，否则页面会有一瞬间变空
++        // 加载首页（数据到达时统一做一次 HTML 实体解码）
++        this.homeList = TextUtils.decodeArticleList(result.datas) // 不要清空数组再 concat，否则页面会有一瞬间变空
+       } else {
+         // 加载更多
+-        this.homeList = this.homeList.concat(result.datas)
++        this.homeList = this.homeList.concat(TextUtils.decodeArticleList(result.datas))
+         setTimeout(() => { // 延迟后 恢复可加载更多状态
+           this.isLoadingMore = false
+         }, 2000)
+diff --git a/entry/src/main/ets/pages/SearchPage.ets b/entry/src/main/ets/pages/SearchPage.ets
+index 516b8795b6849db1b1b625c348d8d6ab98468f9d..28f58da28d48d5863e30d33893a61a1e56ac06f8 100644
+--- a/entry/src/main/ets/pages/SearchPage.ets
++++ b/entry/src/main/ets/pages/SearchPage.ets
+@@ -1,4 +1,5 @@
+ import { WanService } from '../api/services/WanService'
++import { TextUtils } from '../utils/TextUtils'
+ import { DataX } from '../data/ArticlesTree'
+ import { ArticleComponent } from './components/ArticleComponent'
+ import { inputMethod } from '@kit.IMEKit'
+@@ -148,13 +149,13 @@ export struct SearchPage {
+         if (result.datas.length == 0) {
+           toast("没有搜索到相关文章，请更换关键词再尝试")
+         }
+-        // 加载首页
+-        this.searchList = result.datas // 不要清空数组再 concat，否则页面会有一瞬间变空
++        // 加载首页（数据到达时统一做一次 HTML 实体解码）
++        this.searchList = TextUtils.decodeArticleList(result.datas) // 不要清空数组再 concat，否则页面会有一瞬间变空
+         this.scroller.scrollToIndex(0)
+         this.title = `key: ${this.searchKey}`
+       } else {
+         // 加载更多
+-        this.searchList = this.searchList.concat(result.datas)
++        this.searchList = this.searchList.concat(TextUtils.decodeArticleList(result.datas))
+       }
+     })
+   }
+diff --git a/entry/src/main/ets/pages/WebPage.ets b/entry/src/main/ets/pages/WebPage.ets
+index 3c85e7e25b72ba66fc6360c4d2c5ca594d4d88b1..4c3aa28f1e11ad5aa02f94b43840c9dd883c705d 100644
+--- a/entry/src/main/ets/pages/WebPage.ets
++++ b/entry/src/main/ets/pages/WebPage.ets
+@@ -42,11 +42,7 @@ struct WebPage {
+             log(`onTitleReceive title: ${event.title}`, "WebPage")
+             this.title = event.title
+ 
+-            log(`更新前 historyList = ${JSON.stringify(
+-              this.historyList.map<string>((it) => {
+-                return`${it.time} [${it.title}](${it.url})`
+-              })
+-            )}`, "historyList")
++            log(`更新前 historyList.size = ${this.historyList.length}`, "historyList")
+ 
+             // let time = DateUtil.getFormatTime(new Date())
+             let time = dayjs(new Date()).format("YYYY/MM/DD HH:mm:ss")
+@@ -59,11 +55,7 @@ struct WebPage {
+             // 在前面插入新的当前 url 的项
+             this.historyList.splice(0, 0, webData)
+ 
+-            log(`更新后 historyList = ${JSON.stringify(
+-              this.historyList.map<string>((it) => {
+-                return`${it.time} [${it.title}](${it.url})`
+-              })
+-            )}`, "historyList")
++            log(`更新后 historyList.size = ${this.historyList.length}`, "historyList")
+ 
+           })
+           .onProgressChange(event => {
+diff --git a/entry/src/main/ets/pages/components/ArticleComponent.ets b/entry/src/main/ets/pages/components/ArticleComponent.ets
+index ba98313eafc6b4ca5fb38bf570f38b4f35fab116..641345e9b97bf90100374fdbe67510a1e01a697d 100644
+--- a/entry/src/main/ets/pages/components/ArticleComponent.ets
++++ b/entry/src/main/ets/pages/components/ArticleComponent.ets
+@@ -1,5 +1,4 @@
+ import { DataX } from '../../data/ArticlesTree';
+-import { TextUtils } from '../../utils/TextUtils';
+ 
+ @Builder
+ export function ArticleComponent(item: DataX, index: number, onClick: () => void) {
+@@ -34,10 +33,10 @@ export function ArticleComponent(item: DataX, index: number, onClick: () => void
+             .borderRadius(10)
+           Blank().width(10)
+           Column() {
+-            Text(TextUtils.htmlDecode(item.title)).fontWeight(FontWeight.Bold).fontSize(16).maxLines(2)
++            Text(item.title).fontWeight(FontWeight.Bold).fontSize(16).maxLines(2)
+             Blank().height(10)
+             if (item.desc) {
+-              Text(TextUtils.htmlDecode(item.desc)).fontSize(16).maxLines(4)
++              Text(item.desc).fontSize(16).maxLines(4)
+             }
+           }
+           .width("70%")
+@@ -45,10 +44,10 @@ export function ArticleComponent(item: DataX, index: number, onClick: () => void
+         } else {
+           // 没有图片，首页没有
+           Column() {
+-            Text(TextUtils.htmlDecode(item.title)).fontWeight(FontWeight.Bold).fontSize(16).maxLines(2)
++            Text(item.title).fontWeight(FontWeight.Bold).fontSize(16).maxLines(2)
+             Blank().height(10)
+             if (item.desc) {
+-              Text(TextUtils.htmlDecode(item.desc)).fontSize(16).maxLines(4)
++              Text(item.desc).fontSize(16).maxLines(4)
+             }
+           }
+           .width("100%")
+@@ -60,7 +59,7 @@ export function ArticleComponent(item: DataX, index: number, onClick: () => void
+       Blank().height(16)
+       Row() {
+         Column() {
+-          Text(`${item.superChapterName}/${TextUtils.htmlDecode(item.chapterName)}`)
++          Text(`${item.superChapterName}/${item.chapterName}`)
+             .fontColor($r("app.color.secondaryText"))
+             .fontSize(14)
+           if (item.tags) {
+diff --git a/entry/src/main/ets/pages/components/ArticleListComponent.ets b/entry/src/main/ets/pages/components/ArticleListComponent.ets
+index 45194966b2a6596d18f68e008a9a8f04280faee5..a43572d33afe9434ac9503c950a470dda651a890 100644
+--- a/entry/src/main/ets/pages/components/ArticleListComponent.ets
++++ b/entry/src/main/ets/pages/components/ArticleListComponent.ets
+@@ -1,4 +1,5 @@
+ import { Articles, DataX } from '../../data/ArticlesTree';
++import { TextUtils } from '../../utils/TextUtils';
+ import { log } from '../../utils/LogUtils';
+ import { ArticleComponent } from './ArticleComponent';
+ 
+@@ -88,11 +89,11 @@ export struct ArticleListComponent {
+     if (this.fetchList) {
+       this.fetchList(this.currentPage).then(result => {
+         if (this.currentPage == 0) {
+-          // 加载首页
+-          this.dataXArr = result.datas // 不要清空数组再 concat，否则页面会有一瞬间变空
++          // 加载首页（数据到达时统一做一次 HTML 实体解码）
++          this.dataXArr = TextUtils.decodeArticleList(result.datas) // 不要清空数组再 concat，否则页面会有一瞬间变空
+         } else {
+           // 加载更多
+-          this.dataXArr = this.dataXArr.concat(result.datas)
++          this.dataXArr = this.dataXArr.concat(TextUtils.decodeArticleList(result.datas))
+         }
+       })
+     }
+diff --git a/entry/src/main/ets/utils/TextUtils.ets b/entry/src/main/ets/utils/TextUtils.ets
+index c78038db14608ca13a6d78a42afc90292357136c..ea8a44fd89ce8ced0fc78247f2e12a02e3f916c5 100644
+--- a/entry/src/main/ets/utils/TextUtils.ets
++++ b/entry/src/main/ets/utils/TextUtils.ets
+@@ -1,3 +1,5 @@
++import { DataX } from '../data/ArticlesTree';
++
+ export class TextUtils {
+   // json 字符串转为为 url编码的键值对字符串
+   static jsonToUrlEncodedString(jsonString: string): string {
+@@ -56,4 +58,16 @@ export class TextUtils {
+         //
+       .replaceAll("&mdash;", "—") // U+2014
+   }
+-}
+\ No newline at end of file
++
++  // 对文章列表统一做一次 HTML 实体解码，避免列表项每次构建时重复解码
++  static decodeArticleList(datas: Array<DataX>): Array<DataX> {
++    datas.forEach((item: DataX) => {
++      item.title = TextUtils.htmlDecode(item.title)
++      if (item.desc) {
++        item.desc = TextUtils.htmlDecode(item.desc)
++      }
++      item.chapterName = TextUtils.htmlDecode(item.chapterName)
++    })
++    return datas
++  }
++}

@@ -1,5 +1,5 @@
 diff --git a/commons/constants/src/main/ets/DbConst.ets b/commons/constants/src/main/ets/DbConst.ets
-index defd91a..03bc744 100644
+index defd91ab9291f784d1ff6e3590a361f515e4fea3..03bc744ba77101a3775dd689343af1f14d7dd609 100644
 --- a/commons/constants/src/main/ets/DbConst.ets
 +++ b/commons/constants/src/main/ets/DbConst.ets
 @@ -26,7 +26,9 @@ export class DbMigrationConst {

@@ -4,7 +4,7 @@
   "host_app": {
     "name": "browser (小狐狸浏览器)",
     "repository": "https://github.com/langwudong/browser",
-    "upstream_base_commit": "f44fff7",
+    "upstream_base_commit": "f44fff759c50c162739c1585149018e6f0277471",
     "bundle_name": "com.example.nanvision",
     "local_path": "hosts/browser"
   },
@@ -15,16 +15,14 @@
     "页面切换"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/browser_history_list_foreach/unfixed",
       "tree": "83229456c247987eaa418ea094b8b65cddb02c22",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "01cdcb78bae2b553d8093dc9f58b1e309a16554f4f986f07ef234211a72306aa"
     },
     "fixed": {
-      "ref": "clean-app/browser_history_list_foreach/fixed",
       "tree": "ca8cdb46a27f193e2d1e80db3cb72c0f3efc63a4",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "c3b2002c04af5ceb9ebe96d13b20a0603b1177074a1848fae60a4a0c10737520"
     }
   },

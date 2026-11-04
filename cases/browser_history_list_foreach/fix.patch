@@ -1,5 +1,5 @@
 diff --git a/entry/src/main/ets/view/PagesDialog.ets b/entry/src/main/ets/view/PagesDialog.ets
-index b117b24..888f305 100644
+index b117b247c9b1fd2859b07f32b82a016b19aadbc2..888f3057202dc06bbf8e69c7662c0c5b2f6689d1 100644
 --- a/entry/src/main/ets/view/PagesDialog.ets
 +++ b/entry/src/main/ets/view/PagesDialog.ets
 @@ -3,6 +3,40 @@ import { HistoryGroup } from '../common/constants/CommonConstants'

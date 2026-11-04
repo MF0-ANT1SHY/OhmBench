@@ -1,0 +1,211 @@
+diff --git a/entry/src/main/ets/pages/Index.ets b/entry/src/main/ets/pages/Index.ets
+index 43954947dbd6e79b71bf0d3211c1742c7f774107..6c6be76da39be84a3333128941f734519794eac9 100644
+--- a/entry/src/main/ets/pages/Index.ets
++++ b/entry/src/main/ets/pages/Index.ets
+@@ -61,11 +61,7 @@ struct Index {
+   async aboutToAppear() {
+     console.debug("项目正在启动")
+ 
+-    const allDate: string[] = await RdbUtils.queryAllDate()
+-
+-    allDate.forEach(async date => {
+-      this.historyMap.set(date, await RdbUtils.queryHistoriesByDate(date))
+-    })
++    // 历史记录改为在首次打开浏览记录弹窗时按需加载（见 PagesDialog），避免启动阶段全量查询数据库
+ 
+     // 开启软键盘高度变化的监听
+     window.getLastWindow(getContext(this), (err, data) => {
+diff --git a/entry/src/main/ets/utils/RdbUtils.ets b/entry/src/main/ets/utils/RdbUtils.ets
+index 1a0daad5551534a5b71083449a4c526405299411..5f3c789ef6abc90f4b0e5eea9b81db54a4d46eef 100644
+--- a/entry/src/main/ets/utils/RdbUtils.ets
++++ b/entry/src/main/ets/utils/RdbUtils.ets
+@@ -5,6 +5,9 @@ export default class RdbUtils {
+   // 关系型数据库
+   private static rdbStore: relationalStore.RdbStore
+ 
++  // 已确认存在的日期分表，避免每次保存浏览记录都重复查询/建表
++  private static knownDates: Set<string> = new Set()
++
+   static setStore(store: relationalStore.RdbStore) {
+     RdbUtils.rdbStore = store
+   }
+@@ -48,11 +51,16 @@ export default class RdbUtils {
+   }
+ 
+   static async insertDate(date: string) {
++    // 命中缓存时直接返回，跳过查询与建表
++    if (RdbUtils.knownDates.has(date)) {
++      return
++    }
++
+     const predicates = new relationalStore.RdbPredicates("date_table")
+ 
+     predicates.equalTo("date", date);
+ 
+-    let resultSet: relationalStore.ResultSet
++    let resultSet: relationalStore.ResultSet | null = null
+ 
+     try {
+       resultSet = await RdbUtils.getStore().query(predicates, ["date"]);
+@@ -73,6 +81,8 @@ export default class RdbUtils {
+ 
+     // 按天分表
+     await RdbUtils.createHistoryTable(date)
++
++    RdbUtils.knownDates.add(date)
+   }
+ 
+   static async insertHistory(tableName: string, history: History) {
+@@ -112,34 +122,32 @@ export default class RdbUtils {
+ 
+   static async queryHistoriesByDate(date: string) {
+     date = "history_" + date
+-    let predicates = new relationalStore.RdbPredicates(date);
++    const predicates = new relationalStore.RdbPredicates(date);
+ 
+     let histories: History[] = []
+ 
+-    RdbUtils.getStore().query(predicates, []).then(async (resultSet: relationalStore.ResultSet) => {
+-      console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`)
++    let resultSet: relationalStore.ResultSet | null = null
+ 
+-      try {
+-        while (resultSet.goToNextRow()) {
+-          const id = resultSet.getLong(resultSet.getColumnIndex("id"));
+-          const title = resultSet.getString(resultSet.getColumnIndex("title"));
+-          const url = resultSet.getString(resultSet.getColumnIndex("url"));
+-          const timestamp = resultSet.getString(resultSet.getColumnIndex("timestamp"));
++    try {
++      resultSet = await RdbUtils.getStore().query(predicates, [])
+ 
+-          console.info(`查询到记录：id = ${id}, title = ${title}, url = ${url}, timestamp = ${timestamp}`)
++      while (resultSet.goToNextRow()) {
++        const id = resultSet.getLong(resultSet.getColumnIndex("id"));
++        const title = resultSet.getString(resultSet.getColumnIndex("title"));
++        const url = resultSet.getString(resultSet.getColumnIndex("url"));
++        const timestamp = resultSet.getString(resultSet.getColumnIndex("timestamp"));
+ 
+-          let history: History = new History(title, url, timestamp)
+-          history.setId(id)
++        let history: History = new History(title, url, timestamp)
++        history.setId(id)
+ 
+-          histories.unshift(history)
+-        }
+-      } catch (error) {
+-        console.error(`查询异常，失败代码： ${error.code}，失败信息： ${error.message}`);
+-      } finally {
+-        // 释放数据集的内存，若不释放可能会引起 fd 泄露与内存泄露
+-        resultSet.close()
++        histories.unshift(history)
+       }
+-    })
++    } catch (error) {
++      console.error(`查询异常，失败代码： ${error.code}，失败信息： ${error.message}`);
++    } finally {
++      // 释放数据集的内存，若不释放可能会引起 fd 泄露与内存泄露
++      resultSet?.close()
++    }
+ 
+     return histories
+   }
+@@ -158,11 +166,24 @@ export default class RdbUtils {
+ 
+   static async deleteAll() {
+     const dateList: string[] = await RdbUtils.queryAllDate()
+-    dateList.forEach((date: string) => {
+-      const sql = `DROP TABLE IF EXISTS ${date}`
+-      RdbUtils.executeSql(sql)
+-    })
++    for (const date of dateList) {
++      const tableName = "history_" + date
++      // 逐条删除各日期分表中的浏览记录
++      let resultSet: relationalStore.ResultSet | null = null
++      try {
++        resultSet = await RdbUtils.getStore().querySql(`SELECT id FROM ${tableName}`)
++        while (resultSet.goToNextRow()) {
++          const id = resultSet.getLong(resultSet.getColumnIndex("id"))
++          await RdbUtils.getStore().executeSql(`DELETE FROM ${tableName} WHERE id = ${id}`)
++        }
++      } catch (error) {
++        console.error(`清理历史记录异常： ${error.code}，失败信息： ${error.message}`)
++      } finally {
++        resultSet?.close()
++      }
++      await RdbUtils.getStore().executeSql(`DELETE FROM date_table WHERE date = '${date}'`)
++    }
+ 
+-    RdbUtils.executeSql(`DROP TABLE IF EXISTS date_table`)
++    RdbUtils.knownDates.clear()
+   }
+ }
+\ No newline at end of file
+diff --git a/entry/src/main/ets/view/PagesDialog.ets b/entry/src/main/ets/view/PagesDialog.ets
+index efac6538893cb743e3f4492a7dfdd87fad75cf0f..b117b247c9b1fd2859b07f32b82a016b19aadbc2 100644
+--- a/entry/src/main/ets/view/PagesDialog.ets
++++ b/entry/src/main/ets/view/PagesDialog.ets
+@@ -1,6 +1,7 @@
+ import History from '../common/bean/History'
+ import { HistoryGroup } from '../common/constants/CommonConstants'
+ import HistoryItem from './HistoryItem'
++import RdbUtils from '../utils/RdbUtils'
+ 
+ @CustomDialog
+ export default struct PagesDialog {
+@@ -17,6 +18,13 @@ export default struct PagesDialog {
+ 
+   async loadHistoryData() {
+     try {
++      // 历史记录按需加载：仅当内存中还没有加载过时才查询数据库
++      if (this.historyMap.size === 0) {
++        const allDate: string[] = await RdbUtils.queryAllDate()
++        for (const date of allDate) {
++          this.historyMap.set(date, await RdbUtils.queryHistoriesByDate(date))
++        }
++      }
+       this.historyGroups = []
+       this.historyGroups = Array.from(this.historyMap.entries()).map((item) => ({
+         date: item[0],
+diff --git a/entry/src/main/ets/view/SettingDialog.ets b/entry/src/main/ets/view/SettingDialog.ets
+index dd82c057c1d82f23ded6857353d54dd9ec63dbb4..52c27fad635589070fc760dc23f5ad1b55297f08 100644
+--- a/entry/src/main/ets/view/SettingDialog.ets
++++ b/entry/src/main/ets/view/SettingDialog.ets
+@@ -1,6 +1,7 @@
+ import History from '../common/bean/History'
+ import CommonConstants from '../common/constants/CommonConstants'
+ import { Prompt, PromptAction } from '@kit.ArkUI'
++import RdbUtils from '../utils/RdbUtils'
+ 
+ @CustomDialog
+ export default struct SettingDialog {
+@@ -25,7 +26,8 @@ export default struct SettingDialog {
+     }
+   }
+ 
+-  onConfirm() {
++  async onConfirm(): Promise<void> {
++    await RdbUtils.deleteAll()
+     this.historyMap.clear()
+ 
+     Prompt.showToast({
+diff --git a/oh-package-lock.json5 b/oh-package-lock.json5
+index 9b8016a6dd91fd56a74a9bc04858205036d7fc54..c2f6d1bc9cb330eeb990573aa7e74cbccfb64b61 100644
+--- a/oh-package-lock.json5
++++ b/oh-package-lock.json5
+@@ -11,14 +11,14 @@
+   },
+   "packages": {
+     "@ohos/hamock@1.0.0": {
+-      "name": "",
++      "name": "@ohos/hamock",
+       "version": "1.0.0",
+       "integrity": "sha512-K6lDPYc6VkKe6ZBNQa9aoG+ZZMiwqfcR/7yAVFSUGIuOAhPvCJAo9+t1fZnpe0dBRBPxj2bxPPbKh69VuyAtDg==",
+       "resolved": "https://ohpm.openharmony.cn/ohpm/@ohos/hamock/-/hamock-1.0.0.har",
+       "registryType": "ohpm"
+     },
+     "@ohos/hypium@1.0.21": {
+-      "name": "",
++      "name": "@ohos/hypium",
+       "version": "1.0.21",
+       "integrity": "sha512-iyKGMXxE+9PpCkqEwu0VykN/7hNpb+QOeIuHwkmZnxOpI+dFZt6yhPB7k89EgV1MiSK/ieV/hMjr5Z2mWwRfMQ==",
+       "resolved": "https://ohpm.openharmony.cn/ohpm/@ohos/hypium/-/hypium-1.0.21.har",

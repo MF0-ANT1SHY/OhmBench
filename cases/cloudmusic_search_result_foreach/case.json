@@ -4,7 +4,7 @@
   "host_app": {
     "name": "CloudMusic-HarmonyOSNext (仿网易云音乐)",
     "repository": "https://github.com/Chenlvin/CloudMusic-HarmonyOSNext",
-    "upstream_base_commit": "724702c",
+    "upstream_base_commit": "724702c9eb5ae0695651eb995829c0b0c7834e0a",
     "bundle_name": "cc.chenlvin.cloudmusic",
     "local_path": "hosts/cloudmusic"
   },
@@ -15,20 +15,14 @@
     "组件创建"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/cloudmusic_search_result_foreach/unfixed",
       "tree": "4f85a008f5da6713dd500d451e466d4332ebd356",
-      "production_patches": [
-        "hosts_patches/cloudmusic/cloudmusic_search_result_foreach-unfixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "cc4104c393ebe1e023f767f0bbe886149f5843c378fd9a1d96bd96a74e6875ae"
     },
     "fixed": {
-      "ref": "clean-app/cloudmusic_search_result_foreach/fixed",
       "tree": "e3471407d84d006ca33e7401fdb1881c829e56a0",
-      "production_patches": [
-        "hosts_patches/cloudmusic/cloudmusic_search_result_foreach-fixed.patch"
-      ],
       "reference_unsigned_hap_sha256": "cbf493ed156ee55707e827ce6a2b028491ad3279d4fdebf18bd6495e8f76c174"
     }
   },

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build all 60 business-only HAPs in new worktrees; audit compiled artifacts."""
+"""Build the unfixed and fixed HAP of each case in a git worktree; audit the bytecode."""
 import argparse
 import json
 import os
@@ -9,7 +9,6 @@ import time
 from pathlib import Path
 
 from audit_clean_app import audit_hap, audit_source
-from clean_sources import app_ref
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,9 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def build_case(case, variant, output, toolchain, mode, source_ref=None):
     cid = case["id"]
     repo = ROOT / case["host_app"]["local_path"]
-    # Isolated candidates may be compiled before changing the published source
-    # mapping. The receipt still binds the exact audited ref and source tree.
-    ref = source_ref or app_ref(case, variant)
+    ref = source_ref or f"case/{cid}/{variant}"   # tag created by prepare_sources.py
     dest = output / cid / variant
     dest.mkdir(parents=True, exist_ok=True)
     source = audit_source(repo, ref)

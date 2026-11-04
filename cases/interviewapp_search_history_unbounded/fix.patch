@@ -1,5 +1,5 @@
 diff --git a/features/home/src/main/ets/utils/history.ets b/features/home/src/main/ets/utils/history.ets
-index 375d60d..b451639 100644
+index 375d60d641f51582c116f7daa4f837138dc737bf..b451639a3947e07349976c4816cb8d9a45f01d39 100644
 --- a/features/home/src/main/ets/utils/history.ets
 +++ b/features/home/src/main/ets/utils/history.ets
 @@ -1,7 +1,10 @@

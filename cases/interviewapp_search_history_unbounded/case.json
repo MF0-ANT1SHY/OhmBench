@@ -4,7 +4,7 @@
   "host_app": {
     "name": "interview-handbook-project (面试通)",
     "repository": "https://github.com/HarmonyOS-Next/interview-handbook-project",
-    "upstream_base_commit": "1e05347",
+    "upstream_base_commit": "1e053477091e58ba00c65045ae2c51f669855c41",
     "bundle_name": "com.itcast.pass_interview",
     "local_path": "hosts/interviewapp"
   },
@@ -14,16 +14,14 @@
     "页面切换"
   ],
   "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
     "unfixed": {
-      "ref": "clean-app/interviewapp_search_history_unbounded/unfixed",
       "tree": "4085ad189b70ef72a88ddc0010fdf6890b12aa49",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "82852c0c1e05422b84aa9d3f1c70c60bf77d5f371ca5c41a2ca5c787cec3532e"
     },
     "fixed": {
-      "ref": "clean-app/interviewapp_search_history_unbounded/fixed",
       "tree": "6ead8b753ec2a2f67ecdbc52bd53a454f2942b9f",
-      "production_patches": [],
       "reference_unsigned_hap_sha256": "dc8c86eba41cb1b96150e052ac156f337a4ab8dd018c869294d3b446568c0c93"
     }
   },
