@@ -14,7 +14,7 @@
 | interviewapp | https://github.com/HarmonyOS-Next/interview-handbook-project | `1e05347` | none |
 | ytmusic | https://github.com/Charles-Stark/Youtube-Music-ArkTS-Clone | `f925981` | none |
 
-## Included cases
+## Case list
 
 | Case | App | Category | Oracle metric | Pass criterion | Ref. median ratio | Primary root causes |
 |---|---|---|---|---|---|---|
@@ -39,17 +39,3 @@
 | `ytmusic_current_playing_timeupdate` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.2 * fixed over >= 3 rounds per variant | 4.95 | 1 |
 | `ytmusic_history_json_parse_per_row` | Youtube-Music-ArkTS-Clone | cpu | `hiperf_instructions` | unfixed >= 1.3 * fixed over >= 3 rounds per variant | 3.30 | 1 |
 | `ytmusic_search_no_debounce` | Youtube-Music-ArkTS-Clone | network | `search_response_body_bytes` | unfixed >= 5.0 * fixed successful search response bytes over 3 paired rounds | 5.50 | 1 |
-
-## Excluded cases
-
-| Case | App | Category | Oracle metric | Measured median ratio |
-|---|---|---|---|---|
-| `browser_insert_date_lookup_cache` | browser (小狐狸浏览器) | latency | `hiperf_instructions` | 1.00 |
-| `cloudmusic_indexof_in_render` | CloudMusic-HarmonyOSNext (仿网易云音乐) | cpu | `hiperf_instructions` | 1.01 |
-| `cloudmusic_local_song_memory_filter` | CloudMusic-HarmonyOSNext (仿网易云音乐) | latency | `hiperf_instructions` | 1.10 |
-| `cloudmusic_songcard_artists_concat` | CloudMusic-HarmonyOSNext (仿网易云音乐) | cpu | `hiperf_instructions` | 1.01 |
-| `interviewapp_response_log_full_stringify` | interview-handbook-project (面试通) | cpu | `hiperf_instructions` | 1.04 |
-| `interviewapp_search_history_sync_flush` | interview-handbook-project (面试通) | latency | `hiperf_instructions` | 1.01 |
-| `wanharmony_history_log_materialization` | WanHarmony (WanAndroid 客户端) | cpu | `trace_cpu_ms` | 1.00 |
-| `wanharmony_html_decode_per_render` | WanHarmony (WanAndroid 客户端) | latency | `hiperf_instructions` | 1.04 |
-| `wanharmony_web_progress_log_storm` | WanHarmony (WanAndroid 客户端) | cpu | `hiperf_instructions` | 0.99 |

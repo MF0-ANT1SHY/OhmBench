@@ -1,8 +1,6 @@
 # Overview
 
-**30 cases from 9 apps: 21 included, 9 excluded** ([list](cases.md)). Excluded cases build and run but
-did not meet their performance oracle; they are kept for reference and must not be used for
-evaluation.
+**21 cases from 9 apps** ([list](cases.md)).
 
 ## Prerequisite
 

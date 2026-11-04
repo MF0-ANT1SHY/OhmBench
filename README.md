@@ -7,5 +7,5 @@ A benchmark of performance bugs in HarmonyOS applications, for evaluating perfor
 - [Building and signing](docs/build.md): reconstruct sources and build the unfixed/fixed HAPs
 - [Extension standard](docs/extending.md): requirements for adding a case
 - [Collection and evaluation standard](docs/evaluation.md): inputs, per-case record, metrics, matching
-- [Cases](docs/cases.md): host apps, included and excluded cases
+- [Cases](docs/cases.md): host apps and cases
 - [Known limitations](docs/limitations.md)

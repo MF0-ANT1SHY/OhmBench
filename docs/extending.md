@@ -16,7 +16,8 @@ Rules:
 
 - No benchmark code in the app: no counters, custom traces, test entry points or instrumentation
   (`tools/audit_clean_app.py` enforces known patterns).
-- `status` is `included` only if the clean unfixed/fixed pair meets `performance_oracle.comparison`
-  on a real device with the recorded workload; otherwise `excluded` with an `exclusion_reason`.
+- A case is added only if the clean unfixed/fixed pair meets `performance_oracle.comparison`
+  on a real device with the recorded workload; `status` is then `included`. Cases that do not meet
+  their oracle are not added.
 - Any workload input data (databases, preferences, backend responses) must be described so that it
   can be prepared outside the app, identically for both variants.

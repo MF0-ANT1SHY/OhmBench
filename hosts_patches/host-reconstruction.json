@@ -37,14 +37,6 @@
         "case/browser_history_list_foreach/unfixed": {
           "state": "perf: batch all clear-history DELETE statements into a single RDB transaction",
           "tree": "83229456c247987eaa418ea094b8b65cddb02c22"
-        },
-        "case/browser_insert_date_lookup_cache/fixed": {
-          "state": "perf: cache known per-day history tables in memory so saving a browsing record skips the repeated date lookup and CREATE TABLE statements",
-          "tree": "b5f933274bab9a3518b4b572da64957f3f9e9e87"
-        },
-        "case/browser_insert_date_lookup_cache/unfixed": {
-          "state": "perf: load browsing history lazily when the history dialog first opens instead of eagerly querying all history tables during app startup",
-          "tree": "0ba445d9e65201d8b2c135dc64f17cafa5c4a2ee"
         }
       }
     },
@@ -53,22 +45,6 @@
       "upstream_base_commit": "dd45ad2",
       "ohmbase_commit": "cb8a8ea61b6b0fc4d744d7ec9298f0a391910e12",
       "case_tags": {
-        "case/wanharmony_history_log_materialization/fixed": {
-          "state": "perf: log browsing-history size instead of materializing and stringifying the whole list on every page visit",
-          "tree": "4335f38febb7059d241de4f6ef22ade69767e729"
-        },
-        "case/wanharmony_history_log_materialization/unfixed": {
-          "state": "perf: decode HTML entities once when article data arrives instead of on every list-item build",
-          "tree": "41efd76077ad95ba36a279f8d4874c6d2310bca7"
-        },
-        "case/wanharmony_html_decode_per_render/fixed": {
-          "state": "perf: decode HTML entities once when article data arrives instead of on every list-item build",
-          "tree": "41efd76077ad95ba36a279f8d4874c6d2310bca7"
-        },
-        "case/wanharmony_html_decode_per_render/unfixed": {
-          "state": "upstream-base:dd45ad2",
-          "tree": "88b368cc0c7d5f07755f64a4a3aa7152208a5ac6"
-        },
         "case/wanharmony_persisted_home_list_growth/fixed": {
           "state": "perf: persist only the first-page home-article snapshot; accumulated load-more pages stay in memory instead of rewriting the whole list to persistent storage on every scroll",
           "tree": "892d60f0762ef9cbf11fc32972f2b4116df74aa1"
@@ -76,14 +52,6 @@
         "case/wanharmony_persisted_home_list_growth/unfixed": {
           "state": "perf: log browsing-history size instead of materializing and stringifying the whole list on every page visit",
           "tree": "4335f38febb7059d241de4f6ef22ade69767e729"
-        },
-        "case/wanharmony_web_progress_log_storm/fixed": {
-          "state": "perf: log web page load progress only at milestones instead of on every high-frequency progress event",
-          "tree": "99dcfd702c28ecbaf6386036450985be31f31735"
-        },
-        "case/wanharmony_web_progress_log_storm/unfixed": {
-          "state": "perf: persist only the first-page home-article snapshot; accumulated load-more pages stay in memory instead of rewriting the whole list to persistent storage on every scroll",
-          "tree": "892d60f0762ef9cbf11fc32972f2b4116df74aa1"
         }
       }
     },
@@ -143,34 +111,6 @@
       "upstream_base_commit": "724702c",
       "ohmbase_commit": "ff15a9947c7438848de730bc46b02d5573b7583d",
       "case_tags": {
-        "case/cloudmusic_indexof_in_render/fixed": {
-          "state": "perf: pass the LazyForEach index to song cards instead of calling list.indexOf(item) twice per row build",
-          "tree": "a668180b0569859ca1d7fa7ccb3eb16e9ab7e1f5"
-        },
-        "case/cloudmusic_indexof_in_render/unfixed": {
-          "state": "build: strip local signing configs for headless CI build",
-          "tree": "21ed09da100d1dba53df5043b1dc50f24d22bc09"
-        },
-        "case/cloudmusic_local_song_memory_filter/fixed": {
-          "state": "perf: filter local songs in SQLite with a LIKE predicate instead of materializing the whole table and filtering in memory",
-          "tree": "2846ea4d65fe74a0290de6c36b3d5815be288073",
-          "app_ref": "clean-app-v4/cloudmusic_local_song_memory_filter/fixed",
-          "app_tree": "0b5dec7ee0528cc56e306a9686d3c20d46a27485",
-          "production_patches": [
-            "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-            "hosts_patches/cloudmusic/production-local-interactions-sql.patch"
-          ]
-        },
-        "case/cloudmusic_local_song_memory_filter/unfixed": {
-          "state": "perf: pass the LazyForEach index to song cards instead of calling list.indexOf(item) twice per row build",
-          "tree": "a668180b0569859ca1d7fa7ccb3eb16e9ab7e1f5",
-          "app_ref": "clean-app-v4/cloudmusic_local_song_memory_filter/unfixed",
-          "app_tree": "7f1ad4a5829283cc440789b46875fd3ff8879f4c",
-          "production_patches": [
-            "hosts_patches/cloudmusic/production-virtual-local-grid.patch",
-            "hosts_patches/cloudmusic/production-local-interactions-js.patch"
-          ]
-        },
         "case/cloudmusic_play_time_high_frequency_update/fixed": {
           "state": "perf: update the global play-time state only when the displayed second changes instead of on every high-frequency timeUpdate callback",
           "tree": "86e2414cd33836172a421d2cf9749e9fd1a0b94a",
@@ -208,14 +148,6 @@
           "production_patches": [
             "hosts_patches/cloudmusic/search-large-page-unfixed-v2.patch"
           ]
-        },
-        "case/cloudmusic_songcard_artists_concat/fixed": {
-          "state": "perf: assemble artist names with a single join instead of repeated string concatenation in a loop",
-          "tree": "61388725820d06db64e66e57edb504321b12ba6c"
-        },
-        "case/cloudmusic_songcard_artists_concat/unfixed": {
-          "state": "perf: render song search results with LazyForEach and a data source so off-screen result rows are not created eagerly",
-          "tree": "9fce0f474edb3690c2c562d83cc82629ae42fb24"
         }
       }
     },
@@ -391,22 +323,6 @@
       "upstream_base_commit": "1e05347",
       "ohmbase_commit": "9f226e3d8793bf1a9396221d5c518debd7b8bde5",
       "case_tags": {
-        "case/interviewapp_response_log_full_stringify/fixed": {
-          "state": "perf: log only the response code and message instead of JSON.stringify-ing the whole response body to truncate it to 200 chars",
-          "tree": "4085ad189b70ef72a88ddc0010fdf6890b12aa49"
-        },
-        "case/interviewapp_response_log_full_stringify/unfixed": {
-          "state": "perf: debounce search-history preference flushes instead of flushing to disk synchronously on every keyword save",
-          "tree": "382c9d77994a2b3aa5e42dcac0f81fbae280b8cf"
-        },
-        "case/interviewapp_search_history_sync_flush/fixed": {
-          "state": "perf: debounce search-history preference flushes instead of flushing to disk synchronously on every keyword save",
-          "tree": "382c9d77994a2b3aa5e42dcac0f81fbae280b8cf"
-        },
-        "case/interviewapp_search_history_sync_flush/unfixed": {
-          "state": "build: strip local signing configs and refresh lockfiles for headless CI build",
-          "tree": "e77617182614753257cf10aff3244973254c2c97"
-        },
         "case/interviewapp_search_history_unbounded/fixed": {
           "state": "perf: keep search history as a bounded, ordered list (max 20 entries) instead of an ever-growing key set",
           "tree": "6ead8b753ec2a2f67ecdbc52bd53a454f2942b9f"
@@ -468,6 +384,6 @@
   },
   "totals": {
     "hosts": 9,
-    "case_tags": 60
+    "case_tags": 42
   }
 }

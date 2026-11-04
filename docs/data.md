@@ -7,7 +7,7 @@ cases/
   collection.yaml          reference HapRay/hiprofiler collection configuration
   <case-id>/
     case.json              metadata: status, host app, source trees, testcase, collection
-    prompt.json            prompt given to a diagnosis tool (included cases)
+    prompt.json            prompt given to a diagnosis tool
     groundtruth.json       oracle: mechanism, root-cause locations, performance oracle
     fix.patch              repair diff, unfixed -> fixed
     testcase/              HapRay testcase, UI workload plan and shared UI driver

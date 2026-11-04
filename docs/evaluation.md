@@ -51,5 +51,5 @@ Matching of a suspect to a groundtruth location (the root cause itself or one of
    (rule 1 only) may be reported in addition and must be labelled as such.
 
 A case without an answer scores P = R = F1 = 0 and keeps its measured cost. Report per-case records
-and the **macro average** over all 21 included cases (and optionally micro averages, pooling
+and the **macro average** over all 21 cases (and optionally micro averages, pooling
 suspects and root causes). Use the same model, budget and inputs for all cases of a run.
