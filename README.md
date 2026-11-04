@@ -1,16 +1,21 @@
 # OhmBench
 
-A benchmark of performance bugs in HarmonyOS applications, for
-evaluating performance-diagnosis abilities.
+A benchmark of performance bugs in HarmonyOS applications, for evaluating performance-diagnosis abilities.
+
+## Prerequisite
+
+To use this benchmark, users are expected to provide two stuffs: 1) a HarmonyOS singing certificate for **signing apps and install it on the device**, and 2) a device running apps.
 
 ## What the benchmark provides
 
-| Part | Provided by OhmBench | Provided by the user |
+The benchmark provides two part: 1) Data, and 2) Code.
+
+| Part | Detail |
 |---|---|---|
-| **Data** | per case: **source + patch** to build the unfixed and fixed app, the **prompt**, and the **oracle** (groundtruth); a neutral UI workload | a HarmonyOS **signing certificate** (and a device) |
-| **Build** | `tools/` — reconstruct the sources from public upstreams and build both variants | — |
-| **Extend** | the [case standard](#extension-standard) every new case must follow | the new case's prompt, source + patch and oracle |
-| **Collect / evaluate** | the [evaluation standard](#collection-and-evaluation-standard): what to measure per case and how | the code that runs a tool, collects the measurements and scores them |
+| **Data** | per case: **source + patch** to build the unfixed and fixed app, the **prompt**, and the **oracle** (groundtruth); a neutral UI workload |
+| **Code(build)** | `tools/` — reconstruct the sources from public upstreams and build both variants |
+| **Code(extend)** | the [case standard](#extension-standard) every new case must follow |
+| **Code(collect / evaluate)** | the [evaluation standard](#collection-and-evaluation-standard): what to measure per case and how |
 
 ## Repository layout
 
