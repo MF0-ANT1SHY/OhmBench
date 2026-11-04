@@ -1,0 +1,42 @@
+{
+  "case": "interviewapp_response_log_full_stringify",
+  "status": "excluded",
+  "mechanism": "The shared HTTP client logs every successful API response with JSON.stringify(res.result).substring(0, 200): the ENTIRE response object (large question lists, article payloads) is serialized into a string only to keep the first 200 characters. Every API call pays a full-payload serialization plus a substring copy on its completion path.",
+  "fix_summary": "The log records only the response code and message fields, removing the full-body JSON.stringify and truncation copy.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "commons/basic/src/main/ets/utils/request.ets",
+      "class": "HdHttp",
+      "symbol": "request",
+      "changed_lines": [
+        57,
+        58
+      ],
+      "scope_lines": [
+        26,
+        76
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1463268858
+      ],
+      "fixed": [
+        1412255669
+      ],
+      "paired_ratios": [
+        1.0361217802978422
+      ],
+      "median_ratio": 1.0361217802978422,
+      "rounds_per_variant": 1
+    }
+  }
+}

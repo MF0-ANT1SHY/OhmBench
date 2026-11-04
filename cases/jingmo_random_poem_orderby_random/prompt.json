@@ -1,0 +1,11 @@
+{
+  "case": "jingmo_random_poem_orderby_random",
+  "bundle_name": "com.hefengbao.jingmo.hw",
+  "ability": "EntryAbility",
+  "symptom": "切换随机诗词时响应变慢。",
+  "scenario": "jingmo (京墨文库)页面操作",
+  "perf_scenarios": [
+    "数据库读取",
+    "页面启动"
+  ]
+}

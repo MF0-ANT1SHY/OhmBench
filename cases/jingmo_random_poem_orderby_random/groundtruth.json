@@ -1,0 +1,50 @@
+{
+  "case": "jingmo_random_poem_orderby_random",
+  "status": "included",
+  "mechanism": "Reading a random classic poem executes 'select * from classicalliterature_classicpoem where id = (select p.id from classicalliterature_classicpoem p order by random() limit 1)', which materializes and sorts every row of the poem table (thousands of rows with long text fields) on each refresh. The classic-poem page runs this query on page entry and on every toolbar refresh tap, so its latency grows linearly with dataset size.",
+  "fix_summary": "The random pick uses a random id range scan on the primary key (where id >= abs(random()) % max(id) ... order by id limit 1), an O(log n) indexed lookup instead of a full-table sort.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "constant",
+      "file": "commons/constants/src/main/ets/DbConst.ets",
+      "class": "DbCRUDConst",
+      "symbol": "READ_RANDOM_CLASSICPOEM",
+      "changed_lines": [
+        28,
+        32
+      ],
+      "scope_lines": [
+        28,
+        32
+      ],
+      "aliases": [
+        {
+          "file": "features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets",
+          "class": "ClassicPoemDao",
+          "symbol": "readRandomClassicPoem"
+        }
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        4350783146,
+        4361057665,
+        4332976122
+      ],
+      "fixed": [
+        557986288,
+        540454327,
+        554432218
+      ],
+      "median_ratio": 7.847276916364193,
+      "rounds_per_variant": 3
+    }
+  }
+}

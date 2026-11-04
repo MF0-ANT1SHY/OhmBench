@@ -14,8 +14,6 @@
     "列表滑动",
     "网络结果渲染"
   ],
-  "bug_description": "ArticleComponent calls TextUtils.htmlDecode on title, desc and chapterName every time a list item is built. The feed list uses plain ForEach, so opening the home/search/square lists and every re-render during scrolling re-runs 12 replaceAll passes per field across all accumulated items, multiplying decode work on the render path.",
-  "fix_summary": "HTML entities are decoded once when article data arrives (TextUtils.decodeArticleList applied in fetchData/search/loadList); list items render the already-decoded fields.",
   "source": {
     "unfixed": {
       "ref": "clean-app/wanharmony_html_decode_per_render/unfixed",
@@ -57,23 +55,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        5224464512
-      ],
-      "fixed": [
-        5026161911
-      ],
-      "paired_ratios": [
-        1.0394540813669382
-      ],
-      "median_ratio": 1.0394540813669382,
-      "rounds_per_variant": 1
-    }
   }
 }

@@ -1,0 +1,99 @@
+{
+  "case": "browser_eager_history_load",
+  "status": "included",
+  "mechanism": "On application startup the main page eagerly queries every per-day history table in the RDB database and materializes all browsing-history rows in memory (Index.aboutToAppear -> RdbUtils.queryAllDate + queryHistoriesByDate for each date), even though history is only consumed when the user opens the browsing-history dialog. Cold-start latency and startup CPU grow linearly with the number of recorded history entries.",
+  "fix_summary": "History is loaded lazily on first open of the history dialog (PagesDialog.loadHistoryData), and RdbUtils.queryHistoriesByDate now actually awaits the RDB query instead of returning an unfilled array.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "class": "Index",
+      "symbol": "aboutToAppear",
+      "changed_lines": [
+        64,
+        69
+      ],
+      "scope_lines": [
+        61,
+        83
+      ],
+      "aliases": [
+        {
+          "file": "entry/src/main/ets/utils/RdbUtils.ets",
+          "class": "RdbUtils",
+          "symbol": "queryHistoriesByDate"
+        },
+        {
+          "file": "entry/src/main/ets/utils/RdbUtils.ets",
+          "class": "RdbUtils",
+          "symbol": "queryAllDate"
+        }
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/utils/RdbUtils.ets",
+      "class": "RdbUtils",
+      "symbol": "queryHistoriesByDate",
+      "changed_lines": [
+        115,
+        143
+      ],
+      "scope_lines": [
+        113,
+        145
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "RC4",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": "PagesDialog",
+      "symbol": "loadHistoryData",
+      "changed_lines": [
+        19,
+        20
+      ],
+      "scope_lines": [
+        18,
+        29
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1777740431,
+        1756342612,
+        1805539155
+      ],
+      "fixed": [
+        1313976611,
+        1285360539,
+        1308952979
+      ],
+      "median_ratio": 1.3581392605547522,
+      "rounds_per_variant": 3
+    }
+  }
+}

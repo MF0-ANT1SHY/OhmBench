@@ -1,0 +1,11 @@
+{
+  "case": "ytmusic_search_no_debounce",
+  "bundle_name": "com.example.myapplication",
+  "ability": "EntryAbility",
+  "symptom": "输入搜索词时，会产生多次无用的搜索结果传输。",
+  "scenario": "Youtube-Music-ArkTS-Clone页面操作",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "状态更新"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "case": "jingmo_dataset_import_no_transaction",
+  "bundle_name": "com.hefengbao.jingmo.hw",
+  "ability": "EntryAbility",
+  "symptom": "导入数据时响应变慢。",
+  "scenario": "通过正常同步入口导入文库数据",
+  "perf_scenarios": [
+    "数据库读取",
+    "网络结果渲染"
+  ]
+}

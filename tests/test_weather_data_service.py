@@ -7,7 +7,7 @@ import threading
 import unittest
 from urllib.error import HTTPError
 from urllib.request import urlopen
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'/'collect'/'fixtures'))
 from weather_data_service import forecast,handler
 
 class WeatherFixtureTests(unittest.TestCase):

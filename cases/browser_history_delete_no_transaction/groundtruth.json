@@ -1,0 +1,50 @@
+{
+  "case": "browser_history_delete_no_transaction",
+  "status": "included",
+  "mechanism": "Clearing browsing history (settings -> clear history) walks every per-day history table, selects all row IDs and executes one standalone DELETE statement per row, each in its own implicit transaction (autocommit). With hundreds of history entries this causes hundreds of individual journal/fsync cycles, making the clear operation and the following UI freeze noticeably long.",
+  "fix_summary": "All clear-history DELETE statements are wrapped in a single RDB transaction (beginTransaction/commit with rollback on error): one bulk DELETE per table inside one commit.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/utils/RdbUtils.ets",
+      "class": "RdbUtils",
+      "symbol": "deleteAll",
+      "changed_lines": [
+        169,
+        185
+      ],
+      "scope_lines": [
+        167,
+        188
+      ],
+      "aliases": [
+        {
+          "file": "entry/src/main/ets/utils/RdbUtils.ets",
+          "class": "RdbUtils",
+          "symbol": "deleteHistory"
+        }
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1843064109,
+        1861622479,
+        1877101942
+      ],
+      "fixed": [
+        62688675,
+        59118103,
+        59449886
+      ],
+      "median_ratio": 31.31414716253619,
+      "rounds_per_variant": 3
+    }
+  }
+}

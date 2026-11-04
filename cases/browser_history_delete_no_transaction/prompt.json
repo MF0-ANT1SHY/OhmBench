@@ -1,0 +1,11 @@
+{
+  "case": "browser_history_delete_no_transaction",
+  "bundle_name": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "symptom": "清理浏览历史时响应变慢。",
+  "scenario": "浏览器页面操作",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ]
+}

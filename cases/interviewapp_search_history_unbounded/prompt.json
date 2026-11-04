@@ -1,0 +1,11 @@
+{
+  "case": "interviewapp_search_history_unbounded",
+  "bundle_name": "com.itcast.pass_interview",
+  "ability": "PhoneAbility",
+  "symptom": "打开搜索历史页面后，应用内存占用较高。",
+  "scenario": "interview-handbook-project (面试通)页面操作",
+  "perf_scenarios": [
+    "状态更新",
+    "页面切换"
+  ]
+}

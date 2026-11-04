@@ -1,0 +1,88 @@
+{
+  "case": "cloudmusic_search_result_foreach",
+  "status": "included",
+  "mechanism": "Eager ForEach creates all song result rows on a large search page. LazyForEach creates visible rows as needed. Both revised variants request 1000 songs per page and advance offsets by actual response length; the original 30-song-page negative is archived.",
+  "fix_summary": "Keep normal search and pagination while using LazyForEach with the song data source to avoid eager offscreen row construction.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/search/SearchSongsList.ets",
+      "class": "SearchSongsList",
+      "symbol": "build",
+      "changed_lines": [
+        55,
+        66
+      ],
+      "scope_lines": [
+        44,
+        91
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/pages/search/SearchSongsList.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "class_member",
+      "file": "entry/src/main/ets/pages/search/SearchSongsList.ets",
+      "class": "SearchSongsList",
+      "symbol": null,
+      "changed_lines": [
+        21,
+        22
+      ],
+      "scope_lines": [
+        17,
+        113
+      ]
+    },
+    {
+      "id": "RC4",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/search/SearchSongsList.ets",
+      "class": "SearchSongsList",
+      "symbol": "loadSongs",
+      "changed_lines": [
+        102,
+        103
+      ],
+      "scope_lines": [
+        93,
+        112
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 2.0 * fixed over >= 3 rounds per variant",
+    "workload_notes": "All three paired ratios and median must reach 2.0x. Native search requests and list rows are verified in each trial. Both variants use the same 1000-song page size and response-sized pagination;",
+    "evidence": {
+      "unfixed": [
+        1060174524,
+        1045821912,
+        1044303565
+      ],
+      "fixed": [
+        472633416,
+        471042623,
+        465363469
+      ],
+      "median_ratio": 2.220227769069637,
+      "rounds_per_variant": 3
+    }
+  }
+}

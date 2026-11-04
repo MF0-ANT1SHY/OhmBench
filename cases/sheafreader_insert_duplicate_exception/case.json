@@ -13,8 +13,6 @@
     "数据库读取",
     "网络结果渲染"
   ],
-  "bug_description": "insertArticle detects duplicates by letting the UNIQUE(feed_id, guid) constraint fail and catching the thrown exception ('Duplicate entry, ignore'). Every feed refresh re-attempts inserts for ALL previously seen articles — each one a full insert attempt that ends in a constraint-violation exception (statement execution + error object construction + catch), multiplying refresh cost with stored article count.",
-  "fix_summary": "Inserts run with ConflictResolution.ON_CONFLICT_IGNORE so SQLite silently skips duplicates without exception overhead; behavior (only new articles stored) is unchanged.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/sheafreader_insert_duplicate_exception/unfixed",
@@ -60,24 +58,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        3271974943,
-        3279607994,
-        3268534428
-      ],
-      "fixed": [
-        2208546715,
-        2184750089,
-        2168863509
-      ],
-      "median_ratio": 1.4976426637875284,
-      "rounds_per_variant": 3
-    }
   }
 }

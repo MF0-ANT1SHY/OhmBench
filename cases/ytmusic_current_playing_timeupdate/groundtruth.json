@@ -1,0 +1,43 @@
+{
+  "case": "ytmusic_current_playing_timeupdate",
+  "status": "included",
+  "mechanism": "The now-playing page assigns the raw millisecond position from AVPlayer's timeUpdate callback into a page-level @State on every callback (~10/s). The whole player page (cover image, title, slider, controls) re-renders at callback frequency although the slider position and time labels only visibly change once per second, wasting UI-thread CPU throughout playback.",
+  "fix_summary": "The state is assigned only when the whole-second part of the position changes.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/CurrentPlaying.ets",
+      "class": "CurrentPlaying",
+      "symbol": "setAVPlayerCallback",
+      "changed_lines": [
+        12,
+        24
+      ],
+      "scope_lines": [
+        12,
+        63
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1064745383,
+        1060708477,
+        1098371574
+      ],
+      "fixed": [
+        203852201,
+        215081945,
+        215838507
+      ],
+      "median_ratio": 4.950417307226788,
+      "rounds_per_variant": 3
+    }
+  }
+}

@@ -13,8 +13,6 @@
     "网络结果渲染",
     "状态更新"
   ],
-  "bug_description": "Searching on every keystroke transfers obsolete result bodies. The revised ordinary backend makes previously failing DNS-independent searches reproducible. Both variants receive the same 20-song catalogue without artificial response delay. The existing 300 ms debounce suppresses intermediate queries; original CPU-pending evidence remains archived.",
-  "fix_summary": "Search-as-you-type is debounced by 300ms (timer reset on each keystroke, cleared on submit), so one request is issued per paused query instead of one per keystroke.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v3/ytmusic_search_no_debounce/unfixed",
@@ -60,25 +58,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "search_response_body_bytes",
-    "definition": "Successful ordinary search JSON response-body bytes during ten native key changes and submit. Every pair and median must show at least a five-fold reduction while preserving the final song results. No artificial service delay. This is not a CPU or radio-byte claim.",
-    "comparison": "unfixed >= 5.0 * fixed successful search response bytes over 3 paired rounds",
-    "workload_notes": "Measure successful ordinary search response-body bytes during ten native key changes and submit. All three paired ratios and median must reach 5.0x. Exact ordinary catalogue body hashes and native result titles, artists, and durations must match. Both variants use the same ordinary backend without artificial delay; only the search endpoint changes alongside the existing debounce fix.",
-    "evidence": {
-      "unfixed": [
-        23309,
-        23309,
-        23309
-      ],
-      "fixed": [
-        4238,
-        4238,
-        4238
-      ],
-      "median_ratio": 5.5,
-      "rounds_per_variant": 3
-    }
   }
 }

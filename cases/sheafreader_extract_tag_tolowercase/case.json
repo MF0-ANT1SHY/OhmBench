@@ -13,8 +13,6 @@
     "数据库读取",
     "网络结果渲染"
   ],
-  "bug_description": "FeedParser.extractTag locates the closing tag with xml.toLowerCase().indexOf(...), materializing a full lowercase copy of the item fragment for every extracted tag. Parsing one RSS item extracts ~6 tags (title/link/description/date/guid/author), so each refresh of a feed with N items allocates and scans ~6N full-fragment lowercase copies on the parsing thread, increasing GC pressure and feed-refresh latency.",
-  "fix_summary": "Use native tag-prefix and CDATA-marker searches, folding only bounded tag names; avoid full-fragment lowercase copies and whole-body regexp scans while retaining case-insensitive extraction.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/sheafreader_extract_tag_tolowercase/unfixed",
@@ -61,24 +59,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        53541274550,
-        53550002296,
-        53475898980
-      ],
-      "fixed": [
-        43257363759,
-        43213142754,
-        43269045728
-      ],
-      "median_ratio": 1.237737806869018,
-      "rounds_per_variant": 3
-    }
   }
 }

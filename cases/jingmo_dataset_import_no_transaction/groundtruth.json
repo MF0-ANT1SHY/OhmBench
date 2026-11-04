@@ -1,0 +1,87 @@
+{
+  "case": "jingmo_dataset_import_no_transaction",
+  "status": "included",
+  "mechanism": "The dataset-sync page imports the classic-poem dataset by iterating the parsed JSON array and issuing one standalone RDB INSERT per poem (each in its own autocommit transaction, all fired concurrently via a non-awaited map). Importing thousands of rows generates thousands of individual journal/fsync cycles, saturating the DB writer and freezing the sync page for a long time.",
+  "fix_summary": "Dataset import uses RdbStore.batchInsert so the whole array is inserted in a single transaction; the per-row debug logging is removed.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "features/settings/src/main/ets/pages/SyncData.ets",
+      "class": "SyncData",
+      "symbol": "aboutToAppear",
+      "changed_lines": [
+        27,
+        34
+      ],
+      "scope_lines": [
+        18,
+        37
+      ],
+      "aliases": [
+        {
+          "file": "features/settings/src/main/ets/viewmodel/DatasetViewModel.ets",
+          "class": "DatasetViewModel",
+          "symbol": "insertClassicPoemToDb"
+        },
+        {
+          "file": "features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets",
+          "class": "ClassicPoemDao",
+          "symbol": "createClassicPoem"
+        }
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "class_member",
+      "file": "features/classicalliterature/classicpoem/src/main/ets/database/ClassicPoemDao.ets",
+      "class": "ClassicPoemDao",
+      "symbol": null,
+      "changed_lines": [
+        39,
+        40
+      ],
+      "scope_lines": [
+        9,
+        81
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "class_member",
+      "file": "features/settings/src/main/ets/viewmodel/DatasetViewModel.ets",
+      "class": "DatasetViewModel",
+      "symbol": null,
+      "changed_lines": [
+        53,
+        54
+      ],
+      "scope_lines": [
+        7,
+        54
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        3318602834,
+        3231131575,
+        3258196691
+      ],
+      "fixed": [
+        1507303209,
+        1497036123,
+        1488444276
+      ],
+      "median_ratio": 2.176431577663407,
+      "rounds_per_variant": 3
+    }
+  }
+}

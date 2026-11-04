@@ -14,8 +14,6 @@
     "网络结果渲染",
     "页面切换"
   ],
-  "bug_description": "WebPage.onTitleReceive serializes the ENTIRE browsing-history list with JSON.stringify(list.map(...)) twice (before and after every recorded page visit), and HistoryPage.aboutToAppear stringifies the whole list again when the history page opens. With a large history this materializes and stringifies hundreds of entries on every page-load title event, blocking the web page load path and the history page transition.",
-  "fix_summary": "The debug logs report the list size only, removing full-list map + JSON.stringify on the page-load and page-open paths.",
   "source": {
     "unfixed": {
       "ref": "clean-app/wanharmony_history_log_materialization/unfixed",
@@ -57,23 +55,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "trace_cpu_ms",
-    "definition": "Native app on-CPU sched_switch intervals clipped to external native-clock markers around five complete normal history page loads; not wall time or app counters.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        9277.974
-      ],
-      "fixed": [
-        9294.78
-      ],
-      "paired_ratios": [
-        0.9981918883502353
-      ],
-      "median_ratio": 0.9981918883502353,
-      "rounds_per_variant": 1
-    }
   }
 }

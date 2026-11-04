@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 import xml.etree.ElementTree as ET
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'/'collect'/'fixtures'))
 from seed_wanharmony_history import preferences_bytes,validate_entries
 
 class WanHistoryFixtureTest(unittest.TestCase):

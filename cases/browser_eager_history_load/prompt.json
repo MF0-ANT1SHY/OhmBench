@@ -1,0 +1,11 @@
+{
+  "case": "browser_eager_history_load",
+  "bundle_name": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "symptom": "浏览历史记录时响应变慢。",
+  "scenario": "浏览器页面操作",
+  "perf_scenarios": [
+    "页面启动",
+    "数据库读取"
+  ]
+}

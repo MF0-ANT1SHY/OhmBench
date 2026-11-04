@@ -1,0 +1,11 @@
+{
+  "case": "sheafreader_extract_tag_tolowercase",
+  "bundle_name": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "symptom": "刷新订阅源时响应变慢。",
+  "scenario": "通过普通 F5 刷新已订阅的阅读源",
+  "perf_scenarios": [
+    "数据库读取",
+    "网络结果渲染"
+  ]
+}

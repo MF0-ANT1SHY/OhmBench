@@ -1,0 +1,12 @@
+{
+  "case": "browser_history_list_foreach",
+  "bundle_name": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "symptom": "打开浏览历史列表时响应变慢。",
+  "scenario": "浏览器页面操作",
+  "perf_scenarios": [
+    "列表滑动",
+    "组件创建",
+    "页面切换"
+  ]
+}

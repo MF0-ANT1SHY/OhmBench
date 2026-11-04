@@ -1,0 +1,182 @@
+{
+  "case": "wanharmony_html_decode_per_render",
+  "status": "excluded",
+  "mechanism": "ArticleComponent calls TextUtils.htmlDecode on title, desc and chapterName every time a list item is built. The feed list uses plain ForEach, so opening the home/search/square lists and every re-render during scrolling re-runs 12 replaceAll passes per field across all accumulated items, multiplying decode work on the render path.",
+  "fix_summary": "HTML entities are decoded once when article data arrives (TextUtils.decodeArticleList applied in fetchData/search/loadList); list items render the already-decoded fields.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/HomePage.ets",
+      "class": "HomePage",
+      "symbol": "loadData",
+      "changed_lines": [
+        160,
+        161
+      ],
+      "scope_lines": [
+        155,
+        163
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/HomePage.ets",
+      "class": "HomePage",
+      "symbol": "loadList",
+      "changed_lines": [
+        168,
+        173
+      ],
+      "scope_lines": [
+        165,
+        178
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/SearchPage.ets",
+      "class": "SearchPage",
+      "symbol": "search",
+      "changed_lines": [
+        151,
+        158
+      ],
+      "scope_lines": [
+        142,
+        160
+      ]
+    },
+    {
+      "id": "RC4",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/components/ArticleComponent.ets",
+      "class": null,
+      "symbol": "ArticleComponent",
+      "changed_lines": [
+        37,
+        64
+      ],
+      "scope_lines": [
+        5,
+        86
+      ]
+    },
+    {
+      "id": "RC5",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/components/ArticleListComponent.ets",
+      "class": "ArticleListComponent",
+      "symbol": "fetchData",
+      "changed_lines": [
+        91,
+        96
+      ],
+      "scope_lines": [
+        87,
+        99
+      ]
+    },
+    {
+      "id": "RC6",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/pages/HomePage.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "RC7",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/pages/SearchPage.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "RC8",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/pages/components/ArticleComponent.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        2,
+        2
+      ]
+    },
+    {
+      "id": "RC9",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/pages/components/ArticleListComponent.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "RC10",
+      "role": "related",
+      "kind": "class_member",
+      "file": "entry/src/main/ets/utils/TextUtils.ets",
+      "class": "TextUtils",
+      "symbol": null,
+      "changed_lines": [
+        1,
+        59
+      ],
+      "scope_lines": [
+        1,
+        59
+      ]
+    },
+    {
+      "id": "RC11",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/utils/TextUtils.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        59,
+        60
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        5224464512
+      ],
+      "fixed": [
+        5026161911
+      ],
+      "paired_ratios": [
+        1.0394540813669382
+      ],
+      "median_ratio": 1.0394540813669382,
+      "rounds_per_variant": 1
+    }
+  }
+}

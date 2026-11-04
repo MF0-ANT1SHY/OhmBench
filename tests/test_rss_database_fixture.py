@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools' / 'collect' / 'fixtures'))
 from rss_data_service import Catalogue
 from rss_database_fixture import inspect
 

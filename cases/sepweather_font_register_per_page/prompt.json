@@ -1,0 +1,11 @@
+{
+  "case": "sepweather_font_register_per_page",
+  "bundle_name": "cn.seayj.sepweather",
+  "ability": "EntryAbility",
+  "symptom": "多次进入和退出城市管理页后，应用内存持续升高。",
+  "scenario": "Open and return from the city manager",
+  "perf_scenarios": [
+    "页面启动",
+    "页面切换"
+  ]
+}

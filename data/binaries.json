@@ -1,0 +1,357 @@
+{
+  "release": "binaries-v1",
+  "download_base": "https://github.com/MF0-ANT1SHY/OhmBench/releases/download/binaries-v1",
+  "note": "Unsigned release HAPs built from the recorded source trees with HarmonyOS SDK 5.1.0.",
+  "assets": [
+    {
+      "case": "browser_eager_history_load",
+      "variant": "unfixed",
+      "file": "browser_eager_history_load.unfixed.hap",
+      "sha256": "60cb5758870c38979c397996ca747a5289269c8f3afebbd37d81cf333fa63155",
+      "size": 415559,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "browser_eager_history_load",
+      "variant": "fixed",
+      "file": "browser_eager_history_load.fixed.hap",
+      "sha256": "6bedaa0a8c722900518731cd26772395a01b197169921cfb0bd7e079a6ae11b5",
+      "size": 415627,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "browser_history_delete_no_transaction",
+      "variant": "unfixed",
+      "file": "browser_history_delete_no_transaction.unfixed.hap",
+      "sha256": "3a6ace31b223eb567a84b1d6d17d265cd3d000d94d19c5d38963e2cccba42f90",
+      "size": 419935,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "browser_history_delete_no_transaction",
+      "variant": "fixed",
+      "file": "browser_history_delete_no_transaction.fixed.hap",
+      "sha256": "3338ed364eca4b86f77797ecbd658769223ebe409f3dbd5688f51a566c5fdf55",
+      "size": 417035,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "browser_history_list_foreach",
+      "variant": "unfixed",
+      "file": "browser_history_list_foreach.unfixed.hap",
+      "sha256": "01cdcb78bae2b553d8093dc9f58b1e309a16554f4f986f07ef234211a72306aa",
+      "size": 416935,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "browser_history_list_foreach",
+      "variant": "fixed",
+      "file": "browser_history_list_foreach.fixed.hap",
+      "sha256": "c3b2002c04af5ceb9ebe96d13b20a0603b1177074a1848fae60a4a0c10737520",
+      "size": 418651,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "cloudmusic_play_time_high_frequency_update",
+      "variant": "unfixed",
+      "file": "cloudmusic_play_time_high_frequency_update.unfixed.hap",
+      "sha256": "e857d6f19362359404cecc6023ffd90623a6c10e76b7599a5d94d3d38a774953",
+      "size": 2732914,
+      "published": true
+    },
+    {
+      "case": "cloudmusic_play_time_high_frequency_update",
+      "variant": "fixed",
+      "file": "cloudmusic_play_time_high_frequency_update.fixed.hap",
+      "sha256": "bfce3dc40d63a7652feaad1c10486764d235389e3abebd776ac3e4ec320488ae",
+      "size": 2733010,
+      "published": true
+    },
+    {
+      "case": "cloudmusic_search_result_foreach",
+      "variant": "unfixed",
+      "file": "cloudmusic_search_result_foreach.unfixed.hap",
+      "sha256": "cc4104c393ebe1e023f767f0bbe886149f5843c378fd9a1d96bd96a74e6875ae",
+      "size": 2734594,
+      "published": true
+    },
+    {
+      "case": "cloudmusic_search_result_foreach",
+      "variant": "fixed",
+      "file": "cloudmusic_search_result_foreach.fixed.hap",
+      "sha256": "cbf493ed156ee55707e827ce6a2b028491ad3279d4fdebf18bd6495e8f76c174",
+      "size": 2736210,
+      "published": true
+    },
+    {
+      "case": "interviewapp_search_history_unbounded",
+      "variant": "unfixed",
+      "file": "interviewapp_search_history_unbounded.unfixed.hap",
+      "sha256": "82852c0c1e05422b84aa9d3f1c70c60bf77d5f371ca5c41a2ca5c787cec3532e",
+      "size": 3014044,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "interviewapp_search_history_unbounded",
+      "variant": "fixed",
+      "file": "interviewapp_search_history_unbounded.fixed.hap",
+      "sha256": "dc8c86eba41cb1b96150e052ac156f337a4ab8dd018c869294d3b446568c0c93",
+      "size": 3015048,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "jingmo_dataset_import_no_transaction",
+      "variant": "unfixed",
+      "file": "jingmo_dataset_import_no_transaction.unfixed.hap",
+      "sha256": "14273edd1e5cfef7f57b7e94b7aeb8bced8884315684cbcbe6d3b1a1c33f5062",
+      "size": 347668,
+      "published": true
+    },
+    {
+      "case": "jingmo_dataset_import_no_transaction",
+      "variant": "fixed",
+      "file": "jingmo_dataset_import_no_transaction.fixed.hap",
+      "sha256": "8c047e72875d5aadc3815291db9d39e935aee3d39d9e4fe7803e5386042ef376",
+      "size": 349060,
+      "published": true
+    },
+    {
+      "case": "jingmo_random_poem_orderby_random",
+      "variant": "unfixed",
+      "file": "jingmo_random_poem_orderby_random.unfixed.hap",
+      "sha256": "0aaf275aa3cf68b26cb9aecdb413b79796fc706eb8e80375d1522b514db61682",
+      "size": 343992,
+      "published": true
+    },
+    {
+      "case": "jingmo_random_poem_orderby_random",
+      "variant": "fixed",
+      "file": "jingmo_random_poem_orderby_random.fixed.hap",
+      "sha256": "b33d400ce3eb5dada7a81f08b7bd3b841d0707d69b5d919d5e10a0ee887a9fa2",
+      "size": 344016,
+      "published": true
+    },
+    {
+      "case": "jingmo_sync_page_reimport",
+      "variant": "unfixed",
+      "file": "jingmo_sync_page_reimport.unfixed.hap",
+      "sha256": "8c047e72875d5aadc3815291db9d39e935aee3d39d9e4fe7803e5386042ef376",
+      "size": 349060,
+      "published": true
+    },
+    {
+      "case": "jingmo_sync_page_reimport",
+      "variant": "fixed",
+      "file": "jingmo_sync_page_reimport.fixed.hap",
+      "sha256": "4063f1ea6fec5ecfd7294b1dd913ff5d315b02df6106d38ba5701854341a9e7f",
+      "size": 350200,
+      "published": true
+    },
+    {
+      "case": "sepweather_font_register_per_page",
+      "variant": "unfixed",
+      "file": "sepweather_font_register_per_page.unfixed.hap",
+      "sha256": "dd28a7b09b6743bcfc673da45e225066e985d0cfb0192f6788fa3828e3922435",
+      "size": 5855247,
+      "published": true
+    },
+    {
+      "case": "sepweather_font_register_per_page",
+      "variant": "fixed",
+      "file": "sepweather_font_register_per_page.fixed.hap",
+      "sha256": "c4d95997f5005579c614dfceb8288306bee8408110f546037777314193f2ae1e",
+      "size": 5855483,
+      "published": true
+    },
+    {
+      "case": "sheafreader_article_list_foreach",
+      "variant": "unfixed",
+      "file": "sheafreader_article_list_foreach.unfixed.hap",
+      "sha256": "fe8e45af23c444c3739b805adc19f2833bcee9dae358868b86b20ac34608ada7",
+      "size": 878529,
+      "published": true
+    },
+    {
+      "case": "sheafreader_article_list_foreach",
+      "variant": "fixed",
+      "file": "sheafreader_article_list_foreach.fixed.hap",
+      "sha256": "1852850ec8d0db976946ea409dcf723216bf44c9de87f17897578ab27985c382",
+      "size": 880265,
+      "published": true
+    },
+    {
+      "case": "sheafreader_extract_tag_tolowercase",
+      "variant": "unfixed",
+      "file": "sheafreader_extract_tag_tolowercase.unfixed.hap",
+      "sha256": "be83d4a5203a04d189b40bb6f78cfe85e8b0cf744ba602a571ccbe602aedd574",
+      "size": 879221,
+      "published": true
+    },
+    {
+      "case": "sheafreader_extract_tag_tolowercase",
+      "variant": "fixed",
+      "file": "sheafreader_extract_tag_tolowercase.fixed.hap",
+      "sha256": "045258596066ad562dc26511f10d7f874932d82e5a2c2d9be24bf60ab63cef86",
+      "size": 879969,
+      "published": true
+    },
+    {
+      "case": "sheafreader_insert_duplicate_exception",
+      "variant": "unfixed",
+      "file": "sheafreader_insert_duplicate_exception.unfixed.hap",
+      "sha256": "d28fb329080692a17cf3c98155c66d717e692e0f998956c059f8de31cf37dad8",
+      "size": 881357,
+      "published": true
+    },
+    {
+      "case": "sheafreader_insert_duplicate_exception",
+      "variant": "fixed",
+      "file": "sheafreader_insert_duplicate_exception.fixed.hap",
+      "sha256": "dc3476540d097090e8fd86f6cc9ae03646041440e8a144ee658e4f9fcaaeba78",
+      "size": 881429,
+      "published": true
+    },
+    {
+      "case": "sheafreader_refresh_feeds_sequential",
+      "variant": "unfixed",
+      "file": "sheafreader_refresh_feeds_sequential.unfixed.hap",
+      "sha256": "1852850ec8d0db976946ea409dcf723216bf44c9de87f17897578ab27985c382",
+      "size": 880265,
+      "published": true
+    },
+    {
+      "case": "sheafreader_refresh_feeds_sequential",
+      "variant": "fixed",
+      "file": "sheafreader_refresh_feeds_sequential.fixed.hap",
+      "sha256": "51693c73b8e5b0ed9fb23e852b07498e03e41a21d71a5168ad1ccd19ed231270",
+      "size": 880909,
+      "published": true
+    },
+    {
+      "case": "sheafreader_unread_counts_n_plus_1",
+      "variant": "unfixed",
+      "file": "sheafreader_unread_counts_n_plus_1.unfixed.hap",
+      "sha256": "f6e0c79a149e386cc9b505f3b817552980e8e0a2c2a090e3937672909382dfbc",
+      "size": 880905,
+      "published": true
+    },
+    {
+      "case": "sheafreader_unread_counts_n_plus_1",
+      "variant": "fixed",
+      "file": "sheafreader_unread_counts_n_plus_1.fixed.hap",
+      "sha256": "d28fb329080692a17cf3c98155c66d717e692e0f998956c059f8de31cf37dad8",
+      "size": 881357,
+      "published": true
+    },
+    {
+      "case": "wanharmony_persisted_home_list_growth",
+      "variant": "unfixed",
+      "file": "wanharmony_persisted_home_list_growth.unfixed.hap",
+      "sha256": "0f49cab6d143afade5ff2f597154434b01f022b3898d8129180c3435f8783c11",
+      "size": 2996760,
+      "published": true
+    },
+    {
+      "case": "wanharmony_persisted_home_list_growth",
+      "variant": "fixed",
+      "file": "wanharmony_persisted_home_list_growth.fixed.hap",
+      "sha256": "df1d6aa039fe134c34ac639b3eb73e708f4f942da69024b29dd2cdd5083c10ca",
+      "size": 2997424,
+      "published": true
+    },
+    {
+      "case": "weatherassistant_http_session_leak",
+      "variant": "unfixed",
+      "file": "weatherassistant_http_session_leak.unfixed.hap",
+      "sha256": "a1439555cb78fe4b0f6f97027fd41b08dc61a37291314e324dc0dbe74fd8c88d",
+      "size": 157247,
+      "published": true
+    },
+    {
+      "case": "weatherassistant_http_session_leak",
+      "variant": "fixed",
+      "file": "weatherassistant_http_session_leak.fixed.hap",
+      "sha256": "7f0c4f9f0940cd1adb41f1fc06c1bd00e6fbfc0ab9a6478b8f69bc16c24804aa",
+      "size": 157351,
+      "published": true
+    },
+    {
+      "case": "weatherassistant_remote_weather_icons",
+      "variant": "unfixed",
+      "file": "weatherassistant_remote_weather_icons.unfixed.hap",
+      "sha256": "2d2f650a0bbd69e895c8797fec5ed13e1913908eda640be345ce50e64032e465",
+      "size": 141210,
+      "published": true
+    },
+    {
+      "case": "weatherassistant_remote_weather_icons",
+      "variant": "fixed",
+      "file": "weatherassistant_remote_weather_icons.fixed.hap",
+      "sha256": "4f3fa785462ba232b8484cee2965e58a4b08e89ef0bc77f43c467d388dbac6d6",
+      "size": 147676,
+      "published": true
+    },
+    {
+      "case": "ytmusic_current_playing_timeupdate",
+      "variant": "unfixed",
+      "file": "ytmusic_current_playing_timeupdate.unfixed.hap",
+      "sha256": "744d22d0c5ffc50d8f0e51239b4ea99368a0292836f95924c66acf306fd4ec04",
+      "size": 371454821,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "ytmusic_current_playing_timeupdate",
+      "variant": "fixed",
+      "file": "ytmusic_current_playing_timeupdate.fixed.hap",
+      "sha256": "585676afe9a6b5b26e31fc2fd5b465b38c77601caae8dd18404de98a1bff154c",
+      "size": 371455037,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "ytmusic_history_json_parse_per_row",
+      "variant": "unfixed",
+      "file": "ytmusic_history_json_parse_per_row.unfixed.hap",
+      "sha256": "9ebe2d06e0b0aa7f31200789530b8f11e3322b88b8a0dcd17b334a355a4f9c5d",
+      "size": 371454477,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "ytmusic_history_json_parse_per_row",
+      "variant": "fixed",
+      "file": "ytmusic_history_json_parse_per_row.fixed.hap",
+      "sha256": "0c26c438a7f460290dbd45e7d4d3bbbcce397e2e582d52869ff3378fd6f99cc6",
+      "size": 371456853,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "ytmusic_search_no_debounce",
+      "variant": "unfixed",
+      "file": "ytmusic_search_no_debounce.unfixed.hap",
+      "sha256": "129de34ec8ab009fc5fd70b6d503d7e45829b73540ecfc7b28877ea24472bd23",
+      "size": 371454597,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    },
+    {
+      "case": "ytmusic_search_no_debounce",
+      "variant": "fixed",
+      "file": "ytmusic_search_no_debounce.fixed.hap",
+      "sha256": "e1566fa40058fab5fa8b132f38e87392af270ea966f4dd0bb783f4f952e12404",
+      "size": 371454825,
+      "published": false,
+      "reason": "upstream repository has no licence; build locally (tools/extend/build_clean_cases.py) and use --from-build"
+    }
+  ]
+}

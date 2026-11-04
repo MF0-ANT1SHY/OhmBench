@@ -1,0 +1,11 @@
+{
+  "case": "sheafreader_refresh_feeds_sequential",
+  "bundle_name": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "symptom": "打开阅读器后，等待订阅刷新完成的时间较长。",
+  "scenario": "Open the reader and wait for its automatic subscription refresh",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面启动"
+  ]
+}

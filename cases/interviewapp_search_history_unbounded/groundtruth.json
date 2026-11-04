@@ -1,0 +1,92 @@
+{
+  "case": "interviewapp_search_history_unbounded",
+  "status": "included",
+  "mechanism": "The search-history store persists every keyword as its own preference key and never bounds the number of entries. The history grows without limit, the history component renders an ever-growing ForEach, and preferences storage/flush volume grows with every search.",
+  "fix_summary": "History is kept as a single ordered JSON list capped at the 20 most recent keywords.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "features/home/src/main/ets/utils/history.ets",
+      "class": "HistoryStore",
+      "symbol": "setItem",
+      "changed_lines": [
+        19,
+        21
+      ],
+      "scope_lines": [
+        19,
+        22
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "primary",
+      "kind": "function",
+      "file": "features/home/src/main/ets/utils/history.ets",
+      "class": "HistoryStore",
+      "symbol": "getAll",
+      "changed_lines": [
+        34,
+        37
+      ],
+      "scope_lines": [
+        34,
+        37
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "class_member",
+      "file": "features/home/src/main/ets/utils/history.ets",
+      "class": "HistoryStore",
+      "symbol": null,
+      "changed_lines": [
+        3,
+        24
+      ],
+      "scope_lines": [
+        3,
+        38
+      ]
+    },
+    {
+      "id": "RC4",
+      "role": "related",
+      "kind": "function",
+      "file": "features/home/src/main/ets/utils/history.ets",
+      "class": "HistoryStore",
+      "symbol": "delItem",
+      "changed_lines": [
+        25,
+        27
+      ],
+      "scope_lines": [
+        24,
+        27
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "app_pss_bytes",
+    "definition": "Final absolute app-process PSS after opening the normal history page and a fixed three-second settling period. Kernel smaps_rollup samples bracket the entire page-opening workload. Every trial uses a freshly restored production state derived from the same 2,500 search submissions.",
+    "comparison": "unfixed >= 1.3 * fixed over >= 3 rounds per variant",
+    "workload_notes": "Measure the normal visible history page rather than search results after its history UI is removed. Identical 2,500-submission production states; unchanged business code; threshold raised from 1.2x to 1.3x.",
+    "evidence": {
+      "unfixed": [
+        364454912,
+        358107136,
+        365289472
+      ],
+      "fixed": [
+        77057024,
+        77926400,
+        76762112
+      ],
+      "median_ratio": 4.729678010923443,
+      "rounds_per_variant": 3
+    }
+  }
+}

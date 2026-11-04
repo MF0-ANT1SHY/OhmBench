@@ -13,8 +13,6 @@
     "数据库读取",
     "状态更新"
   ],
-  "bug_description": "One unread COUNT query per subscription repeatedly scans unread article rows. A grouped query obtains all subscription counts in one pass. This revised workload uses 100 ordinary subscriptions and 100000 articles; the original small-input retired-instructions negative remains archived.",
-  "fix_summary": "A single grouped query (GROUP BY feed_id over unread articles) returns all feeds' unread counts at once.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/sheafreader_unread_counts_n_plus_1/unfixed",
@@ -60,25 +58,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "trace_cpu_ms",
-    "definition": "App-only native scheduler CPU during normal startup and unread sidebar loading; 100 subscriptions and 100000 articles. Each paired ratio and median ratio must be at least 2.0. Native recent-fetch limits exclude network refresh.",
-    "comparison": "unfixed >= 2.0 * fixed over >= 3 rounds per variant",
-    "workload_notes": "Measure app-only scheduler CPU during normal startup with 100 recently fetched subscriptions and 100000 articles. All three paired ratios and median must reach 2.0x. Verify all 100 ordinary unread badges and complete unchanged table contents. Business source is unchanged;",
-    "evidence": {
-      "unfixed": [
-        16563.935,
-        16483.168,
-        17887.962
-      ],
-      "fixed": [
-        1232.659,
-        1270.421,
-        1196.606
-      ],
-      "median_ratio": 13.437564646832579,
-      "rounds_per_variant": 3
-    }
   }
 }

@@ -11,7 +11,7 @@ from pathlib import Path
 from audit_clean_app import audit_hap, audit_source
 from clean_sources import app_ref
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def build_case(case, variant, output, toolchain, mode, source_ref=None):

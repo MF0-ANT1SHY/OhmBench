@@ -13,8 +13,6 @@
     "动画",
     "状态更新"
   ],
-  "bug_description": "AVPlayerUtils' timeUpdate callback writes the millisecond-precision playback position into the global PLAY_TIME AppStorage state on every callback (about 10 times per second). The full player page binds PLAY_TIME via @StorageProp, so the heavy player view (cover art, controls, lyrics entry) re-renders at callback frequency even though the displayed progress only changes once per second, wasting UI-thread CPU during playback and draining battery.",
-  "fix_summary": "The global state is written only when the whole-second part of the position changes (seek still updates immediately).",
   "source": {
     "unfixed": {
       "ref": "clean-app-v4/cloudmusic_play_time_high_frequency_update/unfixed",
@@ -62,24 +60,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        529265934,
-        528154427,
-        524562798
-      ],
-      "fixed": [
-        178970205,
-        174382547,
-        174760908
-      ],
-      "median_ratio": 3.022154285213487,
-      "rounds_per_variant": 3
-    }
   }
 }

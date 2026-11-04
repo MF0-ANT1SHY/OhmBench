@@ -1,0 +1,49 @@
+{
+  "case": "sheafreader_refresh_feeds_sequential",
+  "status": "included",
+  "mechanism": "Sequential fetching adds the latency of each due subscription. This revision measures normal startup through automatic all-feed refresh under a declared 1.5-second RSS response delay. It does not claim lower CPU time; the original CPU-negative result is archived.",
+  "fix_summary": "Fetch due feeds using four bounded workers and add each completed inserted count after await, preserving totals under out-of-order completion.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/services/FeedService.ets",
+      "class": "FeedService",
+      "symbol": "refreshAllFeeds",
+      "changed_lines": [
+        161,
+        175
+      ],
+      "scope_lines": [
+        144,
+        179
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "startup_refresh_elapsed_s",
+    "definition": "Elapsed normal startup including all-feed refresh under identical 1.5-second RSS response latency. Every unfixed lower timing bound must exceed 1.5 times its paired fixed upper bound; native CPU is diagnostic only.",
+    "comparison": "unfixed conservative lower bound >= 1.5 * fixed upper bound over 3 paired rounds",
+    "workload_notes": "Measure complete ordinary startup and automatic all-feed refresh under identical declared 1.5-second RSS response latency. All three conservative lower/upper paired ratios must reach 1.5x. Native scheduling is diagnostic; Concurrent inserted totals are corrected.",
+    "evidence": {
+      "unfixed": [
+        21.25579310000103,
+        21.574176899999657,
+        21.187260400000014
+      ],
+      "fixed": [
+        9.72918910000044,
+        9.796314799999891,
+        9.960387299999638
+      ],
+      "paired_conservative_ratios": [
+        1.8567428193989528,
+        1.8735227455124577,
+        1.7951272436965613
+      ],
+      "median_ratio": 1.844020161540805,
+      "rounds_per_variant": 3
+    }
+  }
+}

@@ -14,8 +14,6 @@
     "组件创建",
     "页面切换"
   ],
-  "bug_description": "The article list view renders store.articles through a Scroll container holding a Column with a plain ForEach, which is never virtualised; the card grid also uses a non-caching ForEach. Opening a feed or scrolling loads pages of articles (limit grows with 'load more'), and every accumulated article row/card — including off-screen ones — is built eagerly, with per-card context menus bound, slowing list display and paging in large feeds.",
-  "fix_summary": "Both the list and grid render via LazyForEach over an IDataSource kept in sync with the store, so rows are created on demand as they enter the viewport.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/sheafreader_article_list_foreach/unfixed",
@@ -61,24 +59,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        12212669871,
-        12238308976,
-        11967515145
-      ],
-      "fixed": [
-        5099750308,
-        5047644852,
-        5041658899
-      ],
-      "median_ratio": 2.4194788320261957,
-      "rounds_per_variant": 3
-    }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "case": "ytmusic_current_playing_timeupdate",
+  "bundle_name": "com.example.myapplication",
+  "ability": "EntryAbility",
+  "symptom": "播放过程中界面更新不流畅。",
+  "scenario": "Youtube-Music-ArkTS-Clone页面操作",
+  "perf_scenarios": [
+    "动画",
+    "状态更新"
+  ]
+}

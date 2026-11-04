@@ -1,0 +1,11 @@
+{
+  "case": "sheafreader_unread_counts_n_plus_1",
+  "bundle_name": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "symptom": "订阅和文章较多时，打开阅读器后侧栏未读数量加载缓慢。",
+  "scenario": "Open the reader and load subscription unread badges",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ]
+}

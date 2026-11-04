@@ -13,8 +13,6 @@
     "数据库读取",
     "页面切换"
   ],
-  "bug_description": "Opening the dataset sync page unconditionally re-downloads the full classic-poem dataset JSON and re-runs the bulk import, even when the (static, versioned) dataset is already fully imported. Every re-import re-attempts thousands of inserts that all conflict with existing rows (id primary key), wasting network transfer, parsing, and database work on each visit.",
-  "fix_summary": "Before importing, a single COUNT query checks whether the dataset is already present and skips the download/import entirely when the table is populated.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/jingmo_sync_page_reimport/unfixed",
@@ -60,24 +58,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        4506681633,
-        4499744652,
-        4511747452
-      ],
-      "fixed": [
-        1055658926,
-        1099558430,
-        1070568655
-      ],
-      "median_ratio": 4.209614779913391,
-      "rounds_per_variant": 3
-    }
   }
 }

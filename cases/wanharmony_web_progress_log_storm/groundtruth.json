@@ -1,0 +1,42 @@
+{
+  "case": "wanharmony_web_progress_log_storm",
+  "status": "excluded",
+  "mechanism": "WebPage's onProgressChange handler writes a hilog log line for every progress event. Web progress fires dozens of times per page load (per sub-resource), so opening any article emits a log storm on the UI thread (formatting + hilog IPC per event), adding overhead to every page load.",
+  "fix_summary": "Progress is logged only at milestones (every 25% and completion), cutting per-event formatting and hilog traffic during page loads.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/WebPage.ets",
+      "class": "WebPage",
+      "symbol": "build",
+      "changed_lines": [
+        62,
+        63
+      ],
+      "scope_lines": [
+        25,
+        146
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        1350232653
+      ],
+      "fixed": [
+        1367926793
+      ],
+      "paired_ratios": [
+        0.9870649949320789
+      ],
+      "median_ratio": 0.9870649949320789,
+      "rounds_per_variant": 1
+    }
+  }
+}

@@ -13,8 +13,6 @@
     "页面启动",
     "数据库读取"
   ],
-  "bug_description": "On application startup the main page eagerly queries every per-day history table in the RDB database and materializes all browsing-history rows in memory (Index.aboutToAppear -> RdbUtils.queryAllDate + queryHistoriesByDate for each date), even though history is only consumed when the user opens the browsing-history dialog. Cold-start latency and startup CPU grow linearly with the number of recorded history entries.",
-  "fix_summary": "History is loaded lazily on first open of the history dialog (PagesDialog.loadHistoryData), and RdbUtils.queryHistoriesByDate now actually awaits the RDB query instead of returning an unfilled array.",
   "source": {
     "unfixed": {
       "ref": "clean-app/browser_eager_history_load/unfixed",
@@ -56,24 +54,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        1777740431,
-        1756342612,
-        1805539155
-      ],
-      "fixed": [
-        1313976611,
-        1285360539,
-        1308952979
-      ],
-      "median_ratio": 1.3581392605547522,
-      "rounds_per_variant": 3
-    }
   }
 }

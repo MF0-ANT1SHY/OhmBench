@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'/'collect'/'fixtures'))
 from cloudmusic_data_service import Catalogue,handler
 
 

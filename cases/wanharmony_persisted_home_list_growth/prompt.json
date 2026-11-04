@@ -1,0 +1,11 @@
+{
+  "case": "wanharmony_persisted_home_list_growth",
+  "bundle_name": "org.example.wan.ohos",
+  "ability": "EntryAbility",
+  "symptom": "浏览首页并连续翻页后，应用内存占用较高。",
+  "scenario": "WanHarmony (WanAndroid 客户端)页面操作",
+  "perf_scenarios": [
+    "列表滑动",
+    "状态更新"
+  ]
+}

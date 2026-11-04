@@ -1,0 +1,11 @@
+{
+  "case": "weatherassistant_http_session_leak",
+  "bundle_name": "com.alatus.futureweather",
+  "ability": "AlatusAbility",
+  "symptom": "多次返回城市天气页刷新预报后，应用内存持续升高。",
+  "scenario": "Refresh the saved city forecasts",
+  "perf_scenarios": [
+    "网络结果渲染",
+    "页面切换"
+  ]
+}

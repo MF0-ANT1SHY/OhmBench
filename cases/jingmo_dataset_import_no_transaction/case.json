@@ -13,8 +13,6 @@
     "数据库读取",
     "网络结果渲染"
   ],
-  "bug_description": "The dataset-sync page imports the classic-poem dataset by iterating the parsed JSON array and issuing one standalone RDB INSERT per poem (each in its own autocommit transaction, all fired concurrently via a non-awaited map). Importing thousands of rows generates thousands of individual journal/fsync cycles, saturating the DB writer and freezing the sync page for a long time.",
-  "fix_summary": "Dataset import uses RdbStore.batchInsert so the whole array is inserted in a single transaction; the per-row debug logging is removed.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v2/jingmo_dataset_import_no_transaction/unfixed",
@@ -60,24 +58,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        3318602834,
-        3231131575,
-        3258196691
-      ],
-      "fixed": [
-        1507303209,
-        1497036123,
-        1488444276
-      ],
-      "median_ratio": 2.176431577663407,
-      "rounds_per_variant": 3
-    }
   }
 }

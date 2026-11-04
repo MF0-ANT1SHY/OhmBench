@@ -14,8 +14,6 @@
     "数据库读取",
     "状态更新"
   ],
-  "bug_description": "Searching local songs materializes the entire songs table via getAllSongs() (already loaded in full by the page) and then filters with Array.filter over songFile strings in memory for every search submission. With a large local library the search does O(total_songs) string work on the UI path instead of an indexed SQLite LIKE query that returns only matching rows.",
-  "fix_summary": "A getSongsByKeyword query (RdbPredicates.like on songFile, with LIKE-wildcard escaping) performs the filtering in SQLite; the page search handler awaits it directly instead of filtering the full in-memory list.",
   "source": {
     "unfixed": {
       "ref": "clean-app-v4/cloudmusic_local_song_memory_filter/unfixed",
@@ -63,24 +61,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        2045600548,
-        2054389977,
-        2030748226
-      ],
-      "fixed": [
-        1855940154,
-        1855603380,
-        1877265799
-      ],
-      "median_ratio": 1.1021910073938732,
-      "rounds_per_variant": 3
-    }
   }
 }

@@ -14,8 +14,6 @@
     "列表滑动",
     "组件创建"
   ],
-  "bug_description": "getArtists builds the artist name line with artistStr = artistStr + artist.name + ', ' inside a loop and then strips the trailing separator. It runs in SongCard.aboutToAppear for every visible song row (lists, search results, playlists), allocating an intermediate string per artist per row on the render path.",
-  "fix_summary": "Names are collected into an array and joined once.",
   "source": {
     "unfixed": {
       "ref": "clean-app/cloudmusic_songcard_artists_concat/unfixed",
@@ -57,24 +55,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        4387898960,
-        4432927262,
-        4465272396
-      ],
-      "fixed": [
-        4363734492,
-        4400388212,
-        4477160107
-      ],
-      "median_ratio": 1.0073945862120222,
-      "rounds_per_variant": 3
-    }
   }
 }

@@ -1,0 +1,43 @@
+{
+  "case": "cloudmusic_indexof_in_render",
+  "status": "excluded",
+  "mechanism": "In the playlist page content list, every song row build passes sid/index to SongCard as this.list.indexOf(item), twice per row. indexOf is a linear scan over the whole (potentially 1000+) song list, so rendering/scrolling the playlist costs O(n) per row and O(n^2) cumulative, wasting UI-thread time as the list grows.",
+  "fix_summary": "The index already provided by the LazyForEach item generator is passed to SongCard, removing both per-row linear scans.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/pages/playlist/PlayListPage.ets",
+      "class": "PlayListPage",
+      "symbol": "ContentList",
+      "changed_lines": [
+        251,
+        255
+      ],
+      "scope_lines": [
+        236,
+        271
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        5952383770,
+        5935725421,
+        5910313879
+      ],
+      "fixed": [
+        5894203971,
+        5880653020,
+        5906285266
+      ],
+      "median_ratio": 1.0070444542137138,
+      "rounds_per_variant": 3
+    }
+  }
+}

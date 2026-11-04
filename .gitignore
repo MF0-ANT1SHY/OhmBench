@@ -1,7 +1,9 @@
-# Upstream app clones created by tools/reconstruct_clean_hosts.py
-/hosts/
-# Build outputs and locally generated data
+# Upstream app clones created by tools/extend/reconstruct_clean_hosts.py
+/hosts
+# Build outputs, downloaded binaries and locally generated data
 /artifacts/
+# HapRay dynamic data collected by tools/collect/collect_case.py
+/collected/
 # HarmonyOS command-line tools (symlink or directory)
 /toolchain
 __pycache__/

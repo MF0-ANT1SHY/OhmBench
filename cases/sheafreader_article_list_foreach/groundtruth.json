@@ -1,0 +1,71 @@
+{
+  "case": "sheafreader_article_list_foreach",
+  "status": "included",
+  "mechanism": "The article list view renders store.articles through a Scroll container holding a Column with a plain ForEach, which is never virtualised; the card grid also uses a non-caching ForEach. Opening a feed or scrolling loads pages of articles (limit grows with 'load more'), and every accumulated article row/card — including off-screen ones — is built eagerly, with per-card context menus bound, slowing list display and paging in large feeds.",
+  "fix_summary": "Both the list and grid render via LazyForEach over an IDataSource kept in sync with the store, so rows are created on demand as they enter the viewport.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/components/ArticleListView.ets",
+      "class": "ArticleListView",
+      "symbol": "build",
+      "changed_lines": [
+        805,
+        914
+      ],
+      "scope_lines": [
+        593,
+        919
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/components/ArticleListView.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        61,
+        62
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "class_member",
+      "file": "entry/src/main/ets/components/ArticleListView.ets",
+      "class": "ArticleListView",
+      "symbol": null,
+      "changed_lines": [
+        64,
+        65
+      ],
+      "scope_lines": [
+        63,
+        920
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        12212669871,
+        12238308976,
+        11967515145
+      ],
+      "fixed": [
+        5099750308,
+        5047644852,
+        5041658899
+      ],
+      "median_ratio": 2.4194788320261957,
+      "rounds_per_variant": 3
+    }
+  }
+}

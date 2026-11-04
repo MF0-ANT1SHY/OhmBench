@@ -1,0 +1,11 @@
+{
+  "case": "cloudmusic_play_time_high_frequency_update",
+  "bundle_name": "cc.chenlvin.cloudmusic",
+  "ability": "EntryAbility",
+  "symptom": "播放过程中界面更新不流畅。",
+  "scenario": "通过普通本地曲库菜单播放真实60秒音频，在完整播放器观察播放进度推进",
+  "perf_scenarios": [
+    "动画",
+    "状态更新"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "case": "weatherassistant_remote_weather_icons",
+  "bundle_name": "com.alatus.futureweather",
+  "ability": "AlatusAbility",
+  "symptom": "打开天气页面后，天气图片显示较慢。",
+  "scenario": "Open the weather forecast",
+  "perf_scenarios": [
+    "图片加载",
+    "页面启动",
+    "页面切换"
+  ]
+}

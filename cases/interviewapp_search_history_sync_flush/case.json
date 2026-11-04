@@ -14,8 +14,6 @@
     "状态更新",
     "数据库读取"
   ],
-  "bug_description": "The search-history HistoryStore calls preferences flush() synchronously on every setItem/delItem (i.e., on every recorded search keyword), forcing a disk write on the caller's thread each time. Rapid successive searches each pay a full synchronous flush, adding avoidable I/O latency to the search flow.",
-  "fix_summary": "Flushes are debounced: mutations update the in-memory cache synchronously and a single flush runs 2 seconds after the last mutation.",
   "source": {
     "unfixed": {
       "ref": "clean-app/interviewapp_search_history_sync_flush/unfixed",
@@ -57,23 +55,5 @@
       "ui/",
       "thermal/"
     ]
-  },
-  "test_oracle": {
-    "metric": "hiperf_instructions",
-    "definition": "raw-instruction-retired sample count attributed to the app process during the measured step, aggregated from perf.data (HapRay perf.db instruction counts).",
-    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
-    "evidence": {
-      "unfixed": [
-        4137642395
-      ],
-      "fixed": [
-        4116119424
-      ],
-      "paired_ratios": [
-        1.0052289471667186
-      ],
-      "median_ratio": 1.0052289471667186,
-      "rounds_per_variant": 1
-    }
   }
 }

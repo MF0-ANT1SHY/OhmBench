@@ -1,0 +1,11 @@
+{
+  "case": "jingmo_sync_page_reimport",
+  "bundle_name": "com.hefengbao.jingmo.hw",
+  "ability": "EntryAbility",
+  "symptom": "同步数据时响应变慢。",
+  "scenario": "通过普通同步页面重复检查已导入的文库数据",
+  "perf_scenarios": [
+    "数据库读取",
+    "页面切换"
+  ]
+}

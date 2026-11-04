@@ -1,0 +1,12 @@
+{
+  "case": "ytmusic_history_json_parse_per_row",
+  "bundle_name": "com.example.myapplication",
+  "ability": "EntryAbility",
+  "symptom": "打开观看记录并滑动时，应用 CPU 开销较高。",
+  "scenario": "通过普通观看记录入口读取1000条原生歌曲历史并滚动列表",
+  "perf_scenarios": [
+    "列表滑动",
+    "状态更新",
+    "组件创建"
+  ]
+}

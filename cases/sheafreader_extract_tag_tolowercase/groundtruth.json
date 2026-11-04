@@ -1,0 +1,75 @@
+{
+  "case": "sheafreader_extract_tag_tolowercase",
+  "status": "included",
+  "mechanism": "FeedParser.extractTag locates the closing tag with xml.toLowerCase().indexOf(...), materializing a full lowercase copy of the item fragment for every extracted tag. Parsing one RSS item extracts ~6 tags (title/link/description/date/guid/author), so each refresh of a feed with N items allocates and scans ~6N full-fragment lowercase copies on the parsing thread, increasing GC pressure and feed-refresh latency.",
+  "fix_summary": "Use native tag-prefix and CDATA-marker searches, folding only bounded tag names; avoid full-fragment lowercase copies and whole-body regexp scans while retaining case-insensitive extraction.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/utils/FeedParser.ets",
+      "class": "FeedParser",
+      "symbol": "extractTag",
+      "changed_lines": [
+        180,
+        195
+      ],
+      "scope_lines": [
+        179,
+        195
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "class_member",
+      "file": "entry/src/main/ets/utils/FeedParser.ets",
+      "class": "FeedParser",
+      "symbol": null,
+      "changed_lines": [
+        197,
+        201
+      ],
+      "scope_lines": [
+        13,
+        303
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/utils/FeedParser.ets",
+      "class": "FeedParser",
+      "symbol": "joinCdata",
+      "changed_lines": [
+        202,
+        212
+      ],
+      "scope_lines": [
+        201,
+        214
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        53541274550,
+        53550002296,
+        53475898980
+      ],
+      "fixed": [
+        43257363759,
+        43213142754,
+        43269045728
+      ],
+      "median_ratio": 1.237737806869018,
+      "rounds_per_variant": 3
+    }
+  }
+}

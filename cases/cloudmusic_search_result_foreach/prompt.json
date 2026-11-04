@@ -1,0 +1,12 @@
+{
+  "case": "cloudmusic_search_result_foreach",
+  "bundle_name": "cc.chenlvin.cloudmusic",
+  "ability": "EntryAbility",
+  "symptom": "搜索歌曲时，大量结果的列表加载较慢。",
+  "scenario": "Search and load the first song result page",
+  "perf_scenarios": [
+    "列表滑动",
+    "网络结果渲染",
+    "组件创建"
+  ]
+}

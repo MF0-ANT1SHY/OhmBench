@@ -1,0 +1,87 @@
+{
+  "case": "browser_history_list_foreach",
+  "status": "included",
+  "mechanism": "The browsing-history dialog renders each day's entries with a plain ForEach inside ListItemGroup, so when the dialog opens, HistoryItem components for every recorded entry (including off-screen ones) are created eagerly, and scrolling re-creates components instead of recycling them. Opening the history dialog and scrolling it is slow once history grows.",
+  "fix_summary": "History entries are rendered with LazyForEach backed by a per-group IDataSource implementation, so row components are created on demand as they enter the viewport and recycled while scrolling.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": "PagesDialog",
+      "symbol": "build",
+      "changed_lines": [
+        86,
+        91
+      ],
+      "scope_lines": [
+        78,
+        101
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "module",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": null,
+      "symbol": null,
+      "changed_lines": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "RC3",
+      "role": "related",
+      "kind": "class_member",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": "PagesDialog",
+      "symbol": null,
+      "changed_lines": [
+        12,
+        13
+      ],
+      "scope_lines": [
+        7,
+        102
+      ]
+    },
+    {
+      "id": "RC4",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "class": "PagesDialog",
+      "symbol": "loadHistoryData",
+      "changed_lines": [
+        32,
+        33
+      ],
+      "scope_lines": [
+        19,
+        37
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "Sampled retired-instruction period sum (hw-instructions) attributed to the app process in the complete externally driven measured window.",
+    "comparison": "unfixed >= 1.2 * fixed over >= 3 rounds per variant",
+    "evidence": {
+      "unfixed": [
+        10968865584,
+        10978280673,
+        10936138517
+      ],
+      "fixed": [
+        4040506851,
+        4035677834,
+        4048744455
+      ],
+      "median_ratio": 2.7147251541685358,
+      "rounds_per_variant": 3
+    }
+  }
+}
