@@ -51,7 +51,7 @@ Matching of a suspect to a groundtruth location (the root cause itself or one of
    (rule 1 only) may be reported in addition and must be labelled as such.
 
 A case without an answer scores P = R = F1 = 0 and keeps its measured cost. Report per-case records
-and the **macro average** over all 21 cases (and optionally micro averages, pooling
+and the **macro average** over all 22 cases (and optionally micro averages, pooling
 suspects and root causes). Use the same model, budget and inputs for all cases of a run.
 
 ## Batch HapRay evaluation
@@ -82,7 +82,7 @@ suspects and root causes). Use the same model, budget and inputs for all cases o
 
    The default report pattern reads existing
    `{case}/report/root_cause_agent_result.json`. For native HapRay-Skill
-   fix plans, pass `--report '{case}/fix-plan.json'` (or the actual path
+   [v1.3 fix plans](https://gitcode.com/SMAT/HapRay-Skill/blob/a8e53f853528513ddbca60abc3ed8213a1ecc985/skills/optimize/hapray-fix-planning/references/fix-plan-template.json), pass `--report '{case}/fix-plan.json'` (or the actual path
    under each exported workspace). These plans score **selected proposals
    in file order**; they are not the whole scene analysis. Keep selection
    scope and ordering consistent across revisions. For Markdown scene reports,

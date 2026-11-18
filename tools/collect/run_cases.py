@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,7 +22,8 @@ def collect(case_dir, case, work, args, trial):
     if 'memory' in case['collection']['modes']:
         perf.append('--memory')
     with (work / 'collect.log').open('w') as log:
-        subprocess.run([args.prepare, case['id'], args.variant, str(trial), args.device],
+        setup = [sys.executable, args.prepare] if args.prepare.endswith('.py') else [args.prepare]
+        subprocess.run([*setup, case['id'], args.variant, str(trial), args.device],
                        env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         subprocess.run(perf, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
     receipt = json.loads(result.read_text())

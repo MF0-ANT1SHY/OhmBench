@@ -10,9 +10,8 @@
   },
   "category": "latency",
   "perf_scenarios": [
-    "列表滑动",
-    "组件创建",
-    "页面切换"
+    "列表加载",
+    "数据库读取"
   ],
   "source": {
     "patch": "source.patch",

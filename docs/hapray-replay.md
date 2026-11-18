@@ -4,6 +4,7 @@
 `included`. Each has a clean, real-device reference in `groundtruth.json`.
 The [nine failed pairs](https://github.com/MF0-ANT1SHY/OhmBench/blob/2863a47/README.md#excluded-cases)
 were removed in `8a5e4e7`; do not count them as misses or restore them to increase the case count.
+The additional [row-decoding pair](../candidates/browser_history_row_decode/groundtruth.json) also failed its 1.20× gate at 1.14× and is not scored.
 A small but passing effect is not a failed gate: for example, the parser case
 below passed its 1.20× criterion at 1.24×. Use the case's own metric and
 comparison, not a universal cutoff.
@@ -18,6 +19,7 @@ There is no frame-loss acceptance oracle in the current cohort.
 |---|---|---|
 | browser_eager_history_load | latency → latency, load | Seed populated multi-day Histories.db; cold launch. Empty history misses the startup work. |
 | browser_history_delete_no_transaction | latency → latency, load | Same database; verify history exists before confirming clear. Restore it **each round**. |
+| browser_history_eager_date_groups | latency → load, latency | Seed 365 days × 100 rows. Open the dialog and check Article 36499, then verify that scrolling reaches the next date. The oracle measures instructions, not elapsed time. |
 | browser_history_list_foreach | latency → load, jank | Populate history; open the dialog and scroll visible Article rows. |
 | cloudmusic_play_time_high_frequency_update | cpu → load, jank | Local library must show 10,000 songs and playable Track 9999 (60 s audio); check slider advances. The search service alone does not seed the library. |
 | cloudmusic_search_result_foreach | latency → load, latency | Music API on 18490; configure server URL, search “music”, check Track 1 and its artists on the 1,000-song result page. |
@@ -39,7 +41,7 @@ There is no frame-loss acceptance oracle in the current cohort.
 | ytmusic_search_no_debounce | network → load | Search API on 18493; ten key changes and submit, verify final catalogue. Load is the closest route; score bytes, not CPU. |
 
 **Disposition.** This is a dependency audit of the measured path, not a new
-21-case device run. Historical clean evidence is not proof of fresh-install
+full-cohort device run. Historical clean evidence is not proof of fresh-install
 replay today. For WanHarmony, a host GET of
 `https://www.wanandroid.com/article/list/0/json` on 2026-11-18 returned
 `errorCode: -1`, `data: null`. A cached 首页 screen is **not** a successful
@@ -88,3 +90,32 @@ receipt and report directory, and records failures without attributing them
 to the diagnosis model. Omit `--cases` for the full included cohort; use a
 fresh output root with `--variant fixed` for the comparison. Raw capture
 success does not replace the non-HapRay oracle measurements.
+
+### Browser setup hook
+
+On a dedicated test device with access to its app sandbox, use
+[`prepare_browser.py`](../tools/collect/prepare_browser.py) as `--prepare`.
+It replaces **only the browser test history** before each round. Place the
+signed HAPs and SQLite file under `OHM_BROWSER_ASSETS` on the HDC host:
+
+```text
+$OHM_BROWSER_ASSETS/<case-id>/
+  Histories.db
+  unfixed/app.hap
+  fixed/app.hap
+```
+
+Generate the database with the case's fixture parameters. The hook runs
+`hdc install -r` and stops if the signing identity does not match the installed
+app. It does not uninstall an existing app. It checks the restored database
+against the host file's SHA-256 before collection starts.
+
+For the 365-day browser workload, place the signed builds as shown above, then run:
+
+```sh
+case_id=browser_history_eager_date_groups
+python3 tools/collect/fixtures/seed_browser.py "$OHM_BROWSER_ASSETS/$case_id/Histories.db" \
+  --days 365 --per-day 100
+python3 tools/collect/run_cases.py collected/browser-history --device "$SERIAL" \
+  --prepare tools/collect/prepare_browser.py --cases "$case_id"
+```

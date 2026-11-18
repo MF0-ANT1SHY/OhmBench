@@ -1,6 +1,6 @@
 # Overview
 
-**21 cases from 9 apps** ([list](cases.md)).
+**22 cases from 9 apps** ([list](cases.md)).
 
 ## Prerequisite
 

@@ -1,6 +1,6 @@
 {
   "id": "browser_history_eager_date_groups",
-  "status": "candidate",
+  "status": "included",
   "host_app": {
     "name": "browser (小狐狸浏览器)",
     "repository": "https://github.com/langwudong/browser",
@@ -37,7 +37,7 @@
     "workload": "testcase/PerfLoad_browser_0060.workload.json"
   },
   "collection": {
-    "config": "../../cases/collection.yaml",
+    "config": "../collection.yaml",
     "modes": [
       "htrace",
       "hiperf"
