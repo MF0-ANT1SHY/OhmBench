@@ -19,7 +19,7 @@ def git(repo, *args):
     return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
 
 
-def prepare(case):
+def prepare(case, case_root=ROOT / "cases"):
     cid, host, source = case["id"], case["host_app"], case["source"]
     repo = ROOT / host["local_path"]
     if not repo.exists():
@@ -29,7 +29,7 @@ def prepare(case):
         raise RuntimeError(f"refusing to modify a dirty repository: {repo}")
     git(repo, "checkout", "-q", "--detach", host["upstream_base_commit"])
     for variant, patch in (("unfixed", source["patch"]), ("fixed", source["fix_patch"])):
-        git(repo, "apply", "--index", str(ROOT / "cases" / cid / patch))
+        git(repo, "apply", "--index", str(case_root / cid / patch))
         tree = git(repo, "write-tree")
         if tree != source[variant]["tree"]:
             raise RuntimeError(f"{cid}/{variant}: tree {tree} != {source[variant]['tree']}")
@@ -42,14 +42,16 @@ def prepare(case):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("cases", nargs="*", help="case ids (default: all)")
+    parser.add_argument("--candidates", action="store_true", help="operate on unscored candidates instead of included cases")
     args = parser.parse_args()
     failed = False
-    for path in sorted((ROOT / "cases").glob("*/case.json")):
+    case_root = ROOT / ("candidates" if args.candidates else "cases")
+    for path in sorted(case_root.glob("*/case.json")):
         case = json.loads(path.read_text())
         if args.cases and case["id"] not in args.cases:
             continue
         try:
-            prepare(case)
+            prepare(case, case_root)
         except Exception as exc:
             print(f"{case['id']}: FAILED {exc}", flush=True)
             failed = True

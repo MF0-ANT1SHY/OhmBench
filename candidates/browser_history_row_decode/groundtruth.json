@@ -1,0 +1,30 @@
+{
+  "case": "browser_history_row_decode",
+  "status": "candidate",
+  "mechanism": "On the first history dialog open after launch, queryHistoriesByDate resolves four invariant column indices per row and inserts each decoded row at the front of a growing array.",
+  "fix_summary": "Resolve column indices once per result set, append decoded rows, then reverse once to preserve the displayed order.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/utils/RdbUtils.ets",
+      "symbol": "queryHistoriesByDate",
+      "scope_lines": [
+        123,
+        153
+      ],
+      "changed_lines": [
+        134,
+        144
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "App-process retired instructions from opening the history dialog to the appearance of Article 29999, after cold launch at the home screen.",
+    "comparison": "Median unfixed >= 1.2 * median fixed across at least three paired rounds.",
+    "workload_notes": "Use seed_browser.py Histories.db --days 1 --per-day 30000. Reset to the same database and force-stop before each round. Verify the newest record is displayed first. No app-internal driver or counter.",
+    "evidence": null
+  }
+}

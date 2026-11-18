@@ -1,0 +1,33 @@
+diff --git a/entry/src/main/ets/utils/RdbUtils.ets b/entry/src/main/ets/utils/RdbUtils.ets
+index 7ac37952c87b13b5ee4450f8dd795cf8a258995e..a1549ee2bb7616fbf23fb4a8ea7a6f989e087880 100644
+--- a/entry/src/main/ets/utils/RdbUtils.ets
++++ b/entry/src/main/ets/utils/RdbUtils.ets
+@@ -131,17 +131,23 @@ export default class RdbUtils {
+     try {
+       resultSet = await RdbUtils.getStore().query(predicates, [])
+ 
++      const idIndex = resultSet.getColumnIndex("id");
++      const titleIndex = resultSet.getColumnIndex("title");
++      const urlIndex = resultSet.getColumnIndex("url");
++      const timestampIndex = resultSet.getColumnIndex("timestamp");
++
+       while (resultSet.goToNextRow()) {
+-        const id = resultSet.getLong(resultSet.getColumnIndex("id"));
+-        const title = resultSet.getString(resultSet.getColumnIndex("title"));
+-        const url = resultSet.getString(resultSet.getColumnIndex("url"));
+-        const timestamp = resultSet.getString(resultSet.getColumnIndex("timestamp"));
++        const id = resultSet.getLong(idIndex);
++        const title = resultSet.getString(titleIndex);
++        const url = resultSet.getString(urlIndex);
++        const timestamp = resultSet.getString(timestampIndex);
+ 
+         let history: History = new History(title, url, timestamp)
+         history.setId(id)
+ 
+-        histories.unshift(history)
++        histories.push(history)
+       }
++      histories.reverse()
+     } catch (error) {
+       console.error(`查询异常，失败代码： ${error.code}，失败信息： ${error.message}`);
+     } finally {

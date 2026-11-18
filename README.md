@@ -8,4 +8,5 @@ A benchmark of performance bugs in HarmonyOS applications, for evaluating perfor
 - [Extension standard](docs/extending.md): requirements for adding a case
 - [Collection and evaluation standard](docs/evaluation.md): inputs, per-case record, metrics, matching
 - [Cases](docs/cases.md): host apps and cases
+- [HapRay replay matrix](docs/hapray-replay.md): scene selection, clean gates, backend and fixture prerequisites
 - [Known limitations](docs/limitations.md)

@@ -53,3 +53,61 @@ Matching of a suspect to a groundtruth location (the root cause itself or one of
 A case without an answer scores P = R = F1 = 0 and keeps its measured cost. Report per-case records
 and the **macro average** over all 21 cases (and optionally micro averages, pooling
 suspects and root causes). Use the same model, budget and inputs for all cases of a run.
+
+## Batch HapRay evaluation
+
+1. Stage **only blind inputs** under `blind/<id>/`. Pin the
+   [HapRay Skill](https://gitcode.com/SMAT/HapRay-Skill) revision, model,
+   scene, prompt and budget for a comparison. Use a separate agent environment
+   without access to the evaluator checkout. The runner changes directory; it
+   is not a security sandbox.
+2. Run one agent invocation per staged case. For example, on an evaluation
+   host with the skill installed in Codex and unfixed captures already staged:
+
+   ```sh
+   python3 tools/evaluate/run_batch.py blind runs/v1 codex exec --skip-git-repo-check \
+     -o '{output}/answer.json' \
+     'Use the HapRay skill to analyze the unfixed captures for prompt.json. Do not edit the app. Return only JSON with suspects sorted by rank. For each give rank, file, symbol, line_start, line_end, root_cause and fix (concrete recommendation).'
+   ```
+
+   Other agents can use the same argv interface; `{input}` and `{output}`
+   are absolute directories. Use a fresh output root. Failed commands are
+   recorded per case and do not stop later cases.
+3. Score the batch on the evaluator host:
+
+   ```sh
+   python3 tools/evaluate/hapray.py runs/v1 --report '{case}/answer.json' \
+     --out results.json --review-packet private-review.json
+   ```
+
+   The default report pattern reads existing
+   `{case}/report/root_cause_agent_result.json`. For native HapRay-Skill
+   fix plans, pass `--report '{case}/fix-plan.json'` (or the actual path
+   under each exported workspace). These plans score **selected proposals
+   in file order**; they are not the whole scene analysis. Keep selection
+   scope and ordering consistent across revisions. For Markdown scene reports,
+   have the agent export its ranked findings in the JSON format above.
+   File/function localization uses the first five answers. A missing, invalid
+   or failed run earns zero; inspecting a subset requires explicit `--cases`.
+4. The review packet places each first answer beside the actual `fix.patch`,
+   reference mechanism and fix summary. **Location overlap is not repair
+   correctness.** Mark `diagnosis_correct` only for the causal operation and
+   mechanism; mark `repair_correct` for a specific, behavior-preserving repair
+   of that cost, including equivalent alternatives. For manual review create
+   a JSON object keyed by case ID, each value containing the packet's
+   `fingerprint` and both boolean judgments. Alternatively run a separate
+   model judge (the chosen model receives the evaluator-only packet):
+
+   ```sh
+   python3 tools/evaluate/judge.py private-review.json verdicts.json --model MODEL
+   python3 tools/evaluate/hapray.py runs/v1 --report '{case}/answer.json' \
+     --reviews verdicts.json --out reviewed-results.json
+   ```
+
+   Report judge identity and audit its rationales; these are estimates of
+   recommendation correctness, not evidence an applied repair builds or meets
+   its device oracle. Top-1 diagnosis and repair accuracies use **all selected
+   cases**, with missing answers counted as misses. Until all outstanding
+   judgments are supplied, accuracy is null and the pending count is shown.
+   Changed reports or reference patches invalidate prior verdicts. Never
+   stage the private packet or verdicts in the diagnosis workspace.

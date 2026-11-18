@@ -112,10 +112,12 @@ def main():
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts")
     parser.add_argument("--toolchain", type=Path, default=ROOT / "toolchain/command-line-tools")
     parser.add_argument("--mode", choices=["debug", "release"], default="release")
+    parser.add_argument("--candidates", action="store_true", help="operate on unscored candidates instead of included cases")
     args = parser.parse_args()
     output, toolchain = args.output.resolve(), args.toolchain.resolve()
     failed = False
-    for path in sorted((ROOT / "cases").glob("*/case.json")):
+    case_root = ROOT / ("candidates" if args.candidates else "cases")
+    for path in sorted(case_root.glob("*/case.json")):
         case = json.loads(path.read_text())
         if args.cases and case["id"] not in args.cases:
             continue

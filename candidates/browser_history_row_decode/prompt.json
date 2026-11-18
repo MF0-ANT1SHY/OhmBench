@@ -1,0 +1,12 @@
+{
+  "case": "browser_history_row_decode",
+  "bundle_name": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "symptom": "打开浏览历史后，很久才显示记录。",
+  "scenario": "打开包含大量同一天记录的历史列表。",
+  "perf_scenarios": [
+    "列表滑动",
+    "组件创建",
+    "页面切换"
+  ]
+}
