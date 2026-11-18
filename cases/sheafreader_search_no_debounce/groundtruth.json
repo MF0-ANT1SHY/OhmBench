@@ -1,0 +1,124 @@
+{
+  "case": "sheafreader_search_no_debounce",
+  "status": "included",
+  "mechanism": "Every keystroke in the article search box calls AppStore.search(), which immediately reloads the list: DatabaseManager.getArticles() selects up to 800 rows with full article content (SELECT a.*), materializes them and filters them in memory. Typing a 12-character query runs this scan once per character.",
+  "fix_summary": "Debounce the search: update the query text at once, but scan the articles only 300 ms after the last keystroke; clearing the search still applies immediately.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/state/AppStore.ets",
+      "class": "AppStore",
+      "symbol": "search",
+      "scope_lines": [
+        546,
+        549
+      ],
+      "changed_lines": [
+        546,
+        549
+      ],
+      "aliases": [
+        {
+          "file": "entry/src/main/ets/components/ArticleListView.ets",
+          "class": "ArticleListView",
+          "symbol": "onChange",
+          "kind": "function",
+          "scope_lines": [
+            654,
+            656
+          ],
+          "changed_lines": [
+            654,
+            656
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RC2",
+      "role": "related",
+      "kind": "function",
+      "file": "entry/src/main/ets/data/DatabaseManager.ets",
+      "class": "DatabaseManager",
+      "symbol": "getArticles",
+      "scope_lines": [
+        481,
+        545
+      ],
+      "changed_lines": [
+        481,
+        545
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "App-process retired instructions in a fixed 30-second window in which the external driver types \"harbor quiet\" into the article search box and waits for the first match.",
+    "comparison": "Median unfixed >= 1.2 * median fixed across three paired rounds.",
+    "workload_notes": "Build the fixture with seed_reader_article.py empty.db many.db --articles 1000 --paragraphs 6 and install it with the app stopped before every round. Both variants must show \"Harbor quiet report 5\" and 40 results (the scan covers the newest 800).",
+    "evidence": {
+      "unfixed": [
+        3362872445,
+        3375122712,
+        3350525015
+      ],
+      "fixed": [
+        887762507,
+        866590654,
+        888147896
+      ],
+      "rounds_per_variant": 3,
+      "paired_ratios": [
+        3.788,
+        3.8947,
+        3.7725
+      ],
+      "median_ratio": 3.7880316171090564,
+      "device": "HUAWEI Pura 70 Ultra (HBP-AL00), 6.0.0.112(SP55C00E112R5P4)",
+      "date": "2026-11-18",
+      "fixture_sha256": "8be775a33208bebb835b61c9ddc1f99206e5fa63c47d9d58d988fe487f5d787d",
+      "round_order": [
+        {
+          "pair": 1,
+          "variant": "unfixed",
+          "window_s": 30.001,
+          "measured_actions_s": 5.763
+        },
+        {
+          "pair": 1,
+          "variant": "fixed",
+          "window_s": 30.0,
+          "measured_actions_s": 5.733
+        },
+        {
+          "pair": 2,
+          "variant": "fixed",
+          "window_s": 30.0,
+          "measured_actions_s": 5.887
+        },
+        {
+          "pair": 2,
+          "variant": "unfixed",
+          "window_s": 30.0,
+          "measured_actions_s": 5.717
+        },
+        {
+          "pair": 3,
+          "variant": "unfixed",
+          "window_s": 30.0,
+          "measured_actions_s": 5.625
+        },
+        {
+          "pair": 3,
+          "variant": "fixed",
+          "window_s": 30.001,
+          "measured_actions_s": 5.853
+        }
+      ],
+      "collection": "hiperf stat -p <app-pid> -e raw-instruction-retired --control prepare/start/stop around the measured UI actions only. Before each round the signed variant was installed (hash checked on the device), the same database fixture was installed with the app stopped, and the app was launched and brought to the start screen. The app PID was unchanged at the end of every round.",
+      "functional_check": "After the window both variants show \"Harbor quiet report 5\" and the same 40 search results, in every round."
+    }
+  }
+}

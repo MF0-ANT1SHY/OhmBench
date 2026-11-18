@@ -1,0 +1,104 @@
+{
+  "case": "browser_history_eager_date_groups",
+  "status": "included",
+  "mechanism": "The dialog reads every date table and materializes all history groups before displaying the first group. LazyForEach virtualizes row widgets, not these database reads.",
+  "fix_summary": "Populate the initial date groups and request later groups at the end of the list. Persist visits in the existing database instead of retaining another full in-memory mirror.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "symbol": "loadHistoryData",
+      "scope_lines": [
+        56,
+        82
+      ],
+      "changed_lines": [
+        59,
+        78
+      ],
+      "class": "PagesDialog"
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "App-process retired instructions during the fixed 60-second measured step that opens history and waits for Article 36499. Setup and result verification run outside the profile.",
+    "comparison": "Median unfixed >= 1.2 * median fixed across at least three paired rounds.",
+    "workload_notes": "Generate one year of history with seed_browser.py Histories.db --days 365 --per-day 100. Both variants must show Article 36499 on open. Verify later date groups remain reachable. Use the same fixture and 60-second window in each round.",
+    "evidence": {
+      "unfixed": [
+        2842434684,
+        2848386659,
+        2858338532
+      ],
+      "fixed": [
+        1059191969,
+        1049849847,
+        1035645508
+      ],
+      "rounds_per_variant": 3,
+      "median_ratio": 2.7131371854169544,
+      "device": "HUAWEI Pura 70 Ultra (HBP-AL00), 6.0.0.112(SP55C00E112R5P4)",
+      "date": "2026-11-18",
+      "fixture_sha256": "fb4f47102264ca26e0ad89ccf47b7e7964a27a30ea3ff92e518f8fc3fa0af4f6",
+      "round_order": [
+        {
+          "pair": 1,
+          "variant": "unfixed",
+          "window_s": 60.0018,
+          "target_reached_s": 2.8354
+        },
+        {
+          "pair": 1,
+          "variant": "fixed",
+          "window_s": 60.0006,
+          "target_reached_s": 2.6657
+        },
+        {
+          "pair": 2,
+          "variant": "fixed",
+          "window_s": 60.0003,
+          "target_reached_s": 2.8364
+        },
+        {
+          "pair": 2,
+          "variant": "unfixed",
+          "window_s": 60.0005,
+          "target_reached_s": 2.7404
+        },
+        {
+          "pair": 3,
+          "variant": "unfixed",
+          "window_s": 60.0003,
+          "target_reached_s": 2.785
+        },
+        {
+          "pair": 3,
+          "variant": "fixed",
+          "window_s": 60.0002,
+          "target_reached_s": 2.8303
+        }
+      ],
+      "collection": "hiperf stat -p <app-pid> -e raw-instruction-retired --control prepare/start/stop. Each round restored the same SQLite file with the app stopped, launched EntryAbility, and waited for the home screen. The external UI driver opened history and waited for the specified row during the 60-second counter window. It verified that row and the unchanged app PID after stopping the counter. Counter coverage: 100% in all six runs.",
+      "scroll_verification": {
+        "unfixed": {
+          "first_row": 36499,
+          "next_date_visible": [
+            36399,
+            36398
+          ],
+          "swipes": 9
+        },
+        "fixed": {
+          "first_row": 36499,
+          "next_date_visible": [
+            36399,
+            36398
+          ],
+          "swipes": 9
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "bundle": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "description": "Type a search query over 1,000 stored articles",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "全部文章",
+        "match": "exact"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "搜索",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "id": "articleSearch",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "River river report 1",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "measured": [
+    {
+      "op": "input",
+      "selector": {
+        "id": "articleSearch",
+        "match": "exact"
+      },
+      "value": "harbor quiet"
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Harbor quiet report 5",
+        "match": "exact"
+      },
+      "timeout_s": 20
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Harbor quiet report 5",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "40 篇",
+        "match": "exact"
+      }
+    }
+  ]
+}

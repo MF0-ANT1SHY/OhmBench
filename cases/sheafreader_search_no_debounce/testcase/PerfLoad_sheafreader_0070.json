@@ -1,0 +1,16 @@
+{
+    "description": "Type a search query over 1,000 stored articles",
+    "environment": [
+        {
+            "type": "device",
+            "label": "phone"
+        }
+    ],
+    "driver": {
+        "type": "DeviceTest",
+        "py_file": [
+            "PerfLoad_sheafreader_0070.py"
+        ]
+    },
+    "kits": []
+}

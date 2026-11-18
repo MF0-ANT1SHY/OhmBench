@@ -1,0 +1,11 @@
+{
+  "case": "sheafreader_search_no_debounce",
+  "bundle_name": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "symptom": "在文章搜索框中输入关键词时，输入卡顿，结果出现很慢。",
+  "scenario": "在保存了 1000 篇文章的阅读器中输入搜索词。",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ]
+}

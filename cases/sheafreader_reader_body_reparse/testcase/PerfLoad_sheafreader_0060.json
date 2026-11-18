@@ -1,0 +1,16 @@
+{
+    "description": "Star and unstar a long article in the reader",
+    "environment": [
+        {
+            "type": "device",
+            "label": "phone"
+        }
+    ],
+    "driver": {
+        "type": "DeviceTest",
+        "py_file": [
+            "PerfLoad_sheafreader_0060.py"
+        ]
+    },
+    "kits": []
+}

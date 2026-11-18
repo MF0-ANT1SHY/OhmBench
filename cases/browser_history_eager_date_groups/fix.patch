@@ -1,0 +1,155 @@
+diff --git a/entry/src/main/ets/pages/Index.ets b/entry/src/main/ets/pages/Index.ets
+index 6c6be76da39be84a3333128941f734519794eac9..427752e9dfdda2f51ca881245e9a056ce77de734 100644
+--- a/entry/src/main/ets/pages/Index.ets
++++ b/entry/src/main/ets/pages/Index.ets
+@@ -36,9 +36,6 @@ struct Index {
+   // 绑定当前页面是否可前进
+   @State isForwarded: boolean = false
+ 
+-  // 历史浏览记录
+-  @Provide("historyMap") historyMap: Map<string, History[]> = new Map()
+-
+   @Provide webviewController: webview.WebviewController = new webview.WebviewController()
+   // 是否进行过搜索，用于判断是否显示 Web 组件
+   @Provide("webIsSearched") @Watch("onSearched") isSearched: boolean = false
+@@ -92,13 +89,6 @@ struct Index {
+ 
+       const history = new History(this.webviewController.getTitle(), this.webviewController.getUrl(), timestamp)
+ 
+-      // 判断是否有该日期
+-      if (!this.historyMap.has(date)) {
+-        this.historyMap.set(date, [])
+-      }
+-
+-      this.historyMap.get(date)?.unshift(history)
+-
+       await RdbUtils.insertHistory(date, history)
+ 
+       console.info("保存浏览记录成功")
+diff --git a/entry/src/main/ets/view/PagesDialog.ets b/entry/src/main/ets/view/PagesDialog.ets
+index 888f3057202dc06bbf8e69c7662c0c5b2f6689d1..54fdc7493364e613a8eb748c12b965533cb84041 100644
+--- a/entry/src/main/ets/view/PagesDialog.ets
++++ b/entry/src/main/ets/view/PagesDialog.ets
+@@ -1,5 +1,4 @@
+ import History from '../common/bean/History'
+-import { HistoryGroup } from '../common/constants/CommonConstants'
+ import HistoryItem from './HistoryItem'
+ import RdbUtils from '../utils/RdbUtils'
+ 
+@@ -39,10 +38,11 @@ class HistoryDataSource implements IDataSource {
+ 
+ @CustomDialog
+ export default struct PagesDialog {
+-  @Consume("historyMap") historyMap: Map<string, History[]>
+   @Consume("pagesDialogShowed") @Watch("onClicked") isClicked: boolean
+ 
+-  @State historyGroups: HistoryGroup[] = []
++  @State visibleDates: string[] = []
++  private dates: string[] = []
++  private loading: boolean = false
+ 
+   // 每个日期分组的懒加载数据源
+   private groupDataSources: Map<string, HistoryDataSource> = new Map()
+@@ -50,34 +50,31 @@ export default struct PagesDialog {
+   dialogController: CustomDialogController
+ 
+   async aboutToAppear() {
+-    await this.loadHistoryData()
++    this.dates = await RdbUtils.queryAllDate()
++    await this.loadNextDates()
+   }
+ 
+-  async loadHistoryData() {
++  private async loadNextDates() {
++    if (this.loading || this.visibleDates.length >= this.dates.length) {
++      return
++    }
++    this.loading = true
+     try {
+-      // 历史记录按需加载：仅当内存中还没有加载过时才查询数据库
+-      if (this.historyMap.size === 0) {
+-        const allDate: string[] = await RdbUtils.queryAllDate()
+-        for (const date of allDate) {
+-          this.historyMap.set(date, await RdbUtils.queryHistoriesByDate(date))
+-        }
++      const added: string[] = []
++      let rows = 0
++      // Fill a viewport even when several consecutive days contain few visits.
++      for (let i = this.visibleDates.length; i < this.dates.length && rows < 20; i++) {
++        const date = this.dates[i]
++        const histories = await RdbUtils.queryHistoriesByDate(date)
++        const source = new HistoryDataSource()
++        source.setHistories(histories)
++        this.groupDataSources.set(date, source)
++        rows += histories.length
++        added.push(date)
+       }
+-      this.historyGroups = []
+-      this.historyGroups = Array.from(this.historyMap.entries()).map((item) => ({
+-        date: item[0],
+-        histories: item[1]
+-      } as HistoryGroup))
+-      this.historyGroups.forEach((group: HistoryGroup) => {
+-        let ds = this.groupDataSources.get(group.date)
+-        if (!ds) {
+-          ds = new HistoryDataSource()
+-          this.groupDataSources.set(group.date, ds)
+-        }
+-        ds.setHistories(group.histories)
+-      })
+-      console.info("成功加载历史记录")
+-    } catch (error) {
+-      console.error('加载历史数据异常:', error)
++      this.visibleDates = this.visibleDates.concat(added)
++    } finally {
++      this.loading = false
+     }
+   }
+ 
+@@ -126,16 +123,17 @@ export default struct PagesDialog {
+         .fontSize(15)
+         .margin({top: 20, bottom: 20})
+       List() {
+-        ForEach(this.historyGroups, (group: HistoryGroup) => {
+-          ListItemGroup({header: this.ListGroupHeader(group.date)}) {
+-            LazyForEach(this.groupDataSources.get(group.date), (history: History) => {
++        ForEach(this.visibleDates, (date: string) => {
++          ListItemGroup({header: this.ListGroupHeader(date)}) {
++            LazyForEach(this.groupDataSources.get(date), (history: History) => {
+               ListItem() {
+                 HistoryItem({ title: history.title, url: history.url })
+               }
+             }, (history: History) => history.id.toString())
+           }
+-        })
++        }, (date: string) => date)
+       }
++      .onReachEnd(() => { this.loadNextDates() })
+       // 合适的高度保证所有记录都能显示完整
+       .height("90%")
+       .width("100%")
+diff --git a/entry/src/main/ets/view/SettingDialog.ets b/entry/src/main/ets/view/SettingDialog.ets
+index dd82c057c1d82f23ded6857353d54dd9ec63dbb4..d26a041ed44ad4db4981466b03fb0e175edce3d9 100644
+--- a/entry/src/main/ets/view/SettingDialog.ets
++++ b/entry/src/main/ets/view/SettingDialog.ets
+@@ -1,11 +1,8 @@
+-import History from '../common/bean/History'
+ import CommonConstants from '../common/constants/CommonConstants'
+ import { Prompt, PromptAction } from '@kit.ArkUI'
+ 
+ @CustomDialog
+ export default struct SettingDialog {
+-  @Consume("historyMap") historyMap: Map<string, History[]>
+-
+   // 从 AppStore 中获取持久化数据
+   @StorageLink("currentEngineIndex") currentEngineIndex: number = 0
+   @StorageLink("currentEngineName") currentEngineName: string = CommonConstants.SEARCH_ENGINES[0].engine
+@@ -26,8 +23,6 @@ export default struct SettingDialog {
+   }
+ 
+   onConfirm() {
+-    this.historyMap.clear()
+-
+     Prompt.showToast({
+       message: "浏览记录已被清除"
+     })

@@ -1,0 +1,30 @@
+diff --git a/entry/src/main/ets/components/ArticleReaderView.ets b/entry/src/main/ets/components/ArticleReaderView.ets
+index 49f9b3bef27aedf2497ef37cae881b694059bd17..b59c545b115c5775a4f0392dfda200ab8fb7cc86 100644
+--- a/entry/src/main/ets/components/ArticleReaderView.ets
++++ b/entry/src/main/ets/components/ArticleReaderView.ets
+@@ -154,9 +154,24 @@ export struct ArticleReaderView {
+    * with the text; ArkUI draws them from blocks instead.
+    */
+   private bodyBlocks(): ReaderBlock[] {
+-    return ReaderBody.blocks(this.bodyHtml(), this.article.link);
++    const html: string = this.bodyHtml();
++    const link: string = this.article.link;
++    // Starring or marking the article read re-renders this view; the body is
++    // unchanged then, so reuse the blocks instead of parsing the HTML again.
++    if (!this.parsedValid || html !== this.parsedHtml || link !== this.parsedLink) {
++      this.parsedBlocks = ReaderBody.blocks(html, link);
++      this.parsedHtml = html;
++      this.parsedLink = link;
++      this.parsedValid = true;
++    }
++    return this.parsedBlocks;
+   }
+ 
++  private parsedValid: boolean = false;
++  private parsedHtml: string = '';
++  private parsedLink: string = '';
++  private parsedBlocks: ReaderBlock[] = [];
++
+   /** The body markup the reader is showing, before it is split into blocks. */
+   private bodyHtml(): string {
+     let html: string = this.viewBody.length > 0 ? this.viewBody : this.article.content;

@@ -1,0 +1,74 @@
+{
+  "id": "sheafreader_search_no_debounce",
+  "status": "included",
+  "host_app": {
+    "name": "Sheaf-Reader (束阅 RSS 阅读器)",
+    "repository": "https://github.com/simon2137/Sheaf-Reader",
+    "upstream_base_commit": "e04ef65673a7b3a0da2de85fb7b954663232dec7",
+    "bundle_name": "com.sheafreader.hm",
+    "local_path": "hosts/sheafreader"
+  },
+  "category": "cpu",
+  "perf_scenarios": [
+    "数据库读取",
+    "状态更新"
+  ],
+  "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
+    "unfixed": {
+      "tree": "fe0da4cdae56960086e28000e0a08dc4d02f4a04"
+    },
+    "fixed": {
+      "tree": "9c2699c0c768372a909813fcc8ff957b8ce80d7a"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_sheafreader_0070",
+    "py_file": "testcase/PerfLoad_sheafreader_0070.py",
+    "descriptor": "testcase/PerfLoad_sheafreader_0070.json",
+    "install_dir": "perf_testing/hapray/testcases/com.sheafreader.hm",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_sheafreader_0070.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 30,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "tools/collect/fixtures/seed_reader_article.py empty.db many.db --articles 1000 --paragraphs 6",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "latency"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 3.79,
+    "tier": "strong"
+  }
+}
