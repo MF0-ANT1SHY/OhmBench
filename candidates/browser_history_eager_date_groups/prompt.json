@@ -1,0 +1,11 @@
+{
+  "case": "browser_history_eager_date_groups",
+  "bundle_name": "com.example.nanvision",
+  "ability": "EntryAbility",
+  "symptom": "打开浏览记录后，需要等待很久才能看到第一条记录。",
+  "scenario": "打开保存了一年浏览记录的列表。",
+  "perf_scenarios": [
+    "列表加载",
+    "数据库读取"
+  ]
+}

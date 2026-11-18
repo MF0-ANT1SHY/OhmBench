@@ -1,0 +1,30 @@
+{
+  "case": "browser_history_eager_date_groups",
+  "status": "candidate",
+  "mechanism": "The dialog reads every date table and materializes all history groups before displaying the first group. LazyForEach virtualizes row widgets, not these database reads.",
+  "fix_summary": "Populate the initial date groups and request later groups at the end of the list. Persist visits in the existing database instead of retaining another full in-memory mirror.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/view/PagesDialog.ets",
+      "symbol": "loadHistoryData",
+      "scope_lines": [
+        56,
+        81
+      ],
+      "changed_lines": [
+        59,
+        78
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "App-process retired instructions during the fixed 60-second measured step that opens history and waits for Article 36499. Setup and result verification run outside the profile.",
+    "comparison": "Median unfixed >= 1.2 * median fixed across at least three paired rounds.",
+    "workload_notes": "Generate one year of history with seed_browser.py Histories.db --days 365 --per-day 100. Both variants must show Article 36499 on open. Verify later date groups remain reachable. Use the same fixture and 60-second window in each round.",
+    "evidence": null
+  }
+}
