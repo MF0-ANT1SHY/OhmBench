@@ -43,5 +43,23 @@
     ],
     "step_duration_s": 1200,
     "rounds": 3
+  },
+  "runnability": {
+    "data": "local_service",
+    "prepare": "hourly weather replay for ten cities",
+    "service": "tools/collect/fixtures/weather_hourly_data_service.py (port 18496)",
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "memory",
+    "also": [],
+    "collect": "perf --memory",
+    "oracle_metric_in_hapray": false
+  },
+  "quality": {
+    "median_ratio": 40.29,
+    "tier": "strong"
   }
 }

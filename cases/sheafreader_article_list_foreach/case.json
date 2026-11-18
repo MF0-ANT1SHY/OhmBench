@@ -53,5 +53,25 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "native reader database with 300+ articles (tools/collect/fixtures/rss_database_fixture.py)",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "jank"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 2.42,
+    "tier": "strong"
   }
 }

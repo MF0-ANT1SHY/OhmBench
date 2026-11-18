@@ -53,5 +53,23 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "public_backend",
+    "prepare": "tools/collect/fixtures/seed_search_history.py --count 2500 (preferences); home screen loads question banks online",
+    "service": null,
+    "public_backend": "https://api-harmony-teach.itheima.net (answered on 2026-11-18)",
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "memory",
+    "also": [],
+    "collect": "perf --memory",
+    "oracle_metric_in_hapray": false
+  },
+  "quality": {
+    "median_ratio": 4.73,
+    "tier": "strong"
   }
 }

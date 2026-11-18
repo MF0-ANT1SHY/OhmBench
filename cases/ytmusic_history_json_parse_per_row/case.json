@@ -53,5 +53,25 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "tools/collect/fixtures/seed_ytmusic_history.py: 1,000 history entries in preferences",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "jank"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 3.3,
+    "tier": "strong"
   }
 }
