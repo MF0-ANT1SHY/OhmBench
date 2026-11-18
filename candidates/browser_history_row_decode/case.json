@@ -22,8 +22,8 @@
       "reference_unsigned_hap_sha256": "9def6ea841eee330dd863de9c1adca151068d7b2eb240246461e57bd5f10e432"
     },
     "fixed": {
-      "tree": "a5e100b319f4e30e3981e655ef8ad931b49043cb",
-      "reference_unsigned_hap_sha256": "51f87fae9093137bff7181d0e86efdc74f03f95756dd2a595890a0cbf4542a89"
+      "tree": "fa88e66c47db58ad2c1b7b3c9ef8e7425c678f2f",
+      "reference_unsigned_hap_sha256": "f218503353d4c0f8bffc0585228a88eb505a57accb2cde7ed21c8337238dbe77"
     }
   },
   "testcase": {

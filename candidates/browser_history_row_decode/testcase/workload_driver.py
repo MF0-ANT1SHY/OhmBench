@@ -186,4 +186,3 @@ class UI:
         if elapsed[0] > duration:
             raise RuntimeError(f'workload took {elapsed[0]:.2f}s, exceeding the {duration}s capture window')
         return elapsed[0]
-
