@@ -37,6 +37,17 @@ python3 tools/prepare_sources.py --candidates browser_history_row_decode
 python3 tools/build_cases.py --candidates browser_history_row_decode
 ```
 
+After signing, the [batch collector](hapray-replay.md#batch-collection-on-a-prepared-device)
+also accepts `--candidates`. For example, on a reserved device with the
+browser install/reset hook configured:
+
+```sh
+for variant in unfixed fixed; do
+  python3 tools/collect/run_cases.py "captures/$variant" --variant "$variant" \
+    --device "$SERIAL" --prepare "$BROWSER_SETUP" --candidates --cases browser_history_row_decode || exit 1
+done
+```
+
 Its workload and predeclared comparison are in the candidate directory. Promote
 it to `cases/` only after recording a passing clean paired series, then update
 the case list, scene matrix and cohort denominator.

@@ -7,7 +7,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-CASES = Path(__file__).resolve().parents[2] / 'cases'
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def collect(case_dir, case, work, args, trial):
@@ -36,21 +36,31 @@ def main():
     ap.add_argument('out', type=Path, help='new output directory')
     ap.add_argument('--device', required=True)
     ap.add_argument('--prepare', required=True, help='local executable: install signed variant and reset fixture')
-    ap.add_argument('--cases', nargs='+', choices=sorted(p.parent.name for p in CASES.glob('*/case.json')))
+    ap.add_argument('--cases', nargs='+', metavar='CASE_ID')
+    ap.add_argument('--candidates', action='store_true', help='collect unscored candidates instead of included cases')
     ap.add_argument('--variant', choices=['unfixed', 'fixed'], default='unfixed')
     ap.add_argument('--hapray', default='hapray', help='HapRay-Skill bin/hapray executable')
     args = ap.parse_args()
+    case_root = ROOT / ('candidates' if args.candidates else 'cases')
+    status = 'candidate' if args.candidates else 'included'
+    selected = {}
+    for path in sorted(case_root.glob('*/case.json')):
+        case = json.loads(path.read_text())
+        if case['status'] == status:
+            selected[case['id']] = (path.parent, case)
+    if args.cases:
+        unknown = set(args.cases).difference(selected)
+        if unknown:
+            ap.error(f"not in {case_root.name}: {', '.join(sorted(unknown))}")
+        selected = {cid: selected[cid] for cid in args.cases}
     args.out.mkdir(parents=True, exist_ok=False)
     failed = False
-    for path in sorted(CASES.glob('*/case.json')):
-        case = json.loads(path.read_text())
-        if case['status'] != 'included' or (args.cases and case['id'] not in args.cases):
-            continue
+    for directory, case in selected.values():
         for trial in range(1, case['collection']['rounds'] + 1):
             work = (args.out / case['id'] / args.variant / f'round-{trial}').resolve()
             work.mkdir(parents=True)
             try:
-                reports = collect(path.parent, case, work, args, trial)
+                reports = collect(directory, case, work, args, trial)
                 record = dict(status='collected', reports_path=reports)
             except (OSError, subprocess.CalledProcessError, ValueError) as exc:
                 record = dict(status='failed', error=str(exc))
