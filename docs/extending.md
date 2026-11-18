@@ -24,30 +24,14 @@ Rules:
 - Any workload input data (databases, preferences, backend responses) must be described so that it
   can be prepared outside the app, identically for both variants.
 
-## Pending device validation
+## Candidates and failed gates
 
-[`browser_history_row_decode`](../candidates/browser_history_row_decode/) is an
-unscored candidate, not a 22nd included result. Unlike the browser list-render
-case it uses an already virtualized dialog and changes only database row
-decoding. Both release HAPs built and passed the bytecode audit. No clean
-device ratio has been recorded. Reconstruct and build it with:
+Use `--candidates` with `prepare_sources.py` or `build_cases.py` to
+reconstruct candidates without changing the included cohort. For collection,
+see the [batch collector](hapray-replay.md#batch-collection-on-a-prepared-device).
 
-```sh
-python3 tools/prepare_sources.py --candidates browser_history_row_decode
-python3 tools/build_cases.py --candidates browser_history_row_decode
-```
-
-After signing, the [batch collector](hapray-replay.md#batch-collection-on-a-prepared-device)
-also accepts `--candidates`. For example, on a reserved device with the
-browser install/reset hook configured:
-
-```sh
-for variant in unfixed fixed; do
-  python3 tools/collect/run_cases.py "captures/$variant" --variant "$variant" \
-    --device "$SERIAL" --prepare "$BROWSER_SETUP" --candidates --cases browser_history_row_decode || exit 1
-done
-```
-
-Its workload and predeclared comparison are in the candidate directory. Promote
-it to `cases/` only after recording a passing clean paired series, then update
-the case list, scene matrix and cohort denominator.
+The [browser row-decoding case](../candidates/browser_history_row_decode/groundtruth.json)
+passed the build audit but failed the performance gate: 1.14× measured, 1.20×
+required. Its three paired rounds remain available for inspection.
+To repeat an excluded case, pass both `--candidates` and its ID to the collector.
+Do not include its score in cohort metrics.

@@ -1,6 +1,6 @@
 {
   "id": "browser_history_row_decode",
-  "status": "candidate",
+  "status": "excluded",
   "host_app": {
     "name": "browser (小狐狸浏览器)",
     "repository": "https://github.com/langwudong/browser",
@@ -53,5 +53,6 @@
       "ui/",
       "thermal/"
     ]
-  }
+  },
+  "exclusion_reason": "The clean median instruction ratio did not reach the registered 1.20x threshold."
 }

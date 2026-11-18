@@ -46,13 +46,18 @@ def main():
     selected = {}
     for path in sorted(case_root.glob('*/case.json')):
         case = json.loads(path.read_text())
-        if case['status'] == status:
+        # Failed gates stay out of batch runs; allow an explicit reproduction.
+        requested_exclusion = (args.candidates and args.cases and case['id'] in args.cases
+                               and case['status'] == 'excluded')
+        if case['status'] == status or requested_exclusion:
             selected[case['id']] = (path.parent, case)
     if args.cases:
         unknown = set(args.cases).difference(selected)
         if unknown:
             ap.error(f"not in {case_root.name}: {', '.join(sorted(unknown))}")
         selected = {cid: selected[cid] for cid in args.cases}
+    if not selected:
+        ap.error(f'no eligible cases in {case_root.name}')
     args.out.mkdir(parents=True, exist_ok=False)
     failed = False
     for directory, case in selected.values():

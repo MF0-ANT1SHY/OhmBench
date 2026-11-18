@@ -1,6 +1,6 @@
 {
   "case": "browser_history_row_decode",
-  "status": "candidate",
+  "status": "excluded",
   "mechanism": "On the first history dialog open after launch, queryHistoriesByDate resolves four invariant column indices per row and inserts each decoded row at the front of a growing array.",
   "fix_summary": "Resolve column indices once per result set, append decoded rows, then reverse once to preserve the displayed order.",
   "root_causes": [
@@ -25,6 +25,61 @@
     "definition": "App-process retired instructions during the fixed 60-second measured step that opens history and waits for Article 29999. Setup and result verification run outside the profile.",
     "comparison": "Median unfixed >= 1.2 * median fixed across at least three paired rounds.",
     "workload_notes": "Use seed_browser.py Histories.db --days 1 --per-day 30000. Reset to the same database and force-stop before each round. Verify the newest record is displayed first. No app-internal driver or counter.",
-    "evidence": null
+    "evidence": {
+      "unfixed": [
+        11448473575,
+        12111216267,
+        11203753864
+      ],
+      "fixed": [
+        10747111074,
+        10017828829,
+        9629244988
+      ],
+      "rounds_per_variant": 3,
+      "median_ratio": 1.142809861340265,
+      "device": "HUAWEI Pura 70 Ultra (HBP-AL00), 6.0.0.112(SP55C00E112R5P4)",
+      "date": "2026-11-18",
+      "fixture_sha256": "bb40a4e622c66cf4e63ee5bdb6b9d3286a000f82aaeba23533095dd723f96a18",
+      "round_order": [
+        {
+          "pair": 1,
+          "variant": "unfixed",
+          "window_s": 60.0006,
+          "target_reached_s": 2.7773
+        },
+        {
+          "pair": 1,
+          "variant": "fixed",
+          "window_s": 60.0004,
+          "target_reached_s": 2.8056
+        },
+        {
+          "pair": 2,
+          "variant": "fixed",
+          "window_s": 60.0004,
+          "target_reached_s": 2.8607
+        },
+        {
+          "pair": 2,
+          "variant": "unfixed",
+          "window_s": 60.0007,
+          "target_reached_s": 2.8228
+        },
+        {
+          "pair": 3,
+          "variant": "unfixed",
+          "window_s": 60.0004,
+          "target_reached_s": 2.87
+        },
+        {
+          "pair": 3,
+          "variant": "fixed",
+          "window_s": 60.0011,
+          "target_reached_s": 2.9732
+        }
+      ],
+      "collection": "hiperf stat -p <app-pid> -e raw-instruction-retired --control prepare/start/stop. Each round restored the same SQLite file with the app stopped, launched EntryAbility, and waited for the home screen. The external UI driver opened history and waited for the specified row during the 60-second counter window. It verified that row and the unchanged app PID after stopping the counter. Counter coverage: 100% in all six runs."
+    }
   }
 }
