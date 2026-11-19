@@ -1,19 +1,19 @@
----
-name: ohmbench-hapray-eval
-description: Run HapRay-Skill on OhmBench cases in batch and score its diagnoses and fix suggestions against the benchmark ground truth (fix.patch). Use when asked to evaluate, benchmark or regression-test HapRay / HapRay-Skill on OhmBench.
----
+# Evaluating HapRay-Skill: step by step
 
-# Evaluate HapRay-Skill on OhmBench
+A checklist for running HapRay-Skill on OhmBench cases and scoring its diagnoses and fix suggestions
+against the ground truth (`fix.patch`). The commands are explained in
+[the batch HapRay evaluation](evaluation.md#batch-hapray-evaluation). You can also give this page to
+an agent as its instructions.
 
 Work from the OhmBench checkout. Never show `groundtruth.json`, `fix.patch`, `case.json`, the fixed
 build, the review packet or verdicts to the agent that does the diagnosis.
 
 1. **Pick cases.** `python3 tools/catalog.py list [--scene load|memory|jank|latency] [--tier strong]`.
-   `docs/cases.md` shows each case's HapRay scene and the input data it needs.
+   [The case list](cases.md) shows each case's HapRay scene and the input data it needs.
 2. **Get HapRay data** for the unfixed variant. If captures exist, use them (`CAPTURES/<case-id>/`).
    Otherwise, on a prepared phone:
    `python3 tools/collect/run_cases.py CAPTURES --device SERIAL --prepare PREPARE_SCRIPT --cases ...`
-   (the user provides signed builds and the prepare script; see docs/evaluation.md).
+   (you provide signed builds and the prepare script; see [evaluation.md](evaluation.md#batch-hapray-evaluation)).
 3. **Run HapRay-Skill per case** with a fresh agent per case and the same model, budget and inputs:
    `python3 tools/evaluate/run_hapray.py CAPTURES runs/NAME --with-source -- <agent CLI> "$(cat tools/evaluate/agent_prompt.md)"`.
    Record the HapRay-Skill commit and the model.

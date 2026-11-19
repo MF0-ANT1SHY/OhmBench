@@ -118,5 +118,5 @@ Accuracy is shown only when every answered case has a verdict; a verdict is igno
 or the reference changes. The packet and verdicts contain the answers: never put them where the
 diagnosis agent can read them.
 
-The Claude Code skill [`ohmbench-hapray-eval`](../.claude/skills/ohmbench-hapray-eval/SKILL.md)
-walks an agent through these steps.
+[Evaluating HapRay-Skill: step by step](hapray-eval.md) lists these steps as a checklist, for a
+person or an agent.
