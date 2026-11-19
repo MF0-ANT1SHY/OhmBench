@@ -6,14 +6,18 @@
 cases/
   collection.yaml          reference HapRay/hiprofiler collection configuration
   <case-id>/
-    case.json              metadata: status, host app, source trees, testcase, collection
+    case.json              metadata: status, host app, source trees, testcase, collection,
+                           quality (effect size, weak/strong), runnability (input data, backend),
+                           hapray (HapRay scene and collection mode); summarized in docs/cases.md
     prompt.json            prompt given to a diagnosis tool
     groundtruth.json       oracle: mechanism, root-cause locations, performance oracle
     source.patch           upstream base commit -> unfixed source
     fix.patch              repair diff, unfixed -> fixed
     testcase/              HapRay testcase, UI workload plan and shared UI driver
 docs/                      documentation linked from README.md
-tools/                     reconstruction, build and bytecode audit
+tools/                     reconstruction, build, bytecode audit, case catalog (catalog.py)
+  collect/                 batch HapRay collection on a device; fixtures/ input data and replay services
+  evaluate/                batch HapRay-Skill runs, scoring against fix.patch, optional judge
 ```
 
 ## Source + patch

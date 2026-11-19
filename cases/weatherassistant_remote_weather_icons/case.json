@@ -53,5 +53,23 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "local_service",
+    "prepare": "forecast + icon replay with a 4-second image delay; cold image cache",
+    "service": "tools/collect/fixtures/weather_data_service.py --icons DIR (port 18492)",
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "latency",
+    "also": [],
+    "collect": "perf",
+    "oracle_metric_in_hapray": false
+  },
+  "quality": {
+    "median_ratio": 2.27,
+    "tier": "strong"
   }
 }

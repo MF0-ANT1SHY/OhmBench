@@ -52,5 +52,25 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "local_service",
+    "prepare": "poetry dataset replay; the setup enters the URL http://127.0.0.1:18492/api/",
+    "service": "tools/collect/fixtures/jingmo_data_service.py (port 18492)",
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "latency"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 2.18,
+    "tier": "strong"
   }
 }

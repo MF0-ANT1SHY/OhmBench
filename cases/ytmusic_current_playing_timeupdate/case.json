@@ -52,5 +52,25 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "plays the song bundled in the app (rawfile audio); no network",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "jank"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 4.95,
+    "tier": "strong"
   }
 }

@@ -1,0 +1,11 @@
+{
+  "case": "sheafreader_reader_body_reparse",
+  "bundle_name": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "symptom": "阅读长文章时，点击收藏按钮后界面反应迟缓，手机发热。",
+  "scenario": "在阅读页反复点击一篇长文章的收藏按钮。",
+  "perf_scenarios": [
+    "状态更新",
+    "组件创建"
+  ]
+}

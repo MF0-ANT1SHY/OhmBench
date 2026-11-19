@@ -1,6 +1,6 @@
 {
   "id": "wanharmony_persisted_home_list_growth",
-  "status": "included",
+  "status": "excluded",
   "host_app": {
     "name": "WanHarmony (WanAndroid 客户端)",
     "repository": "https://github.com/zjmok/WanHarmony",
@@ -53,5 +53,24 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "public_backend",
+    "prepare": "initialized preferences plus successful WanAndroid article pages while scrolling",
+    "service": null,
+    "public_backend": "https://www.wanandroid.com/article/list/<page>/json returned {\"errorCode\":-1,\"errorMsg\":\"could not execute query\"} on 2026-11-18",
+    "runnable": false,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "memory",
+    "also": [],
+    "collect": "perf --memory",
+    "oracle_metric_in_hapray": false
+  },
+  "exclusion_reason": "The workload needs successful WanAndroid article pages; the public API returned an error on 2026-11-18, so the case cannot be re-run. Its recorded evidence and captures stay for reference.",
+  "quality": {
+    "median_ratio": 1.37,
+    "tier": "weak"
   }
 }

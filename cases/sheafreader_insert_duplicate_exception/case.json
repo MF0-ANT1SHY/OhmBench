@@ -52,5 +52,23 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "local_service",
+    "prepare": "RSS replay; import once, then refresh with unchanged articles",
+    "service": "tools/collect/fixtures/rss_data_service.py (port 18491)",
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 1.5,
+    "tier": "weak"
   }
 }

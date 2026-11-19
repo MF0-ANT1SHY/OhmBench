@@ -1,6 +1,6 @@
 {
   "case": "wanharmony_persisted_home_list_growth",
-  "status": "included",
+  "status": "excluded",
   "mechanism": "The home list is linked to PersistentStorage. Loaded pages accumulate in the persistent homeList as well as the visible session list. Under the normal twelve-swipe workload, the unfixed app retains more process memory than the fixed app, which persists only its first-page snapshot. Whole-preferences file traffic includes cookies and old keys; this case does not claim a 3x reduction in file-write volume or exclusive attribution of those writes.",
   "fix_summary": "Persist only the first-page snapshot in homeListCache. Keep later loaded pages in component state. This bounds the active persisted list; it does not eliminate all preferences writes.",
   "root_causes": [

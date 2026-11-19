@@ -52,5 +52,25 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "tools/collect/fixtures/seed_reader_count_workload.py: 100 feeds x 1,000 articles, recently fetched",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "latency"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 13.44,
+    "tier": "strong"
   }
 }

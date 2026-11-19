@@ -52,5 +52,23 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "one saved city (北京); the upstream weather API key is empty, so forecasts never load in either variant and the measured city-manager path is local",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "memory",
+    "also": [],
+    "collect": "perf --memory",
+    "oracle_metric_in_hapray": false
+  },
+  "quality": {
+    "median_ratio": 2.65,
+    "tier": "strong"
   }
 }

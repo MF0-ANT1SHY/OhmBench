@@ -1,0 +1,79 @@
+{
+  "bundle": "com.sheafreader.hm",
+  "ability": "EntryAbility",
+  "description": "Star and unstar a long article in the reader",
+  "setup": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "全部文章",
+        "match": "exact"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "全部文章",
+        "match": "exact",
+        "index": 1
+      }
+    },
+    {
+      "op": "pause",
+      "seconds": 1
+    },
+    {
+      "op": "tap",
+      "selector": {
+        "text": "Long Article",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Section 1",
+        "match": "exact"
+      },
+      "timeout_s": 30
+    },
+    {
+      "op": "pause",
+      "seconds": 3
+    }
+  ],
+  "measured": [
+    {
+      "op": "repeat",
+      "count": 21,
+      "actions": [
+        {
+          "op": "point",
+          "x": 0.6595,
+          "y": 0.0721
+        },
+        {
+          "op": "pause",
+          "seconds": 1.2
+        }
+      ]
+    }
+  ],
+  "verify": [
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Long Article",
+        "match": "exact"
+      }
+    },
+    {
+      "op": "wait",
+      "selector": {
+        "text": "Section 1",
+        "match": "exact"
+      }
+    }
+  ]
+}

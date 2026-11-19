@@ -1,0 +1,76 @@
+{
+  "id": "browser_history_eager_date_groups",
+  "status": "included",
+  "host_app": {
+    "name": "browser (小狐狸浏览器)",
+    "repository": "https://github.com/langwudong/browser",
+    "upstream_base_commit": "f44fff759c50c162739c1585149018e6f0277471",
+    "bundle_name": "com.example.nanvision",
+    "local_path": "hosts/browser"
+  },
+  "category": "latency",
+  "perf_scenarios": [
+    "列表加载",
+    "数据库读取"
+  ],
+  "source": {
+    "patch": "source.patch",
+    "fix_patch": "fix.patch",
+    "unfixed": {
+      "tree": "ca8cdb46a27f193e2d1e80db3cb72c0f3efc63a4",
+      "reference_unsigned_hap_sha256": "9def6ea841eee330dd863de9c1adca151068d7b2eb240246461e57bd5f10e432"
+    },
+    "fixed": {
+      "tree": "c072fea7afb966873c443d50b3ec924d903f340c",
+      "reference_unsigned_hap_sha256": "5b4ee4f6af365dad1d7d2752e7558974dd7f8a709423636ddd71ce62933e1d41"
+    }
+  },
+  "testcase": {
+    "name": "PerfLoad_browser_0060",
+    "py_file": "testcase/PerfLoad_browser_0060.py",
+    "descriptor": "testcase/PerfLoad_browser_0060.json",
+    "install_dir": "perf_testing/hapray/testcases/com.example.nanvision",
+    "driver": "DeviceTest",
+    "module": "entry",
+    "ability": "EntryAbility",
+    "trigger": "external_ui",
+    "workload": "testcase/PerfLoad_browser_0060.workload.json"
+  },
+  "collection": {
+    "config": "../collection.yaml",
+    "modes": [
+      "htrace",
+      "hiperf"
+    ],
+    "step_duration_s": 60,
+    "rounds": 3,
+    "outputs": [
+      "htrace/trace.htrace",
+      "hiperf/perf.data",
+      "pids.json",
+      "memory/",
+      "ui/",
+      "thermal/"
+    ]
+  },
+  "runnability": {
+    "data": "offline",
+    "prepare": "tools/collect/fixtures/seed_browser.py --days 365 --per-day 100",
+    "service": null,
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "latency"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 2.71,
+    "tier": "strong"
+  }
+}

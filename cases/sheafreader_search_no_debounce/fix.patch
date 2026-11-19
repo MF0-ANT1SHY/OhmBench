@@ -1,0 +1,39 @@
+diff --git a/entry/src/main/ets/state/AppStore.ets b/entry/src/main/ets/state/AppStore.ets
+index a391c9b3960d8774d614ce68771c71dff7418a53..eda0ea4f04c6871612eeb6c4e80ba8eaac305426 100644
+--- a/entry/src/main/ets/state/AppStore.ets
++++ b/entry/src/main/ets/state/AppStore.ets
+@@ -24,6 +24,8 @@ import { common } from '@kit.AbilityKit';
+  * window is exhausted; the same page size is used here.
+  */
+ const ARTICLE_PAGE_SIZE: number = 300;
++/** Quiet time after the last keystroke before a search scans the articles. */
++const SEARCH_DEBOUNCE_MS: number = 300;
+ 
+ /**
+  * Global application state. An @Observed class so child components can
+@@ -545,9 +547,24 @@ export class AppStore {
+ 
+   async search(query: string): Promise<void> {
+     this.searchQuery = query;
+-    await this.resetArticles();
++    // Typing changes the query once per key. Scan the stored articles once the
++    // user pauses instead of once per keystroke; clearing applies immediately.
++    if (this.searchTimer !== -1) {
++      clearTimeout(this.searchTimer);
++      this.searchTimer = -1;
++    }
++    if (query.length === 0) {
++      await this.resetArticles();
++      return;
++    }
++    this.searchTimer = setTimeout(() => {
++      this.searchTimer = -1;
++      this.resetArticles();
++    }, SEARCH_DEBOUNCE_MS);
+   }
+ 
++  private searchTimer: number = -1;
++
+   async selectArticle(articleId: number): Promise<void> {
+     this.selectedArticleId = articleId;
+     const article: Article | undefined = this.articles.find((a: Article) => a.id === articleId);

@@ -53,5 +53,26 @@
       "ui/",
       "thermal/"
     ]
+  },
+  "runnability": {
+    "data": "local_service",
+    "prepare": "music API replay; configure http://127.0.0.1:18490 with tools/collect/fixtures/cloudmusic-api-setup.workload.json",
+    "service": "tools/collect/fixtures/cloudmusic_data_service.py (port 18490)",
+    "public_backend": null,
+    "runnable": true,
+    "checked": "2026-11-18"
+  },
+  "hapray": {
+    "scene": "load",
+    "also": [
+      "jank",
+      "latency"
+    ],
+    "collect": "perf",
+    "oracle_metric_in_hapray": true
+  },
+  "quality": {
+    "median_ratio": 2.22,
+    "tier": "strong"
   }
 }

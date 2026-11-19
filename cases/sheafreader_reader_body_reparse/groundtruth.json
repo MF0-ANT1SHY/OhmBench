@@ -1,0 +1,108 @@
+{
+  "case": "sheafreader_reader_body_reparse",
+  "status": "included",
+  "mechanism": "ArticleReaderView.bodyBlocks() re-parses the whole article HTML with ReaderBody.blocks() every time the reader body is rendered. The view holds the article through @ObjectLink, so starring or marking the article read re-renders it and repeats ~10 full-text regex passes over the unchanged body. Cost per tap grows with article length.",
+  "fix_summary": "Cache the parsed blocks in the view and parse again only when the body HTML or article link changes.",
+  "root_causes": [
+    {
+      "id": "RC1",
+      "role": "primary",
+      "kind": "function",
+      "file": "entry/src/main/ets/components/ArticleReaderView.ets",
+      "class": "ArticleReaderView",
+      "symbol": "bodyBlocks",
+      "scope_lines": [
+        156,
+        158
+      ],
+      "changed_lines": [
+        156,
+        158
+      ],
+      "aliases": [
+        {
+          "file": "entry/src/main/ets/utils/ReaderBody.ets",
+          "class": "ReaderBody",
+          "symbol": "blocks",
+          "kind": "function",
+          "scope_lines": [
+            145,
+            199
+          ],
+          "changed_lines": [
+            145,
+            199
+          ]
+        }
+      ]
+    }
+  ],
+  "performance_oracle": {
+    "metric": "hiperf_instructions",
+    "definition": "App-process retired instructions in a fixed 90-second window in which the external driver taps the reader's star button 21 times (1.2 s apart) on one open 271 KB article.",
+    "comparison": "Median unfixed >= 1.2 * median fixed across three paired rounds.",
+    "workload_notes": "Launch once, stop, copy sheaf_reader.db out; build the fixture with tools/collect/fixtures/seed_reader_article.py empty.db long.db; install it with the app stopped before every round. After the window the article must be starred (21 taps) and its body text still shown.",
+    "evidence": {
+      "unfixed": [
+        5878992102,
+        5906695909,
+        5860600547
+      ],
+      "fixed": [
+        1810125203,
+        1828907717,
+        1824366813
+      ],
+      "rounds_per_variant": 3,
+      "paired_ratios": [
+        3.2478,
+        3.2296,
+        3.2124
+      ],
+      "median_ratio": 3.2224835817598265,
+      "device": "HUAWEI Pura 70 Ultra (HBP-AL00), 6.0.0.112(SP55C00E112R5P4)",
+      "date": "2026-11-18",
+      "fixture_sha256": "9c9945f4aa28b8cc5d772042c3678d5f0769a8763b93f9ef2816dde7a9a96a82",
+      "round_order": [
+        {
+          "pair": 1,
+          "variant": "unfixed",
+          "window_s": 90.0,
+          "measured_actions_s": 61.361
+        },
+        {
+          "pair": 1,
+          "variant": "fixed",
+          "window_s": 90.0,
+          "measured_actions_s": 61.437
+        },
+        {
+          "pair": 2,
+          "variant": "fixed",
+          "window_s": 90.001,
+          "measured_actions_s": 61.356
+        },
+        {
+          "pair": 2,
+          "variant": "unfixed",
+          "window_s": 90.0,
+          "measured_actions_s": 61.474
+        },
+        {
+          "pair": 3,
+          "variant": "unfixed",
+          "window_s": 90.001,
+          "measured_actions_s": 61.496
+        },
+        {
+          "pair": 3,
+          "variant": "fixed",
+          "window_s": 90.001,
+          "measured_actions_s": 61.373
+        }
+      ],
+      "collection": "hiperf stat -p <app-pid> -e raw-instruction-retired --control prepare/start/stop around the measured UI actions only. Before each round the signed variant was installed (hash checked on the device), the same database fixture was installed with the app stopped, and the app was launched and brought to the start screen. The app PID was unchanged at the end of every round.",
+      "functional_check": "After the window the article is starred in the database (21 taps) and its title and body text are shown, in every round of both variants."
+    }
+  }
+}

@@ -6,6 +6,8 @@ A benchmark of performance bugs in HarmonyOS applications, for evaluating perfor
 - [Data](docs/data.md): repository layout, source + patch, prompt, oracle, workload
 - [Building and signing](docs/build.md): reconstruct sources and build the unfixed/fixed HAPs
 - [Extension standard](docs/extending.md): requirements for adding a case
-- [Collection and evaluation standard](docs/evaluation.md): inputs, per-case record, metrics, matching
-- [Cases](docs/cases.md): host apps and cases
+- [Collection and evaluation standard](docs/evaluation.md): inputs, per-case record, metrics, matching,
+  and the [batch HapRay evaluation](docs/evaluation.md#batch-hapray-evaluation) (collect, run, score)
+- [Cases](docs/cases.md): host apps and cases, effect size (weak cases), input data and backends,
+  HapRay scene of each case
 - [Known limitations](docs/limitations.md)
