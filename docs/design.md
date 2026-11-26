@@ -5,6 +5,8 @@ The rules that follow from these choices are in [the case standard](case-standar
 
 ![OhmBench architecture](architecture.svg)
 
+Diagram source: [architecture.drawio](architecture.drawio). Icons: [Lucide](https://lucide.dev) (ISC licence).
+
 ## Goal
 
 OhmBench measures how well a tool diagnoses and repairs performance bugs in HarmonyOS apps.
@@ -60,7 +62,7 @@ It is self-contained: it holds patches, not app sources.
 | `groundtruth.json` | mechanism, root-cause locations, performance oracle and its evidence | the evaluator only |
 | `case.json` | metadata: host app, source tree hashes, testcase, collection, quality, runnability, HapRay scene | the evaluator only |
 
-The full field list is in [the case standard](case-standard.md#casejson-schema).
+The full field list is in [the case standard](case-standard.md#3-casejson-schema).
 
 ## Layers
 
@@ -73,13 +75,17 @@ Each layer reads the output of the one before it.
    `tools/build_cases.py` builds unsigned HAPs with the HarmonyOS command-line tools.
    `tools/audit_app.py` checks the source and the disassembled bytecode for benchmark code.
    The user signs the HAPs with their own certificate.
-3. **Device and collection.** The signed app runs on a real HarmonyOS phone over `hdc`.
+3. **On-device run and collection.** The signed app runs on a real HarmonyOS phone over `hdc`.
    `tools/collect/run_cases.py` installs each case through a user hook, restores its input data and runs `hapray perf`.
    The result is a capture directory per case and round.
 4. **Detector under test.** `tools/evaluate/run_hapray.py` gives the tool one blind input directory per case.
    Any command line works; HapRay-Skill driven by an agent CLI is the reference example.
-5. **Evaluation.** `tools/evaluate/score.py` scores the answers against `groundtruth.json` and `fix.patch`.
+5. **Scoring and judging.** `tools/evaluate/score.py` scores the answers against `groundtruth.json` and `fix.patch`.
    `tools/evaluate/judge.py` optionally asks a model or a person whether the diagnosis and the repair are right.
+   The report is a score table for all cases, for strong cases only and per HapRay scene, plus one row per case.
+
+The ground truth (`groundtruth.json`, `fix.patch`) comes from the case corpus and goes only to scoring.
+New cases enter the corpus through the [case standard](case-standard.md).
 
 ## Blind evaluation
 

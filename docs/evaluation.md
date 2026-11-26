@@ -1,5 +1,17 @@
 # Collection and evaluation standard
 
+## Protocol
+
+1. **Select cases.** `python3 tools/catalog.py list [--scene load|memory|jank|latency] [--tier strong] [--data offline]`.
+2. **Collect data on a phone** from the unfixed variant: `tools/collect/run_cases.py`.
+3. **Run the tool** on one blind input directory per case: `tools/evaluate/run_hapray.py`.
+4. **Score** the answers against `groundtruth.json` and `fix.patch`: `tools/evaluate/score.py`.
+5. **Judge** (optional) whether the first diagnosis and repair are right: `tools/evaluate/judge.py`, with a model or a person.
+
+Scores are macro averages over all selected cases, also shown for strong cases only and per HapRay scene.
+A case without an answer scores zero.
+The sections below give the rules and the commands for each step.
+
 ## Blind input
 
 A tool under evaluation may receive, per case: the **signed unfixed HAP**, `prompt.json`, the
@@ -120,3 +132,12 @@ diagnosis agent can read them.
 
 [Evaluating HapRay-Skill: step by step](hapray-eval.md) lists these steps as a checklist, for a
 person or an agent.
+
+## Adding a detector
+
+Any tool can be evaluated.
+`run_hapray.py` runs the command after `--` once per case.
+In each argument, `{input}`, `{output}` and `{case}` are replaced by the blind input directory, the output directory and the case id.
+The tool must write `{output}/answer.json` with ranked suspects; the format is in [agent_prompt.md](../tools/evaluate/agent_prompt.md) and in the [per-case record](#per-case-record).
+`score.py` also reads HapRay-Skill's own outputs (`fix-plan.json`, `root_cause_agent_result.json`, scene reports).
+A tool with another output format needs a small reader in `score.py` or a converter to `answer.json`.

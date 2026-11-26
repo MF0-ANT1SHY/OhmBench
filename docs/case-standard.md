@@ -172,6 +172,16 @@ A case enters the catalog with `status: included` when:
 - `python3 -m unittest discover tests` passes (it runs the check and fails if `docs/cases.md` is out of date);
 - the reviewer has checked the manual criteria, in particular that `fix.patch` holds only the repair and that `prompt.json` does not reveal the cause.
 
+In short: pick a real bug, write the two patches and the workload, measure the pair on a phone, write the ground truth, then run:
+
+```bash
+python3 tools/prepare_sources.py <case-id>
+python3 tools/build_cases.py <case-id>
+python3 tools/catalog.py docs
+python3 tools/catalog.py check
+python3 -m unittest discover tests
+```
+
 ## 7. Naming and versioning
 
 | Item | Convention |
